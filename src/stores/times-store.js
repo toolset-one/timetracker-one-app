@@ -1,0 +1,112 @@
+import { writable } from 'svelte/store';
+import { routerStore } from '../stores/router-store.js'
+import { authStore } from '../stores/auth-store.js'
+
+export const timesStore = writable({
+	textActive: null,
+	json: {},
+	array: []
+})
+
+let listener,
+	textId
+
+
+export function timesStoreInit() {
+	setListener()
+
+	routerStore.subscribe(routerData => {
+		textId = routerData.id
+		timesStore.update(data => {
+			data.textActive = (data.json && data.json[textId]) ? data.json[textId] : null
+			return data
+		})
+	})
+}
+
+function setListener() {
+	authStore.subscribe(authData => {
+		if(listener) {
+			listener()
+		}
+
+		if(authData.hasAuth) {
+			listener = firebase.db.collection('times').where('user', '==', authData.user.id).onSnapshot(snapshot =>
+				snapshot.docChanges().forEach(change => {
+								
+					if (change.type === 'added' || change.type === 'modified') {
+
+						const textData = Object.assign({ 
+							id: change.doc.id 
+						}, change.doc.data())
+
+						timesStore.update(data => {
+							data.json[textData.id] = textData
+							data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => 
+								(b.updated ? b.updated.toDate() : 0) - (a.updated ? a.updated.toDate() : 0)
+							)
+							data.textActive = (data.json && data.json[textId]) ? data.json[textId] : null
+							return data
+						})
+					} else if (change.type === 'removed') {
+						timesStore.update(data => {
+							delete data.json[change.doc.data().slug]
+							data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => 
+								(b.updated ? b.updated.toDate() : 0) - (a.updated ? a.updated.toDate() : 0)
+							)
+							data.textActive = (data.json && data.json[textId]) ? data.json[textId] : null
+							return data
+						})
+					}
+				})
+			)
+		}
+	})
+}
+
+
+export function timesStoreNewTime(cb) {
+
+	const unsubscribe = authStore.subscribe(authData => {
+		firebase.db.collection('times').doc().set({
+			user: authData.user.id,
+			excerpt: '',
+			text: '',
+			updated: new Date(),
+			created: new Date()
+		}).then(() => {
+			console.log('document created');
+			cb(true)
+		}).catch(err => {
+			console.error('error: ', err);
+			cb(false)
+		})
+	})
+	unsubscribe()
+}
+
+
+export function timesStoreChangeTime(id, text) {
+	firebase.db.collection('times').doc(id).update({
+		text,
+		excerpt: getExcerpt(text),
+		updated: new Date()
+	})
+}
+
+
+function getExcerpt(text) {
+
+	if(text.length > 100) {
+
+		if(text.split('\n')[0].length <= 100) {
+			return	text.split('\n')[0]
+		}
+
+		const trimmedTime = text.substr(0, 100),
+			wordTrimmedTime = trimmedTime.substr(0, Math.min(trimmedTime.length, trimmedTime.lastIndexOf(' ')))
+			return wordTrimmedTime +'…'
+	}
+
+	return text
+}
