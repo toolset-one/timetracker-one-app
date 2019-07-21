@@ -1,7 +1,11 @@
 <script>
+	import Page from 'page'
 	import { onMount } from 'svelte';
+	import { routerStore } from '../stores/router-store.js'
+
 	import UiButton from '../ui/ui-button.svelte'
 	import TimelogEntry from '../timelog/timelog-entry.svelte'
+	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate } from '../helpers/helpers.js'
 
 	let newData = {
 		duration: 0,
@@ -16,6 +20,12 @@
 		comment: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren.'
 	}]
 
+	$: dateNow = dateStringToDate($routerStore.subview)
+
+	onMount(() => {
+		console.log($routerStore.subview)
+	})
+
 	function newEntry() {
 		entries = [...entries, newData]
 	}
@@ -25,21 +35,24 @@
 	<header>
 		<div class="date-nav">
 			<div class="button-wrapper">
-				<UiButton type="icon" icon="arrow-left" />
+				<UiButton 
+					type="icon" 
+					icon="arrow-left" 
+					on:click={e => Page('/timelog/' + dateToDatestring(datePrevDate(dateNow)) + '/')} />
 			</div>
 			<div class="button-wrapper">
-				<UiButton type="icon" icon="arrow-right" />
+				<UiButton 
+					type="icon"
+					icon="arrow-right"
+					on:click={e => Page('/timelog/' + dateToDatestring(dateNextDate(dateNow)) + '/')} />
 			</div>
 			<h2>
-				7. Juli, Sunday
+				{dateGetHumanDate(dateNow)}
 			</h2>
 		</div>
 		<div class="add-button-wrapper">
 			<UiButton label="Add Entry" on:click={e => newEntry()} />
 		</div>
-
-		<!-- TODO!!! -->
-		<div style="clear:both"></div>
 	</header>
 
 	<ul class="entries">
@@ -57,19 +70,22 @@
 <style>
 
 	header {
+		display:flex;
+		flex-flow: row wrap;
 		height:42px;
 		max-width:900px;
 		margin:60px auto 24px auto;
 	}
 
 	.date-nav {
+		display:flex;
+		flex-flow: row wrap;
 		font-size:0;
 		width:50%;
-		float:left;
 	}
 
 	.button-wrapper {
-		float:left;
+
 		margin-right:6px;
 	}
 
@@ -78,11 +94,11 @@
 	}
 
 	.add-button-wrapper {
-		float:right;
+		flex: 1;
+		text-align: right;
 	}
 
 	.entries {
-		clear:both;
 		position: relative;
 		max-width:900px;
 		margin:24px auto 12px auto;

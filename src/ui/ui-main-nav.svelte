@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { routerStore } from '../stores/router-store.js'
+	import { dateToDatestring } from '../helpers/helpers.js'
 
 	let ROUTES = ['timelog', 'reports', 'settings'],
 	ELEMENTS_MAP = {},
@@ -24,7 +25,7 @@
 		{#each ROUTES as route}
 			<li>
 				<a 
-					href="/{route}/" 
+					href="/{route}/{route === 'timelog' ? dateToDatestring(new Date()) + '/' : ''}"
 					bind:this={ELEMENTS_MAP[route]}
 					class="{$routerStore.view === route ? 'active' : ''}"
 					on:mouseenter={e => hoverEl = ELEMENTS_MAP[route]}>
