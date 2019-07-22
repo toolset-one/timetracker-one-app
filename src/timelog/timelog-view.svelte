@@ -3,13 +3,19 @@
 	import { onMount } from 'svelte';
 	import { routerStore } from '../stores/router-store.js'
 	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
+	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes } from '../helpers/helpers.js'
 
 	import UiButton from '../ui/ui-button.svelte'
 	import TimelogEntry from '../timelog/timelog-entry.svelte'
 	import TimelogDurationOverlay from '../timelog/timelog-duration-overlay.svelte'
-	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes } from '../helpers/helpers.js'
+	import TimelogProjectOverlay from '../timelog/timelog-project-overlay.svelte'
+	import TimelogCommentOverlay from '../timelog/timelog-comment-overlay.svelte'
 
-	let openedDurationId = null
+
+
+	let openedDurationId = null,
+		openProjectId = null,
+		openCommentId = null
 
 	$: dateNow = dateStringToDate($routerStore.subview)
 	$: entries = $timesStore.array.filter(entry => entry.day === $routerStore.subview)
@@ -52,7 +58,11 @@
 
 <ul class="entries">
 	{#each entries as entry}
-		<TimelogEntry data={entry} on:openDuration={e => openedDurationId = e.detail} />
+		<TimelogEntry
+			data={entry}
+			on:openDuration={e => openedDurationId = e.detail}
+			on:openProject={e => openProjectId = e.detail}
+			on:openComment={e => openCommentId = e.detail} />
 	{/each}
 </ul>
 
@@ -70,7 +80,20 @@
 
 
 {#if openedDurationId}
-	<TimelogDurationOverlay id={openedDurationId} duration={$timesStore.json[openedDurationId].duration} on:close={e => openedDurationId = null} />
+	<TimelogDurationOverlay
+		id={openedDurationId}
+		duration={$timesStore.json[openedDurationId].duration}
+		on:close={e => openedDurationId = null} />
+{:else if openProjectId}
+	<TimelogProjectOverlay
+		id={openProjectId}
+		project={$timesStore.json[openProjectId].project}
+		on:close={e => openProjectId = null} />
+{:else if openCommentId}
+	<TimelogCommentOverlay
+		id={openCommentId}
+		comment={$timesStore.json[openCommentId].comment}
+		on:close={e => openCommentId = null} />
 {/if}
 
 <style>
@@ -79,7 +102,7 @@
 		display:flex;
 		flex-flow: row wrap;
 		height:42px;
-		max-width:900px;
+		max-width:960px;
 		margin:60px auto 24px auto;
 	}
 
@@ -106,7 +129,7 @@
 
 	.entries {
 		position: relative;
-		max-width:900px;
+		max-width:960px;
 		margin:24px auto 12px auto;
 		padding:0;
 		list-style: none;
@@ -131,7 +154,7 @@
 	}
 
 	.total {
-		max-width:900px;
+		max-width:960px;
 		margin:18px auto 24px auto;
 		padding:0 0 0 54px;
 	}

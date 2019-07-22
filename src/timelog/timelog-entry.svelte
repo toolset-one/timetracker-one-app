@@ -1,5 +1,6 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte';
+	import { fade } from 'svelte/transition'
 	import UiButton from '../ui/ui-button.svelte'
 	import { dateGetHours, dateGetMinutes, dateGetSeconds } from '../helpers/helpers.js'
 
@@ -13,6 +14,7 @@
 
 	<li
 		id="{data.id}"
+		transition:fade="{{delay: 0, duration: 1000}}"
 		class="{hovered ? 'hovered' : ''}"
 		on:mouseenter={e => hovered = true}
 		on:mouseleave={e => hovered = false}>
@@ -24,12 +26,14 @@
 				{dateGetHours(data.duration)}<span>:</span>{dateGetMinutes(data.duration)}<small>{dateGetSeconds(data.duration)}</small>
 			</div>
 		</div>
-		<div class="project">
+		<div class="project" on:click={e => dispatch('openProject', data.id)}>
 			<div>
 				No Project
 			</div>
 		</div>
-		<div class="comment {data.comment.length === 0 ? 'no-comment' : ''}">
+		<div
+			class="comment {data.comment.length === 0 ? 'no-comment' : ''}"
+			on:click={e => dispatch('openComment', data.id)}>
 			<div>
 				{data.comment.length > 0 ? data.comment : 'No comment'}
 			</div>

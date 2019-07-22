@@ -74,27 +74,29 @@ export function timesStoreNewTime(day, cb) {
 }
 
 
-export function timesStoreChangeTime(id, text) {
+export function timesStoreChangeComment(id, comment) {
 	firebase.db.collection('times').doc(id).update({
-		text,
-		excerpt: getExcerpt(text),
+		comment,
 		updated: new Date()
+	})	
+
+	timesStore.update(data => {
+		data.json[id].comment = comment
+		data.array = (Object.keys(data.json).map(el => data.json[el]))
+		return data
 	})
 }
 
 
-function getExcerpt(text) {
+export function timesStoreChangeDuration(id, duration) {
+	firebase.db.collection('times').doc(id).update({
+		duration,
+		updated: new Date()
+	})	
 
-	if(text.length > 100) {
-
-		if(text.split('\n')[0].length <= 100) {
-			return	text.split('\n')[0]
-		}
-
-		const trimmedTime = text.substr(0, 100),
-			wordTrimmedTime = trimmedTime.substr(0, Math.min(trimmedTime.length, trimmedTime.lastIndexOf(' ')))
-			return wordTrimmedTime +'…'
-	}
-
-	return text
+	timesStore.update(data => {
+		data.json[id].duration = duration
+		data.array = (Object.keys(data.json).map(el => data.json[el]))
+		return data
+	})
 }

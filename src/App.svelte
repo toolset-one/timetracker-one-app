@@ -9,11 +9,23 @@
 	import MainNav from './ui/ui-main-nav.svelte'
 	import TimelogView from './timelog/timelog-view.svelte'
 
+	let resizing = false,
+		debounceTimeout
 
 	onMount(() => {
 		authInit()
 		timesStoreInit()
 	})
+
+	function resize() {
+		clearTimeout(debounceTimeout)
+		debounceTimeout = setTimeout(() => {
+			resizing = true;
+			setTimeout(() => {
+				resizing = false
+			}, 10)
+		}, 300)
+	}
 
 const COLORS = [
   '#B33C24', '#B37D47', '#B3A147', '#A1B347', '#7DB347',
@@ -23,6 +35,8 @@ const COLORS = [
 ]
 
 </script>
+
+{#if !resizing}
 
 	{#if $authStore.inited && !$authStore.hasAuth}
 		<SignIn />
@@ -37,6 +51,10 @@ const COLORS = [
 			Settings
 		{/if}
 	{/if}
+
+{/if}
+
+<svelte:window on:resize={e => resize()} />
 
 <style>
 /*	.loading {

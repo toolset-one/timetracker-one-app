@@ -62,6 +62,12 @@ export const dateNextDate = date => {
 }
 
 
+export const dateTimeToDuration = time => {
+	const arrDuration = time.split(':'),
+		duration = arrDuration[0] * (60 * 60) + arrDuration[1] * 60
+		return duration
+} 
+
 
 export const dateGetHours = duration => Math.floor(duration / (60 * 60))
 
