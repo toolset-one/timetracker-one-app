@@ -9,18 +9,33 @@
 	export let data = {}
 
 	let hovered = false,
-		isNew = false
+		isNew = false,
+		interval,
+		stopwatchDuration = 0
 
 	const dispatch = createEventDispatcher()
 
 	$: hasStopwatch = $userStore.stopwatchEntryId === data.id
-	$: stopWatchInterval = hasStopwatch 
-		? setInterval(() => {}, 1000) 
-		: clearInterval(stopWatchInterval)
+	$: displayDuration = hasStopwatch
+		? stopwatchDuration
+		: data.duration
+
 
 	onMount(() =>
-		isNew = data.created.seconds * 1000 >= Date.now() - 5000
+		isNew = data.created.seconds * 1000 >= Date.now() - 2000
 	)
+
+	userStore.subscribe(userData => {
+		if(userData.stopwatchEntryId === data.id) {
+			interval = setInterval(() => {
+				stopwatchDuration = Math.floor((Date.now() - $userStore.stopwatchStartTime) / 1000)
+			}, 1000)
+
+			stopwatchDuration = Math.floor((Date.now() - $userStore.stopwatchStartTime) / 1000)
+		} else {
+			clearInterval(interval)
+		}
+	})
 
 </script>
 
@@ -35,15 +50,15 @@
 		on:mouseleave={e => hovered = false}>
 		<div class="stopwatch">
 			<UiButton
-				type="entry"
+				type="{hasStopwatch ? 'entry has-stopwatch' : 'entry'}"
 				icon="{hasStopwatch ? 'pause' : 'play'}"
 				hovered={hovered || hasStopwatch}
 				color="{hovered || hasStopwatch ? '#26231E' : '#E6E4E1'}"
 				on:click={e => userSetStopwatch(data.id, (Date.now() - data.duration * 1000))} />
 		</div>
-		<div class="duration" on:click={e => dispatch('openDuration', data.id)}>
+		<div class="duration" on:click={e => !hasStopwatch && dispatch('openDuration', data.id)}>
 			<div>
-				{dateGetHours(data.duration)}<span>:</span>{dateGetMinutes(data.duration)}<small>{dateGetSeconds(data.duration)}</small>
+				{dateGetHours(displayDuration)}<span>:</span>{dateGetMinutes(displayDuration)}<small>{dateGetSeconds(displayDuration)}</small>
 			</div>
 		</div>
 		<div class="project" on:click={e => dispatch('openProject', data.id)}>
@@ -101,27 +116,38 @@
 	}
 
 	.has-stopwatch {
-		background:#F0F3F5;
+		/* background:#F0F3F5; */
+	}
+
+	.has-stopwatch .duration >div, .has-stopwatch.hovered .duration >div {
+		min-width:63px;
+		background:#477DB3;
+		color:#FFF;
+		cursor:initial;
+		margin-left:-6px;
+		padding-left:12px;
+		border-top-left-radius:0;
+		border-bottom-left-radius:0;
 	}
 
 	.has-stopwatch .duration span {
 		animation: ticking 2000ms infinite;
 	}
 
-@keyframes ticking {
-	0% {
-		opacity:1;
+	@keyframes ticking {
+		0% {
+			opacity:1;
+		}
+		49.9% {
+			opacity:1;
+		}
+		50% {
+			opacity:0;
+		}
+		100% {	
+			opacity:0;
+		}
 	}
-	49.9% {
-		opacity:1;
-	}
-	50% {
-		opacity:0;
-	}
-	100% {	
-		opacity:0;
-	}
-}
 
 	.stopwatch {
 		height:48px;
@@ -159,7 +185,7 @@
 		top:-3px;
 		padding:0 0 0 2px;
 		font-size:10px;
-		font-weight:700;
+		font-weight:600;
 	}
 
 	.project {
@@ -177,7 +203,7 @@
 		background:#68B359;
 		border-radius: 6px;
 		padding:0 12px;
-		font-weight:700;
+		font-weight:600;
 		color:#FFF;
 	}
 

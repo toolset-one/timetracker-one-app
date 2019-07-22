@@ -162,7 +162,7 @@
 	.total p {
 		font-size:14px;
 		line-height:18px;
-		font-weight:700;
+		font-weight:600;
 	}
 
 </style>

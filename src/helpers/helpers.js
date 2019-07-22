@@ -34,14 +34,11 @@ export const dateToDatestring = date => {
 
 export const dateStringToDate = string => {
   const tmp = string.split('-')
-  console.log('DATESTRING', parseInt(tmp[0]), parseInt(tmp[1]), parseInt(tmp[2]))
-  console.log('DATESTRING', new Date(parseInt(tmp[0]), parseInt(tmp[1]) - 1, parseInt(tmp[2]) ) )
   return new Date(parseInt(tmp[0]), parseInt(tmp[1]) - 1, parseInt(tmp[2]) )
 }
 
 
 export const dateGetHumanDate = date => {
-	console.log(date, date.getDate())
 	const dayString = DAY_ENDINGS[date.getDate()] ? date.getDate() + DAY_ENDINGS[date.getDate()] : date.getDate() + 'th',
 		monthString = MONTHS[date.getMonth()],
 		weekdayString = WEEKDAYS_SHORT[date.getDay()]

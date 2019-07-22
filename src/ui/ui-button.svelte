@@ -55,7 +55,7 @@
 	<span>
 		{#if type === 'default'}	
 			{label}
-		{:else if type === 'icon' || type === 'entry'}
+		{:else if type === 'icon' || type === 'entry' || type === 'entry has-stopwatch'}
 			<UiIcon type={icon} color="{color}" />
 		{/if}	
 	</span>
@@ -125,6 +125,11 @@
 		box-shadow:none;
 	}
 
+	.type-entry:hover {
+		transform: none;
+		box-shadow: 0 6px 0 -3px rgba(0, 0, 0, .05);
+	}
+
 	.type-entry.hovered {
 		background:#CCC9C4;
 		box-shadow: 0 6px 0 -3px rgba(0, 0, 0, .05);
@@ -138,6 +143,21 @@
 		padding:11px;
 	}
 
+	.has-stopwatch {
+		border-top-right-radius:0;
+		border-bottom-right-radius:0;
+	}
+
+	.has-stopwatch span {
+		border-top-right-radius:0;
+		border-bottom-right-radius:0;
+		width:35px;
+	}
+
+	.has-stopwatch.hovered {
+		box-shadow: none;
+	}
+
 	span {
 		display: block;
 		position: relative;
@@ -146,7 +166,7 @@
 		background:#FFF;
 		padding:0 18px;
 		font-size:14px;
-		font-weight:700;
+		font-weight:6s00;
 		color:#26231E;
 	}
 
