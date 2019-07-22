@@ -1,30 +1,41 @@
 <script>
 	import { onMount } from 'svelte';
 	import { routerStore } from './stores/router-store.js'
-	/*
-		import { authStore, authInit } from './stores/auth-store.js'
-	 */
+	import { authStore, authInit } from './stores/auth-store.js'
+	import { timesStoreInit } from './stores/times-store.js'
+
+	import SignIn from './sign-in/sign-in-view.svelte'
 
 	import MainNav from './ui/ui-main-nav.svelte'
 	import TimelogView from './timelog/timelog-view.svelte'
 
 
 	onMount(() => {
-		// authInit()
-		// textsStoreInit()
+		authInit()
+		timesStoreInit()
 	})
+
+const COLORS = [
+  '#B33C24', '#B37D47', '#B3A147', '#A1B347', '#7DB347',
+  '#68B359', '#47B359', '#47B37D', '#47B3A1', '#47A1B3',
+  '#477DB3', '#4759B3', '#5947B3', '#7D47B3', '#A147B3',
+  '#B359A4', '#B3477D', '#B34759', '#4D4D4D'
+]
 
 </script>
 
+	{#if $authStore.inited && !$authStore.hasAuth}
+		<SignIn />
+	{:else if $authStore.seemsToHaveAuth}
+		<MainNav />
 
-	<MainNav />
-
-	{#if $routerStore.view === 'timelog'}
-		<TimelogView />
-	{:else if $routerStore.view === 'reports'}
-		Reports
-	{:else if $routerStore.view === 'settings'}
-		Settings
+		{#if $routerStore.view === 'timelog'}
+			<TimelogView />
+		{:else if $routerStore.view === 'reports'}
+			Reports
+		{:else if $routerStore.view === 'settings'}
+			Settings
+		{/if}
 	{/if}
 
 <style>

@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import UiButton from '../ui/ui-button.svelte'
+	import { dateGetHours, dateGetMinutes, dateGetSeconds } from '../helpers/helpers.js'
 
 	export let data = {}
 
@@ -16,7 +17,9 @@
 			<UiButton type="entry" icon="play" hovered={hovered} color="{hovered ? '#26231E' : '#E6E4E1'}" />
 		</div>
 		<div class="duration">
-			0<span>:</span>34<small>00</small>
+			<div>
+				{dateGetHours(data.duration)}<span>:</span>{dateGetMinutes(data.duration)}<small>{dateGetSeconds(data.duration)}</small>
+			</div>
 		</div>
 		<div class="project">
 			<div>
@@ -24,7 +27,9 @@
 			</div>
 		</div>
 		<div class="comment {data.comment.length === 0 ? 'no-comment' : ''}">
-			{data.comment.length > 0 ? data.comment : 'No comment'}
+			<div>
+				{data.comment.length > 0 ? data.comment : 'No comment'}
+			</div>
 		</div>
 		<div class="nav">
 			<UiButton type="entry" icon="burger" hovered={hovered} color="{hovered ? '#26231E' : '#E6E4E1'}" />
@@ -72,15 +77,23 @@
 	.duration {
 		width:68px; /* max length for 44:44:44 */
 		height:48px;
-		line-height:48px;
-		padding:0 6px;
-		font-size:14px;
-		font-weight:600;
+		padding:0;
 		cursor:pointer;
 	}
 
-	.duration:hover {
+	.duration:hover >div {
 		background:rgba(0, 0, 0, .05);
+	}
+
+	.duration >div {
+		display:inline-block;
+		height:36px;
+		line-height:36px;
+		margin:6px 0;
+		padding:0 6px;
+		border-radius: 6px;
+		font-size:14px;
+		font-weight:600;
 	}
 
 	.duration span {
@@ -100,8 +113,8 @@
 		cursor:pointer;
 	}
 
-	.project:hover {
-		background:rgba(0, 0, 0, .05);
+	.project:hover >div {
+		box-shadow: 0 0 0 60px rgba(0, 0, 0, .05) inset;
 	}
 
 	.project >div {
@@ -116,17 +129,29 @@
 
 	.comment {
 		flex: 1;
-		line-height:48px;
-		padding:0 48px 0 6px;
-		font-size:14px;
+		padding:0 48px 0 0;
+		height:48px;
 		cursor:pointer;
+		overflow:hidden;
+	}
+
+	.comment:hover >div {
+		background:rgba(0, 0, 0, .05);
+	}
+
+	.comment >div {
+		display:inline-block;
+		max-width:100%;
+		height:36px;
+		line-height:36px;
+		margin:6px 0;
+		padding:0 6px;
+		border-radius: 6px;
+		font-size:14px;
+		font-weight:400;
 		white-space: nowrap;
 		overflow:hidden;
 		text-overflow:ellipsis;
-	}
-
-	.comment:hover {
-		background:rgba(0, 0, 0, .05);
 	}
 
 	.no-comment {

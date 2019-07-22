@@ -34,11 +34,14 @@ export const dateToDatestring = date => {
 
 export const dateStringToDate = string => {
   const tmp = string.split('-')
-  return new Date(parseInt(tmp[0]), parseInt(tmp[1]) - 1, parseInt(tmp[2]))
+  console.log('DATESTRING', parseInt(tmp[0]), parseInt(tmp[1]), parseInt(tmp[2]))
+  console.log('DATESTRING', new Date(parseInt(tmp[0]), parseInt(tmp[1]) - 1, parseInt(tmp[2]) ) )
+  return new Date(parseInt(tmp[0]), parseInt(tmp[1]) - 1, parseInt(tmp[2]) )
 }
 
 
 export const dateGetHumanDate = date => {
+	console.log(date, date.getDate())
 	const dayString = DAY_ENDINGS[date.getDate()] ? date.getDate() + DAY_ENDINGS[date.getDate()] : date.getDate() + 'th',
 		monthString = MONTHS[date.getMonth()],
 		weekdayString = WEEKDAYS_SHORT[date.getDay()]
@@ -47,11 +50,34 @@ export const dateGetHumanDate = date => {
 }
 
 export const datePrevDate = date => {
-	date.setDate(date.getDate() - 1)
-	return date
+	let newDate = new Date(date)
+	newDate.setDate(newDate.getDate() - 1)
+	return newDate
 }
 
 export const dateNextDate = date => {
-	date.setDate(date.getDate() + 1)
-	return date
+	let newDate = new Date(date)
+	newDate.setDate(newDate.getDate() + 1)
+	return newDate
+}
+
+
+
+export const dateGetHours = duration => Math.floor(duration / (60 * 60))
+
+export const dateGetMinutes = duration => {
+  const minutes = Math.floor(duration / 60)
+  const hours = Math.floor(minutes / 60)
+
+  const leftMinutes = minutes - hours * 60
+  const stringifiedMinutes = leftMinutes < 10 ? '0' + leftMinutes : leftMinutes
+
+  return stringifiedMinutes
+}
+
+export const dateGetSeconds = duration => {
+  const minutes = Math.floor(duration / 60)
+  const seconds = duration - minutes * 60
+  const stringifiedSeconds = seconds < 10 ? '0' + seconds : seconds
+  return stringifiedSeconds
 }

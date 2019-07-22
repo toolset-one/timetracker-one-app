@@ -2,70 +2,68 @@
 	import Page from 'page'
 	import { onMount } from 'svelte';
 	import { routerStore } from '../stores/router-store.js'
+	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
 
 	import UiButton from '../ui/ui-button.svelte'
 	import TimelogEntry from '../timelog/timelog-entry.svelte'
-	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate } from '../helpers/helpers.js'
-
-	let newData = {
-		duration: 0,
-		comment: ''
-	}
-
-	let entries = [{
-		duration: 0,
-		comment: 'Wirklich jetze?'
-	}, {
-		duration: 2400,
-		comment: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren.'
-	}]
+	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes } from '../helpers/helpers.js'
 
 	$: dateNow = dateStringToDate($routerStore.subview)
+	$: entries = $timesStore.array.filter(entry => entry.day === $routerStore.subview)
+	$: total = entries.reduce((sum, entry) => entry.duration + sum, 0)
 
 	onMount(() => {
-		console.log($routerStore.subview)
+
 	})
 
 	function newEntry() {
-		entries = [...entries, newData]
+		timesStoreNewTime(dateToDatestring(dateNow), success => {
+
+		})
 	}
 
 </script>
 
-	<header>
-		<div class="date-nav">
-			<div class="button-wrapper">
-				<UiButton 
-					type="icon" 
-					icon="arrow-left" 
-					on:click={e => Page('/timelog/' + dateToDatestring(datePrevDate(dateNow)) + '/')} />
-			</div>
-			<div class="button-wrapper">
-				<UiButton 
-					type="icon"
-					icon="arrow-right"
-					on:click={e => Page('/timelog/' + dateToDatestring(dateNextDate(dateNow)) + '/')} />
-			</div>
-			<h2>
-				{dateGetHumanDate(dateNow)}
-			</h2>
+<header>
+	<div class="date-nav">
+		<div class="button-wrapper">
+			<UiButton 
+				type="icon" 
+				icon="arrow-left" 
+				link="/timelog/{dateToDatestring(datePrevDate(dateNow))}/" />
 		</div>
-		<div class="add-button-wrapper">
-			<UiButton label="Add Entry" on:click={e => newEntry()} />
+		<div class="button-wrapper">
+			<UiButton 
+				type="icon"
+				icon="arrow-right"
+				link="/timelog/{dateToDatestring(dateNextDate(dateNow))}/" />
 		</div>
-	</header>
-
-	<ul class="entries">
-		{#each entries as entry}
-			<TimelogEntry data={entry} />
-		{/each}
-	</ul>
-
-	<div class="total">
-			<p>
-				1:08 total
-			</p>
+		<h2>
+			{dateGetHumanDate(dateNow)}
+		</h2>
 	</div>
+	<div class="add-button-wrapper">
+		<UiButton label="Add Entry" on:click={e => newEntry()} />
+	</div>
+</header>
+
+<ul class="entries">
+	{#each entries as entry}
+		<TimelogEntry data={entry} />
+	{/each}
+</ul>
+
+{#if entries.length > 0}
+	<div class="total">
+		<p>
+			{dateGetHours(total)}:{dateGetMinutes(total)} total
+		</p>
+	</div>
+{:else}
+	<p style="text-align: center;padding:42px 20px;">
+		No tracked hours for this day.
+	</p>
+{/if}
 
 <style>
 

@@ -6,6 +6,7 @@ const ACTION_CODE_SETTINGS = {
 }
 
 export const authStore = writable({
+	seemsToHaveAuth: false,
 	inited: false,
 	hasAuth: false,
 	user: null
@@ -18,10 +19,19 @@ export function authInit() {
 
 	console.log(Date.now() - loadedTime)
 
+	const seemsToHaveAuth = localStorage.getItem('seemsToHaveAuth')
+	if(seemsToHaveAuth) {
+		authStore.update(data => {
+			data.seemsToHaveAuth = true
+			return data
+		})
+	}
+
 	firebase.auth().onAuthStateChanged(user => {
-		console.log('T', 'AUTH STATE CHANGED', Date.now() - timeStart, firebase.auth().currentUser)
+		console.log('AUTH STATE CHANGED', Date.now() - timeStart, firebase.auth().currentUser)
 		if (user) {
 			authStore.set({
+				seemsToHaveAuth: true,
 				inited: true,
 				hasAuth: true,
 				user: {
@@ -29,16 +39,29 @@ export function authInit() {
 					email: user.email
 				}
 			})
+			localStorage.setItem('seemsToHaveAuth', true)
 		} else {
 			authStore.set({
+				seemsToHaveAuth: false,
 				inited: true,
 				hasAuth: false,
 				user: null
 			})
+
+			localStorage.setItem('seemsToHaveAuth', false)
 		}
 	})
 }
 
+
+export function authAnonymous(cb) {
+
+	firebase.auth().signInAnonymously().then(() => {
+		cb(true)
+	}).catch(err => {
+		cb(false)
+	})
+}
 
 
 export function authSendEmail(email, cb) {

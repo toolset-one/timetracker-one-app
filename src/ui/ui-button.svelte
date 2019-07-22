@@ -11,6 +11,7 @@
 	export let icon = 'arrow-left'
 	export let hovered = false
 	export let color = '#26231E'
+	export let link = null
 
 
 
@@ -26,16 +27,24 @@
 		left: 0
 	}
 
+	function click(e) {
+		if(!link) {
+			e.preventDefault()
+		}
+		dispatch('click', '')
+	}
+
 </script>
 
-<button
+<a
+	href="{link ? link : '#'}"
 	class="type-{type} {hovered ? 'hovered': ''}"
 	style="{
 		'--x:'+ (mousePosition.x - boundingRect.left) +'px;' +
 		'--y:'+ (mousePosition.y - boundingRect.top) +'px;'
 	}"
 	bind:this={el}
-	on:click={e => dispatch('click', '')}
+	on:click={e => click(e)}
 	on:mouseenter={e => hover = true}
 	on:mouseleave={e => hover = false}
 	on:mousemove={e => mousePosition = {
@@ -50,10 +59,11 @@
 			<UiIcon type={icon} color="{color}" />
 		{/if}	
 	</span>
-</button>
+</a>
 
 <style>
-	button {
+	a {
+		display:inline-block;
 		position: relative;
 		padding:1px;
 		border:0;
@@ -65,18 +75,19 @@
 		outline:none;
 	}
 
-	button:hover {
+	a:hover {
+		text-decoration: none;
 		transform: translateY(1px);
 		box-shadow: 0 4px 0 -3px rgba(0, 0, 0, .05);
 	}
 
-	button:active {
+	a:active {
 		background: #99815C;
 		transform: translateY(2px);
 		box-shadow: 0 -4px 0 -3px rgba(0, 0, 0, .05);
 	}
 
-	button:before {
+	a:before {
 		content:'';
 		display:block;
 		width:100%;
@@ -165,7 +176,7 @@
 		pointer-events: none;
 	}
 
-	button:hover em:after {
+	a:hover em:after {
 		transform: translate(-50%, -50%) scale(1);
 	}
 

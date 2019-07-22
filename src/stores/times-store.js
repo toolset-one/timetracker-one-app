@@ -3,7 +3,6 @@ import { routerStore } from '../stores/router-store.js'
 import { authStore } from '../stores/auth-store.js'
 
 export const timesStore = writable({
-	textActive: null,
 	json: {},
 	array: []
 })
@@ -15,13 +14,6 @@ let listener,
 export function timesStoreInit() {
 	setListener()
 
-	routerStore.subscribe(routerData => {
-		textId = routerData.id
-		timesStore.update(data => {
-			data.textActive = (data.json && data.json[textId]) ? data.json[textId] : null
-			return data
-		})
-	})
 }
 
 function setListener() {
@@ -42,19 +34,13 @@ function setListener() {
 
 						timesStore.update(data => {
 							data.json[textData.id] = textData
-							data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => 
-								(b.updated ? b.updated.toDate() : 0) - (a.updated ? a.updated.toDate() : 0)
-							)
-							data.textActive = (data.json && data.json[textId]) ? data.json[textId] : null
+							data.array = (Object.keys(data.json).map(el => data.json[el]))
 							return data
 						})
 					} else if (change.type === 'removed') {
 						timesStore.update(data => {
 							delete data.json[change.doc.data().slug]
-							data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => 
-								(b.updated ? b.updated.toDate() : 0) - (a.updated ? a.updated.toDate() : 0)
-							)
-							data.textActive = (data.json && data.json[textId]) ? data.json[textId] : null
+							data.array = (Object.keys(data.json).map(el => data.json[el]))
 							return data
 						})
 					}
@@ -65,13 +51,15 @@ function setListener() {
 }
 
 
-export function timesStoreNewTime(cb) {
+export function timesStoreNewTime(day, cb) {
 
 	const unsubscribe = authStore.subscribe(authData => {
 		firebase.db.collection('times').doc().set({
 			user: authData.user.id,
-			excerpt: '',
-			text: '',
+			day: day,
+			duration: 0,
+			project: null,
+			comment: '',
 			updated: new Date(),
 			created: new Date()
 		}).then(() => {
