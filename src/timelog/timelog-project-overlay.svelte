@@ -16,7 +16,7 @@
 
 	onMount(() => {
 
-		const boundingRect = document.querySelector('#'+ id +' .project').getBoundingClientRect()
+		const boundingRect = document.querySelector('#entry-'+ id +' .project').getBoundingClientRect()
 		top = boundingRect.top
 		left = boundingRect.left + 6
 

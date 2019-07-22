@@ -23,7 +23,7 @@
 
 		value = comment.replace(/\n/g, '')
 
-		const boundingRect = document.querySelector('#'+ id +' .comment').getBoundingClientRect()
+		const boundingRect = document.querySelector('#entry-'+ id +' .comment').getBoundingClientRect()
 		top = boundingRect.top
 		left = boundingRect.left - 6
 		maxWidth = boundingRect.width - 42

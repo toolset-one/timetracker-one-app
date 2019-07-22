@@ -18,7 +18,7 @@
 
 	onMount(() => {
 
-		const boundingRect = document.querySelector('#'+ id +' .duration').getBoundingClientRect()
+		const boundingRect = document.querySelector('#entry-'+ id +' .duration').getBoundingClientRect()
 		top = boundingRect.top
 		left = boundingRect.left - 6
 

@@ -57,7 +57,7 @@
 </header>
 
 <ul class="entries">
-	{#each entries as entry}
+	{#each entries as entry, i (entry.id)}
 		<TimelogEntry
 			data={entry}
 			on:openDuration={e => openedDurationId = e.detail}

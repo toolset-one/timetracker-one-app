@@ -34,13 +34,13 @@ function setListener() {
 
 						timesStore.update(data => {
 							data.json[textData.id] = textData
-							data.array = (Object.keys(data.json).map(el => data.json[el]))
+							data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
 							return data
 						})
 					} else if (change.type === 'removed') {
 						timesStore.update(data => {
 							delete data.json[change.doc.data().slug]
-							data.array = (Object.keys(data.json).map(el => data.json[el]))
+							data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
 							return data
 						})
 					}
@@ -82,7 +82,7 @@ export function timesStoreChangeComment(id, comment) {
 
 	timesStore.update(data => {
 		data.json[id].comment = comment
-		data.array = (Object.keys(data.json).map(el => data.json[el]))
+		data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
 		return data
 	})
 }
@@ -96,7 +96,7 @@ export function timesStoreChangeDuration(id, duration) {
 
 	timesStore.update(data => {
 		data.json[id].duration = duration
-		data.array = (Object.keys(data.json).map(el => data.json[el]))
+		data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
 		return data
 	})
 }

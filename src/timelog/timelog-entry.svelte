@@ -1,25 +1,45 @@
 <script>
-	import { onMount, createEventDispatcher } from 'svelte';
-	import { fade } from 'svelte/transition'
+	import { onMount, afterUpdate, createEventDispatcher } from 'svelte';
+	import { slide } from 'svelte/transition'
+	import { cubicOut } from 'svelte/easing'
 	import UiButton from '../ui/ui-button.svelte'
 	import { dateGetHours, dateGetMinutes, dateGetSeconds } from '../helpers/helpers.js'
+	import { userStore, userSetStopwatch } from '../stores/user-store.js'
 
 	export let data = {}
 
-	let hovered = false
+	let hovered = false,
+		isNew = false
 
 	const dispatch = createEventDispatcher()
+
+	$: hasStopwatch = $userStore.stopwatchEntryId === data.id
+	$: stopWatchInterval = hasStopwatch 
+		? setInterval(() => {}, 1000) 
+		: clearInterval(stopWatchInterval)
+
+	onMount(() =>
+		isNew = data.created.seconds * 1000 >= Date.now() - 5000
+	)
 
 </script>
 
 	<li
-		id="{data.id}"
-		transition:fade="{{delay: 0, duration: 1000}}"
-		class="{hovered ? 'hovered' : ''}"
+		id="entry-{data.id}"
+		in:slide={{ duration: 100, easing: cubicOut }}
+		class="
+			{hovered ? 'hovered' : ''}
+			{ isNew ? 'new' : ''}
+			{ hasStopwatch ? 'has-stopwatch' : ''}"
 		on:mouseenter={e => hovered = true}
 		on:mouseleave={e => hovered = false}>
 		<div class="stopwatch">
-			<UiButton type="entry" icon="play" hovered={hovered} color="{hovered ? '#26231E' : '#E6E4E1'}" />
+			<UiButton
+				type="entry"
+				icon="{hasStopwatch ? 'pause' : 'play'}"
+				hovered={hovered || hasStopwatch}
+				color="{hovered || hasStopwatch ? '#26231E' : '#E6E4E1'}"
+				on:click={e => userSetStopwatch(data.id, (Date.now() - data.duration * 1000))} />
 		</div>
 		<div class="duration" on:click={e => dispatch('openDuration', data.id)}>
 			<div>
@@ -50,8 +70,8 @@
 		position: relative;
 		margin:0;
 		padding:0;
-		min-height:48px;
 		background:#FFF;
+		min-height:48px;
 	}
 
 	li:after {
@@ -72,9 +92,36 @@
 		}
 	}
 
+	.new {
+		min-height:0;
+	}
+
 	.hovered {
 		background:#F5F3F0;
 	}
+
+	.has-stopwatch {
+		background:#F0F3F5;
+	}
+
+	.has-stopwatch .duration span {
+		animation: ticking 2000ms infinite;
+	}
+
+@keyframes ticking {
+	0% {
+		opacity:1;
+	}
+	49.9% {
+		opacity:1;
+	}
+	50% {
+		opacity:0;
+	}
+	100% {	
+		opacity:0;
+	}
+}
 
 	.stopwatch {
 		height:48px;
