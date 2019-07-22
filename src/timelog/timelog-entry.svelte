@@ -1,5 +1,5 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount, createEventDispatcher } from 'svelte';
 	import UiButton from '../ui/ui-button.svelte'
 	import { dateGetHours, dateGetMinutes, dateGetSeconds } from '../helpers/helpers.js'
 
@@ -7,16 +7,19 @@
 
 	let hovered = false
 
+	const dispatch = createEventDispatcher()
+
 </script>
 
 	<li
+		id="{data.id}"
 		class="{hovered ? 'hovered' : ''}"
 		on:mouseenter={e => hovered = true}
 		on:mouseleave={e => hovered = false}>
 		<div class="stopwatch">
 			<UiButton type="entry" icon="play" hovered={hovered} color="{hovered ? '#26231E' : '#E6E4E1'}" />
 		</div>
-		<div class="duration">
+		<div class="duration" on:click={e => dispatch('openDuration', data.id)}>
 			<div>
 				{dateGetHours(data.duration)}<span>:</span>{dateGetMinutes(data.duration)}<small>{dateGetSeconds(data.duration)}</small>
 			</div>

@@ -6,7 +6,10 @@
 
 	import UiButton from '../ui/ui-button.svelte'
 	import TimelogEntry from '../timelog/timelog-entry.svelte'
+	import TimelogDurationOverlay from '../timelog/timelog-duration-overlay.svelte'
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes } from '../helpers/helpers.js'
+
+	let openedDurationId = null
 
 	$: dateNow = dateStringToDate($routerStore.subview)
 	$: entries = $timesStore.array.filter(entry => entry.day === $routerStore.subview)
@@ -49,7 +52,7 @@
 
 <ul class="entries">
 	{#each entries as entry}
-		<TimelogEntry data={entry} />
+		<TimelogEntry data={entry} on:openDuration={e => openedDurationId = e.detail} />
 	{/each}
 </ul>
 
@@ -63,6 +66,11 @@
 	<p style="text-align: center;padding:42px 20px;">
 		No tracked hours for this day.
 	</p>
+{/if}
+
+
+{#if openedDurationId}
+	<TimelogDurationOverlay id={openedDurationId} duration={$timesStore.json[openedDurationId].duration} on:close={e => openedDurationId = null} />
 {/if}
 
 <style>
