@@ -17,6 +17,18 @@
 
 </script>
 
+<section class="filter-header">
+	<div class="button-wrapper">
+		<UiButton label="Team ▾" />
+	</div>
+	<div class="button-wrapper">
+		<UiButton label="Tasks ▾" />
+	</div>
+	<div class="button-wrapper">
+		<UiButton label="Tags ▾" />
+	</div>
+</section>
+
 <section class="range-header">
 	<div class="date-nav">
 		<div class="button-wrapper">
@@ -52,6 +64,10 @@
 		flex-flow: row wrap;
 		max-width:960px;
 		margin:24px auto 24px auto;
+	}
+
+	.filter-header .button-wrapper {
+		margin-right:6px;
 	}
 
 	.range-header {
