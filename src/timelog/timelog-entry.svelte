@@ -74,7 +74,12 @@
 			</div>
 		</div>
 		<div class="nav">
-			<UiButton type="entry" icon="burger" hovered={hovered} color="{hovered ? '#26231E' : '#E6E4E1'}" />
+			<UiButton
+				type="entry"
+				icon="burger"
+				hovered={hovered}
+				color="{hovered ? '#26231E' : '#E6E4E1'}"
+				on:click={e => dispatch('openContextNav', data.id)} />
 		</div>
 	</li>
 <style>

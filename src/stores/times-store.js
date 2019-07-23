@@ -28,18 +28,18 @@ function setListener() {
 								
 					if (change.type === 'added' || change.type === 'modified') {
 
-						const textData = Object.assign({ 
+						const entryData = Object.assign({ 
 							id: change.doc.id 
 						}, change.doc.data())
 
 						timesStore.update(data => {
-							data.json[textData.id] = textData
+							data.json[entryData.id] = entryData
 							data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
 							return data
 						})
 					} else if (change.type === 'removed') {
 						timesStore.update(data => {
-							delete data.json[change.doc.data().slug]
+							delete data.json[change.doc.id]
 							data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
 							return data
 						})
@@ -74,6 +74,13 @@ export function timesStoreNewTime(day, cb) {
 }
 
 
+export function timesStoreGetEntry(id, cb) {
+	firebase.db.collection('times').doc(id).get().then(doc => cb(doc.data())).catch(err =>
+		console.log(err)
+	)
+}
+
+
 export function timesStoreChangeComment(id, comment) {
 	firebase.db.collection('times').doc(id).update({
 		comment,
@@ -99,4 +106,9 @@ export function timesStoreChangeDuration(id, duration) {
 		data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
 		return data
 	})
+}
+
+
+export function timesStoreDeleteEntry(id) {
+	firebase.db.collection('times').doc(id).delete()
 }

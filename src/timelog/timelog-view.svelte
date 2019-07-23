@@ -10,12 +10,14 @@
 	import TimelogDurationOverlay from '../timelog/timelog-duration-overlay.svelte'
 	import TimelogProjectOverlay from '../timelog/timelog-project-overlay.svelte'
 	import TimelogCommentOverlay from '../timelog/timelog-comment-overlay.svelte'
+	import TimelogContextNav from '../timelog/timelog-context-nav.svelte'
 
 
 
-	let openedDurationId = null,
-		openProjectId = null,
-		openCommentId = null
+	let openedDurationId,
+		openProjectId,
+		openCommentId,
+		openContextNavId
 
 	$: dateNow = dateStringToDate($routerStore.subview)
 	$: entries = $timesStore.array.filter(entry => entry.day === $routerStore.subview)
@@ -62,7 +64,8 @@
 			data={entry}
 			on:openDuration={e => openedDurationId = e.detail}
 			on:openProject={e => openProjectId = e.detail}
-			on:openComment={e => openCommentId = e.detail} />
+			on:openComment={e => openCommentId = e.detail}
+			on:openContextNav={e => openContextNavId = e.detail} />
 	{/each}
 </ul>
 
@@ -94,6 +97,13 @@
 		id={openCommentId}
 		comment={$timesStore.json[openCommentId].comment}
 		on:close={e => openCommentId = null} />
+{:else if openContextNavId}
+	<TimelogContextNav
+		id={openContextNavId}
+		on:close={e => openContextNavId = null}
+		on:openDuration={e => openedDurationId = e.detail}
+		on:openProject={e => openProjectId = e.detail}
+		on:openComment={e => openCommentId = e.detail} />
 {/if}
 
 <style>
