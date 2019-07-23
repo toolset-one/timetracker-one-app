@@ -9,6 +9,7 @@
 
 	import MainNav from './ui/ui-main-nav.svelte'
 	import TimelogView from './timelog/timelog-view.svelte'
+	import ReportsView from './reports/reports-view.svelte'
 
 	let resizing = false,
 		debounceTimeout
@@ -48,7 +49,7 @@ const COLORS = [
 		{#if $routerStore.view === 'timelog'}
 			<TimelogView />
 		{:else if $routerStore.view === 'reports'}
-			Reports
+			<ReportsView />
 		{:else if $routerStore.view === 'settings'}
 			Settings
 		{/if}
