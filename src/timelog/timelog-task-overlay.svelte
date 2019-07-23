@@ -16,7 +16,7 @@
 
 	onMount(() => {
 
-		const boundingRect = document.querySelector('#entry-'+ id +' .project').getBoundingClientRect()
+		const boundingRect = document.querySelector('#entry-'+ id +' .task').getBoundingClientRect()
 		top = boundingRect.top
 		left = boundingRect.left + 6
 
@@ -35,12 +35,12 @@
 		type="text"
 		bind:this={el}
 		bind:value={value}
-		placeholder="Search Projects"
+		placeholder="Search Tasks"
 		on:keydown={e => (e.keyCode === 27 && dispatch('close', ''))}>
 
 	<ul>
 		<li>
-			Testproject
+			Testtask
 		</li>
 		<li>
 			Timetracker.One

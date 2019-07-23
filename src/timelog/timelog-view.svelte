@@ -8,14 +8,14 @@
 	import UiButton from '../ui/ui-button.svelte'
 	import TimelogEntry from '../timelog/timelog-entry.svelte'
 	import TimelogDurationOverlay from '../timelog/timelog-duration-overlay.svelte'
-	import TimelogProjectOverlay from '../timelog/timelog-project-overlay.svelte'
+	import TimelogTaskOverlay from '../timelog/timelog-task-overlay.svelte'
 	import TimelogCommentOverlay from '../timelog/timelog-comment-overlay.svelte'
 	import TimelogContextNav from '../timelog/timelog-context-nav.svelte'
 
 
 
 	let openedDurationId,
-		openProjectId,
+		openTaskId,
 		openCommentId,
 		openContextNavId
 
@@ -63,7 +63,7 @@
 		<TimelogEntry
 			data={entry}
 			on:openDuration={e => openedDurationId = e.detail}
-			on:openProject={e => openProjectId = e.detail}
+			on:openTask={e => openTaskId = e.detail}
 			on:openComment={e => openCommentId = e.detail}
 			on:openContextNav={e => openContextNavId = e.detail} />
 	{/each}
@@ -87,11 +87,11 @@
 		id={openedDurationId}
 		duration={$timesStore.json[openedDurationId].duration}
 		on:close={e => openedDurationId = null} />
-{:else if openProjectId}
-	<TimelogProjectOverlay
-		id={openProjectId}
-		project={$timesStore.json[openProjectId].project}
-		on:close={e => openProjectId = null} />
+{:else if openTaskId}
+	<TimelogTaskOverlay
+		id={openTaskId}
+		task={$timesStore.json[openTaskId].task}
+		on:close={e => openTaskId = null} />
 {:else if openCommentId}
 	<TimelogCommentOverlay
 		id={openCommentId}
@@ -102,7 +102,7 @@
 		id={openContextNavId}
 		on:close={e => openContextNavId = null}
 		on:openDuration={e => openedDurationId = e.detail}
-		on:openProject={e => openProjectId = e.detail}
+		on:openTask={e => openTaskId = e.detail}
 		on:openComment={e => openCommentId = e.detail} />
 {/if}
 

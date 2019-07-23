@@ -61,9 +61,9 @@
 				{dateGetHours(displayDuration)}<span>:</span>{dateGetMinutes(displayDuration)}<small>{dateGetSeconds(displayDuration)}</small>
 			</div>
 		</div>
-		<div class="project" on:click={e => dispatch('openProject', data.id)}>
+		<div class="task" on:click={e => dispatch('openTask', data.id)}>
 			<div>
-				No Project
+				No Task
 			</div>
 		</div>
 		<div
@@ -193,16 +193,16 @@
 		font-weight:600;
 	}
 
-	.project {
+	.task {
 		padding:6px;
 		cursor:pointer;
 	}
 
-	.project:hover >div {
+	.task:hover >div {
 		box-shadow: 0 0 0 60px rgba(0, 0, 0, .05) inset;
 	}
 
-	.project >div {
+	.task >div {
 		line-height:36px;
 		font-size:14px;
 		background:#68B359;

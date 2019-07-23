@@ -23,7 +23,7 @@
 	function resize() {
 		clearTimeout(debounceTimeout)
 		debounceTimeout = setTimeout(() => {
-			resizing = true;
+			//resizing = true;
 			setTimeout(() => {
 				resizing = false
 			}, 10)

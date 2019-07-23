@@ -46,6 +46,18 @@ export const dateGetHumanDate = date => {
 	return dayString + ' ' + monthString + ', ' + weekdayString
 }
 
+export const dateGetDay = date => {
+	return DAY_ENDINGS[date.getDate()] ? date.getDate() + DAY_ENDINGS[date.getDate()] : date.getDate() + 'th'
+}
+
+export const dateGetWeekday = date => {
+	return WEEKDAYS_SHORT[date.getDay()]
+}
+
+export const dateGetMonth = date => {
+	return MONTHS[date.getMonth()]
+}
+
 export const datePrevDate = date => {
 	let newDate = new Date(date)
 	newDate.setDate(newDate.getDate() - 1)
