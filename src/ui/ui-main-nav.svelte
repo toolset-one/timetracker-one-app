@@ -55,6 +55,7 @@
 		top:0;
 		background:#FFF;
 		text-align: center;
+		z-index:500;
 	}
 
 	nav:after {

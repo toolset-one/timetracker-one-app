@@ -67,6 +67,12 @@
 
 <div class="legend"></div>
 
+<div class="line" style="bottom:calc(48px + 352px)"></div>
+<div class="line" style="bottom:calc(48px + 264px)"></div>
+<div class="line" style="bottom:calc(48px + 176px)"></div>
+<div class="line" style="bottom:calc(48px + 88px)"></div>
+<div class="line line-bottom" style="bottom:calc(48px + 0)"></div>
+
 <div
 	class="barchart"
 	bind:this={el}
@@ -130,6 +136,7 @@
 		scroll-snap-align: start;
 		text-align: center;
 		font-size:14px;
+		z-index:100;
 	}
 
 	/* .day-container:nth-child(odd) .date {
@@ -153,7 +160,8 @@
 	}
 
 	.date span {
-		display: block;
+		position: relative;
+		display: inline-block;
 		font-size:12px;
 		line-height:12px;
 		padding:6px 0;
@@ -178,5 +186,33 @@
 		width:100%;
 		height:48px;
 		background:#FAF9F7;
+	}
+
+	.line {
+		content:'';
+		position: absolute;
+		bottom:48px;
+		left:0;
+		right:0;
+		height: 1px;
+		background:#E6E4E1;
+		z-index:200;
+	}
+
+	.line-bottom {
+		background:#26231E;
+		z-index:1;
+	}
+
+ 	@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
+		.line {
+			background:#CCC9C4;
+			transform:scale(1, 0.5);
+			transform-origin: 0 100%;
+		}
+
+		.line-bottom {
+			background:#26231E;
+		}
 	}
 </style>
