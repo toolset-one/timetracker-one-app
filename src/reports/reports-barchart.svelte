@@ -2,38 +2,30 @@
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { routerStore } from '../stores/router-store.js'
-	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
+	import { reportsStore } from '../stores/reports-store.js'
+
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates } from '../helpers/helpers.js'
 
 	import UiButton from '../ui/ui-button.svelte'
-
-	const startDateWritable = writable({
-		startDate: new Date((new Date()).getFullYear(), (new Date()).getMonth(), 1, 0, 0, 0)
-	})
 
 	let el,
 	innerEl,
 	intersectionObserver,
 	daysArray = [],
-	timeout,
-	firstDate = (() => {
-		let dateTmp = new Date($startDateWritable.startDate)
-		dateTmp.setYear(dateTmp.getFullYear() - 5)
-		return dateTmp
-	})()
+	timeout
 
-	$: daysBetween = dateDaysBetweenDates(firstDate, $startDateWritable.startDate)
+	$: daysBetween = dateDaysBetweenDates($reportsStore.firstDate, $reportsStore.startDate)
 
 	onMount(() => {
 		
-		startDateWritable.subscribe(data => {
+		reportsStore.subscribe(data => {
 
 			let tmp = Date.now()
 
 			let dateTmp = new Date(data.startDate)
 			dateTmp.setDate(dateTmp.getDate() - 31)
 
-			let daysSince = dateDaysBetweenDates(firstDate, $startDateWritable.startDate),
+			let daysSince = dateDaysBetweenDates($reportsStore.firstDate, $reportsStore.startDate),
 				arrayTmp = []
 
 			for(var i = -31; i <= 31; i++) {
@@ -49,7 +41,7 @@
 		})
 
 		setTimeout(() => {
-			innerEl.style['width'] = (dateDaysBetweenDates(firstDate, $startDateWritable.startDate) + 62) * (960 / 31) +'px'
+			innerEl.style['width'] = (dateDaysBetweenDates($reportsStore.firstDate, $reportsStore.startDate) + 62) * (960 / 31) +'px'
 			el.scrollLeft = innerEl.getBoundingClientRect().width - 960
 		})
 		
@@ -60,8 +52,8 @@
 			clearTimeout(timeout)
 		}
 
-		startDateWritable.update(data => {
-			let dateTmp = new Date(firstDate)
+		reportsStore.update(data => {
+			let dateTmp = new Date($reportsStore.firstDate)
 			dateTmp.setDate(dateTmp.getDate() + Math.floor(el.scrollLeft / (960 / 31) - 31) )
 			data.startDate = dateTmp
 			return data
