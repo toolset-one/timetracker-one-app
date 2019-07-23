@@ -17,25 +17,26 @@
 
 </script>
 
-<section>
-	<UiRadio />
-</section>
-
-
-<section class="date-nav">
-	<div class="button-wrapper">
-		<UiButton 
-			type="icon" 
-			icon="arrow-left" />
+<section class="range-header">
+	<div class="date-nav">
+		<div class="button-wrapper">
+			<UiButton 
+				type="icon" 
+				icon="arrow-left" />
+		</div>
+		<div class="button-wrapper">
+			<UiButton 
+				type="icon"
+				icon="arrow-right" />
+		</div>
+		<h2>
+			July, 2019
+		</h2>
 	</div>
-	<div class="button-wrapper">
-		<UiButton 
-			type="icon"
-			icon="arrow-right" />
+
+	<div class="range-wrapper">
+		<UiRadio />
 	</div>
-	<h2>
-		July, 2019
-	</h2>
 </section>
 
 <section>
@@ -50,20 +51,32 @@
 		display:flex;
 		flex-flow: row wrap;
 		max-width:960px;
-		margin:18px auto 18px auto;
+		margin:24px auto 24px auto;
+	}
+
+	.range-header {
+		display:flex;
+		flex-direction: row wrap;
 	}
 
 	.date-nav {
+		display:flex;
+		flex-flow: row wrap;
+		width:50%;
 		font-size:0;
 	}
 
 	.button-wrapper {
-
 		margin-right:6px;
 	}
 
 	.button-wrapper + .button-wrapper {
-		margin-right:24px;
+		margin-right:12px;
+	}
+
+	.range-wrapper {
+		flex: 1;
+		text-align:right;
 	}
 
 </style>

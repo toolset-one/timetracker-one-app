@@ -113,7 +113,7 @@
 		flex-flow: row wrap;
 		height:42px;
 		max-width:960px;
-		margin:60px auto 24px auto;
+		margin:24px auto 24px auto;
 	}
 
 	.date-nav {
@@ -129,7 +129,7 @@
 	}
 
 	.button-wrapper + .button-wrapper {
-		margin-right:24px;
+		margin-right:12px;
 	}
 
 	.add-button-wrapper {

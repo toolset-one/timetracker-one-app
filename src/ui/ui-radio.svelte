@@ -15,7 +15,7 @@
 
 	export let value = 'week'
 	export let options = [{
-		title: 'Week Bla Bla',
+		title: 'Week',
 		value: 'week'
 	}, {
 		title: 'Month',
