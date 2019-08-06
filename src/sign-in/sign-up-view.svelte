@@ -23,9 +23,6 @@
 		
 		authSignUp(email, password, (success, err) => {
 			error = ERROR_MAP[err] || '' + err
-			if(success) {
-				// alert('SUCCESS')
-			}
 		})
 	}
 

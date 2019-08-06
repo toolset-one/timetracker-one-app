@@ -23,9 +23,6 @@
 		console.log(email, password)
 		authSignIn(email, password, (success, err) => {
 			error = ERROR_MAP[err] || '' + err
-			if(success) {
-				// alert('SUCCESS')
-			}
 		})
 	}
 
