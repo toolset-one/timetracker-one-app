@@ -97,7 +97,7 @@
 		background:#FFF;
 		min-height:48px;
 		border-radius:3px;
-		box-shadow:0 3px 0 -2px rgba(0, 0, 0, .05), 0 1px 3px rgba(0, 0, 0, .1);
+		box-shadow:0 1px 1px rgba(0, 0, 0, .05), 0 2px 3px rgba(0, 0, 0, .1);
 	}
 
 	/*li:after {
@@ -123,7 +123,7 @@
 	}
 
 	.hovered {
-		background:#F5F3F0;
+		/* background:#F5F3F0; */
 	}
 
 	.first {
@@ -265,7 +265,8 @@
 		right:0;
 		height:48px;
 		padding:6px;
-		background:#FFF;
+		background:transparent;
+		border-radius: 3px;
 	}
 
 	.hovered .nav {
