@@ -6,6 +6,7 @@
 	import { userStoreInit } from './stores/user-store.js'
 	import { reportsStoreInit } from './stores/reports-store.js'
 
+	import SignUp from './sign-in/sign-up-view.svelte'
 	import SignIn from './sign-in/sign-in-view.svelte'
 
 	import MainNav from './ui/ui-main-nav.svelte'
@@ -44,7 +45,11 @@ const COLORS = [
 {#if !resizing}
 
 	{#if $authStore.inited && !$authStore.hasAuth}
-		<SignIn />
+		{#if $routerStore.view === 'sign-up'}
+			<SignUp />
+		{:else}
+			<SignIn />
+		{/if}
 	{:else if $authStore.seemsToHaveAuth}
 		<MainNav />
 

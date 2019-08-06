@@ -54,12 +54,20 @@ export function authInit() {
 }
 
 
-export function authAnonymous(cb) {
-
-	firebase.auth().signInAnonymously().then(() => {
+export function authSignIn(email, password, cb) {
+	firebase.auth().signInWithEmailAndPassword(email, password).then(res => {
 		cb(true)
 	}).catch(err => {
-		cb(false)
+		cb(false, err.code)
+	})
+}
+
+
+export function authSignUp(email, password, cb) {
+	firebase.auth().createUserWithEmailAndPassword(email, password).then(res => {
+		cb(true)
+	}).catch(err => {
+		cb(false, err.code)
 	})
 }
 
