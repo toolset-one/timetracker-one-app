@@ -2,33 +2,36 @@
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { routerStore } from '../stores/router-store.js'
-	import { reportsStore } from '../stores/reports-store.js'
+	import { reportsStore, reportsStoreUpdateDate } from '../stores/reports-store.js'
 
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth} from '../helpers/helpers.js'
 
 	import UiButton from '../ui/ui-button.svelte'
 
+	const barchartStore = writable({
+		startDate: new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
+		firstDate: new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0)
+	})
+
 	let el,
 	innerEl,
-	intersectionObserver,
 	daysArray = [],
-	timeout
+	timeout,
+	scrollLeft
 
-	$: daysBetween = dateDaysBetweenDates($reportsStore.firstDate, $reportsStore.startDate)
+	$: daysBetween = dateDaysBetweenDates($barchartStore.firstDate, $barchartStore.startDate)
 
 	onMount(() => {
 		
-		reportsStore.subscribe(data => {
-
-			let tmp = Date.now()
+		barchartStore.subscribe(data => {
 
 			let dateTmp = new Date(data.startDate)
-			dateTmp.setDate(dateTmp.getDate() - 31)
+			dateTmp.setDate(dateTmp.getDate() - $reportsStore.period)
 
-			let daysSince = dateDaysBetweenDates($reportsStore.firstDate, $reportsStore.startDate),
+			let daysSince = daysBetween,
 				arrayTmp = []
 
-			for(var i = -31; i <= 31; i++) {
+			for(var i = -1 * $reportsStore.period; i <= $reportsStore.period; i++) {
 				arrayTmp.push({
 					date: dateTmp,
 					daysSince
@@ -40,30 +43,44 @@
 			daysArray = arrayTmp
 		})
 
-		setTimeout(() => {
-			innerEl.style['width'] = (dateDaysBetweenDates($reportsStore.firstDate, $reportsStore.startDate) + 62) * (960 / 31) +'px'
-			el.scrollLeft = innerEl.getBoundingClientRect().width - 960
-		})
-		
+		el.scrollLeft = 500000		
 	})
 
+
+
 	function scroll(e) {
+
+		/* const delta = Math.abs(scrollLeft - el.scrollLeft)
+		scrollLeft = el.scrollLeft
+
+		console.log(delta) */
+
+		barchartStore.update(data => {
+			let dateTmp = new Date($barchartStore.firstDate),
+			periodWidth = (960 / $reportsStore.period)
+
+			dateTmp.setDate(dateTmp.getDate() + Math.floor((el.scrollLeft - 500000) / periodWidth) )
+
+			data.startDate = dateTmp
+			return data
+		})
+
 		if(timeout) {
 			clearTimeout(timeout)
 		}
 
-		reportsStore.update(data => {
-			let dateTmp = new Date($reportsStore.firstDate)
-			dateTmp.setDate(dateTmp.getDate() + Math.floor(el.scrollLeft / (960 / 31) - 31) )
-			data.startDate = dateTmp
-			return data
-		})
+		timeout = setTimeout(() => {
+			let dateTmp = new Date($barchartStore.firstDate),
+				periodWidth = (960 / $reportsStore.period)
+			dateTmp.setDate(dateTmp.getDate() + Math.round((el.scrollLeft - 500000) / periodWidth) )
+			reportsStoreUpdateDate(dateTmp)
+		}, 100)
 
 	}
 
 </script>
 
-<div class="barchart-wrapper">
+<div class="barchart-wrapper" style="{'--visible-items:'+ $reportsStore.period}">
 
 <div class="legend"></div>
 
@@ -81,7 +98,11 @@
 		class="inner"
 		bind:this={innerEl}>
 		{#each daysArray as day, i (day.daysSince)}
-			<div class="day-container" style="{'left:'+ ((day.daysSince) * 960/31) +'px'}">
+			<div class="day-container" style="{'left:'+ (500000 + (day.daysSince - $reportsStore.period) * 960 / $reportsStore.period) +'px'}">
+
+				{#if $reportsStore.dates[day.date.getFullYear() +'-'+ day.date.getMonth() +'-'+ day.date.getDate()]}
+					.
+				{/if}
 
 				<div class="date">
 					<span>
@@ -98,6 +119,7 @@
 
 </div>
 
+<!-- {JSON.stringify($reportsStore.dates)} -->
 
 
 <style>
@@ -124,6 +146,7 @@
 	.inner {
 		position: relative;
 		height: 100%;
+		width:1000000px !important;
 		backface-visibility: hidden;
 	}
 
@@ -131,12 +154,14 @@
 		position:absolute;
 		top:0;
 		/* border-right:1px #CCC solid; */
-		width:calc(960px / 31);
+		width:calc(960px / var(--visible-items));
 		height:100%;
 		scroll-snap-align: start;
 		text-align: center;
 		font-size:14px;
 		z-index:100;
+		border-bottom-right-radius: 6px;
+		border-bottom-left-radius: 6px;
 	}
 
 	/* .day-container:nth-child(odd) .date {
@@ -157,6 +182,10 @@
 		left:50%;
 		transform: translateX(-50%);
 		text-align: center;
+	}
+
+	.day-container:hover .day-container {
+		background:rgba(0, 0, 0, .1);
 	}
 
 	.date span {
@@ -201,7 +230,6 @@
 
 	.line-bottom {
 		background:#26231E;
-		z-index:1;
 	}
 
  	@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 

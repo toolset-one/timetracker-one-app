@@ -13,17 +13,8 @@
 	export let color = '#26231E'
 	export let link = null
 
-	export let value = 'week'
-	export let options = [{
-		title: 'Week',
-		value: 'week'
-	}, {
-		title: 'Month',
-		value: 'month'
-	}, {
-		title: 'Year',
-		value: 'year'
-	}]
+	export let value = null
+	export let options = []
 
 	let el,
 		optionEls = {},
@@ -48,11 +39,9 @@
 	$: activeWidth = activeBoundingRect.width + 2
 	$: activeLeft = activeBoundingRect.left - boundingRect.left - 2
 
-	function click(e) {
-		if(!link) {
-			e.preventDefault()
-		}
-		dispatch('click', '')
+	function click(e, option) {
+		value = option.value
+		dispatch('change', '')
 	}
 
 </script>
@@ -80,7 +69,7 @@
 			<div
 				bind:this={optionEls[option.value]}
 				class="option {option.value === value ? 'active' : ''}"
-				on:click={e => value = option.value}>
+				on:click={e => click(e, option)}>
 				{option.title}
 			</div>
 		{/each}

@@ -58,15 +58,21 @@ export const dateGetMonth = date => {
 	return MONTHS[date.getMonth()]
 }
 
-export const datePrevDate = date => {
+export const dateGetWeek = date => {
+    const firstDayOfYear = new Date(date.getFullYear(), 0, 1),
+    	pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)
+}
+
+export const datePrevDate = (date, howManyDays = 1) => {
 	let newDate = new Date(date)
-	newDate.setDate(newDate.getDate() - 1)
+	newDate.setDate(newDate.getDate() - howManyDays)
 	return newDate
 }
 
-export const dateNextDate = date => {
+export const dateNextDate = (date, howManyDays = 1) => {
 	let newDate = new Date(date)
-	newDate.setDate(newDate.getDate() + 1)
+	newDate.setDate(newDate.getDate() + howManyDays)
 	return newDate
 }
 

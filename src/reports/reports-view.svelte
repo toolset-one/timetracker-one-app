@@ -2,18 +2,55 @@
 	import { onMount } from 'svelte';
 	import { routerStore } from '../stores/router-store.js'
 	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
-	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes } from '../helpers/helpers.js'
+	import { reportsStore, reportsStoreSetPeriod } from '../stores/reports-store.js'
+
+	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateGetWeek, dateGetMonth } from '../helpers/helpers.js'
 
 	import UiButton from '../ui/ui-button.svelte'
 	import UiRadio from '../ui/ui-radio.svelte'
 	import ReportsBarchart from '../reports/reports-barchart.svelte'
 
+	const PERIOD_OPTIONS = [{
+		title: 'Week',
+		value: 'week'
+	}, {
+		title: 'Month',
+		value: 'month'
+	}/*, {
+		title: 'Year',
+		value: 'year'
+	}*/],
 
-	let TODO
+	PERIOD_MAP = {
+		'week': 7,
+		'month': 31,
+		'year': 368
+	}
+
+	let period = 'week'
 
 	onMount(() => {
 
 	})
+
+	function getPeriodTitle(date) {
+
+		if(period === 'week') {
+			if( dateGetWeek(datePrevDate(date)) != dateGetWeek(date)) {
+				return 'Week Number ' + dateGetWeek(date)
+			} else {
+				return dateGetHumanDate(date) +' – '+ dateGetHumanDate(dateNextDate(date, 6))
+			}
+		} else if(period === 'month') {
+			if( (datePrevDate(date)).getMonth() != date.getMonth()) {
+				return dateGetMonth(date) + ' ' + date.getFullYear()
+			} else {
+				return dateGetHumanDate(date) +' – '+ dateGetHumanDate(dateNextDate(date, 30))
+			}
+		}
+
+		return dateGetWeek(date)
+	}
 
 </script>
 
@@ -42,12 +79,12 @@
 				icon="arrow-right" />
 		</div>
 		<h2>
-			July, 2019
+			{getPeriodTitle($reportsStore.date)}
 		</h2>
 	</div>
 
 	<div class="range-wrapper">
-		<UiRadio />
+		<UiRadio options={PERIOD_OPTIONS} bind:value={period} on:change={e => reportsStoreSetPeriod(PERIOD_MAP[period])} />
 	</div>
 </section>
 
@@ -78,7 +115,7 @@
 	.date-nav {
 		display:flex;
 		flex-flow: row wrap;
-		width:50%;
+		width:60%;
 		font-size:0;
 	}
 

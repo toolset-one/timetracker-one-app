@@ -4,6 +4,7 @@
 	import { authStore, authInit } from './stores/auth-store.js'
 	import { timesStoreInit } from './stores/times-store.js'
 	import { userStoreInit } from './stores/user-store.js'
+	import { reportsStoreInit } from './stores/reports-store.js'
 
 	import SignIn from './sign-in/sign-in-view.svelte'
 
@@ -18,6 +19,7 @@
 		authInit()
 		timesStoreInit()
 		userStoreInit()
+		reportsStoreInit()
 	})
 
 	function resize() {

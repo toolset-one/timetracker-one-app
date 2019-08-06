@@ -7,6 +7,8 @@
 	import { userStore, userSetStopwatch } from '../stores/user-store.js'
 
 	export let data = {}
+	export let first = false
+	export let last = false
 
 	let hovered = false,
 		isNew = false,
@@ -43,6 +45,8 @@
 		id="entry-{data.id}"
 		in:slide={{ duration: 100, easing: cubicOut }}
 		class="
+			{first ? 'first' : ''}
+			{last ? 'last' : ''}
 			{hovered ? 'hovered' : ''}
 			{ isNew ? 'new' : ''}
 			{ hasStopwatch ? 'has-stopwatch' : ''}"
@@ -86,15 +90,17 @@
 
 	li {
 		display:flex;
-		flex-flow: row wrap;
-		position: relative;
-		margin:0;
+		flex-flow:row wrap;
+		position:relative;
+		margin:0 0 1px 0;
 		padding:0;
 		background:#FFF;
 		min-height:48px;
+		border-radius:3px;
+		box-shadow:0 3px 0 -2px rgba(0, 0, 0, .05), 0 1px 3px rgba(0, 0, 0, .1);
 	}
 
-	li:after {
+	/*li:after {
 		content:'';
 		position: absolute;
 		bottom:0;
@@ -110,7 +116,7 @@
 			transform:scale(1, 0.5);
 			transform-origin: 0 100%;
 		}
-	}
+	}*/
 
 	.new {
 		min-height:0;
@@ -118,6 +124,16 @@
 
 	.hovered {
 		background:#F5F3F0;
+	}
+
+	.first {
+		border-top-left-radius:6px;
+		border-top-right-radius:6px;
+	}
+
+	.last {
+		border-bottom-left-radius:6px;
+		border-bottom-right-radius:6px;
 	}
 
 	.has-stopwatch {

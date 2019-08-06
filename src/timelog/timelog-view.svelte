@@ -62,6 +62,8 @@
 	{#each entries as entry, i (entry.id)}
 		<TimelogEntry
 			data={entry}
+			first={i == 0}
+			last={i == entries.length - 1}
 			on:openDuration={e => openedDurationId = e.detail}
 			on:openTask={e => openTaskId = e.detail}
 			on:openComment={e => openCommentId = e.detail}
@@ -145,7 +147,7 @@
 		list-style: none;
 	}
 
-	.entries:after {
+	/* .entries:after {
 		content:'';
 		position: absolute;
 		top:0;
@@ -161,7 +163,7 @@
 			transform:scale(1, 0.5);
 			transform-origin: 0 0;
 		}
-	}
+	}*/
 
 	.total {
 		max-width:960px;
