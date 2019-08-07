@@ -8,6 +8,8 @@
 
 	import SignUp from './sign-in/sign-up-view.svelte'
 	import SignIn from './sign-in/sign-in-view.svelte'
+	import NewPasswordView from './sign-in/new-password-view.svelte'
+	import AccountView from './sign-in/account-view.svelte'
 
 	import MainNav from './ui/ui-main-nav.svelte'
 	import TimelogView from './timelog/timelog-view.svelte'
@@ -44,9 +46,13 @@ const COLORS = [
 
 {#if !resizing}
 
-	{#if $authStore.inited && !$authStore.hasAuth}
+	{#if $routerStore.view === 'account'}
+		<AccountView />
+	{:else if $authStore.inited && !$authStore.hasAuth}
 		{#if $routerStore.view === 'sign-up'}
 			<SignUp />
+		{:else if $routerStore.view === 'new-password'}
+			<NewPasswordView />
 		{:else}
 			<SignIn />
 		{/if}

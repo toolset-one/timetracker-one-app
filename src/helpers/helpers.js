@@ -119,3 +119,12 @@ export const getWindowWidth = () => {
 	    y = w.innerHeight|| e.clientHeight|| g.clientHeight
 	    return x
 }
+
+export const getUrlParameter = (attr, url) => {
+    attr = attr.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]")
+    const regexS = "[\\?&]" + attr + "=([^&#]*)",
+    	regex = new RegExp(regexS),
+    	results = regex.exec( url )
+    return results == null ? null : results[1]
+
+}

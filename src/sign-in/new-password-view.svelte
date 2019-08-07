@@ -1,27 +1,24 @@
 <script>
 	import { onMount } from 'svelte';
-	import { authStore, authSignIn } from '../stores/auth-store.js'
+	import { authStoreNewPassword } from '../stores/auth-store.js'
 
 	import UiInput from '../ui/ui-input.svelte'
 	import UiButton from '../ui/ui-button.svelte'
 
 	const ERROR_MAP = {
-		'auth/invalid-email': 'The provided email is not valid.',
-		'auth/wrong-password': 'The provided password does not match.'
+		'auth/invalid-email': 'The provided email is not valid.'
 	}
 
 	let email = '',
-		password = '',
 		error = ''
 
 	onMount(() => {
 		
 	})
 
-	function signIn(e) {
+	function getNewPassword(e) {
 		
-		console.log(email, password)
-		authSignIn(email, password, (success, err) => {
+		authStoreNewPassword(email, (success, err) => {
 			error = ERROR_MAP[err] || '' + err
 		})
 	}
@@ -31,7 +28,7 @@
 <section class="container">
 
 	<h2>
-		Sign in to Timetracker.One
+		New password for Timetracker.One
 	</h2>
 
 	{#if error.length > 0}
@@ -40,25 +37,19 @@
 		</p>
 	{/if}
 
-	<form on:submit|preventDefault={e => signIn(e)}>
+	<form on:submit|preventDefault={e => getNewPassword(e)}>
 
 		<UiInput label="E-Mail" type="email" bind:value={email} />
-		<UiInput label="Password" type="password" bind:value={password} />
 		
-		<UiButton label="Sign In" on:click={e => signIn(e)} />
+		<UiButton label="Get New Password" on:click={e => getNewPassword(e)} />
 		<span>
 			or
-			<a href="/sign-up/">
-				create a new account
+			<a href="/sign-in/">
+				go to sign in
 			</a>
 		</span>
 	</form>
 
-	<div class="password-link">
-		<a href="/new-password/">
-			Send new password
-		</a>
-	</div>
 </section>
 
 
@@ -96,18 +87,6 @@
 	span {
 		display:inline-block;
 		padding:0 0 0 12px;
-	}
-
-	.password-link {
-		position: absolute;
-		top:100%;
-		left:0;
-		margin:12px 0 0 0;
-		font-size:14px;
-	}
-
-	.password-link a {
-		color:#999;
 	}
 
 </style>

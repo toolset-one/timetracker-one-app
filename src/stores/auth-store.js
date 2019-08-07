@@ -72,16 +72,38 @@ export function authSignUp(email, password, cb) {
 }
 
 
-export function authSendEmail(email, cb) {
-	firebase.auth().sendSignInLinkToEmail(email, ACTION_CODE_SETTINGS).then(() => {
-		window.localStorage.setItem('emailForSignIn', email)
+export function authStoreNewPassword(email, cb) {
+
+	const actionCodeSettings = {
+		url: 'https://app.timetracker.one/new-password-verification/?email=' + email,
+		handleCodeInApp: true
+	}
+
+	firebase.auth().sendPasswordResetEmail(email).then(() => {
 		cb(true)
-	}).catch(err => {
-		console.log(err)
+	}).catch(function(error) {
 		cb(false)
 	})
 }
 
+
+export function authStoreVerifyPasswordCode(oobCode, cb) {
+	firebase.auth().verifyPasswordResetCode(oobCode).then(res => {
+		cb(null)
+	}).catch(err => {
+		cb(err)
+	})
+}
+
+
+export function authStoreConfirmPasswordReset(oobCode, password, cb) {
+	firebase.auth().confirmPasswordReset(oobCode, password).then(res => {
+		console.log('RES', res)
+		cb(null)
+	}).catch(err => {
+		cb(err)
+	})	
+}
 
 export function authValidateLink(cb) {
 
