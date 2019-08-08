@@ -49,12 +49,7 @@
 
 
 	function scroll(e) {
-
-		/* const delta = Math.abs(scrollLeft - el.scrollLeft)
-		scrollLeft = el.scrollLeft
-
-		console.log(delta) */
-
+		console.log(el.scrollLeft)
 		barchartStore.update(data => {
 			let dateTmp = new Date($barchartStore.firstDate),
 			periodWidth = (960 / $reportsStore.period)
@@ -93,7 +88,7 @@
 <div
 	class="barchart"
 	bind:this={el}
-	on:wheel={e => scroll(e)}>
+	on:scroll={e => scroll(e)}>
 	<div
 		class="inner"
 		bind:this={innerEl}>

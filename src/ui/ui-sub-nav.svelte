@@ -3,31 +3,32 @@
 	import { routerStore } from '../stores/router-store.js'
 	import { dateToDatestring } from '../helpers/helpers.js'
 
-	let ROUTES = ['timelog', 'reports', 'settings'],
+	let ROUTES = ['projects', 'team', 'appearance', 'account'],
 	ELEMENTS_MAP = {},
 
-	activeEl = ELEMENTS_MAP.timelog,
-	hoverEl = ELEMENTS_MAP.timelog,
+	el,
+	activeEl = ELEMENTS_MAP.projects,
+	hoverEl = ELEMENTS_MAP.projects,
 	mousePosition = {
 		x: 0,
 		y: 0
 	}
 
-	$: activeEl = ELEMENTS_MAP[$routerStore.view] || ELEMENTS_MAP.timelog
+	$: activeEl = ELEMENTS_MAP[$routerStore.subview] || ELEMENTS_MAP.timelog
 
-	$: activeElOffset = activeEl ? activeEl.getBoundingClientRect().left : 0
+	$: activeElOffset = (activeEl ? activeEl.getBoundingClientRect().left : 0) - (el ? el.getBoundingClientRect().left : 0)
 	$: activeElWidth = activeEl ? activeEl.getBoundingClientRect().width : 0
 
 </script>
 
-<nav>
+<nav bind:this={el}>
 	<ul>
 		{#each ROUTES as route}
 			<li>
 				<a 
-					href="/{route}/{route === 'timelog' ? dateToDatestring(new Date()) + '/' : ''}{route === 'settings' ? 'projects/' : ''}"
+					href="/settings/{route}/"
 					bind:this={ELEMENTS_MAP[route]}
-					class="{$routerStore.view === route ? 'active' : ''}"
+					class="{$routerStore.subview === route ? 'active' : ''}"
 					on:mouseenter={e => hoverEl = ELEMENTS_MAP[route]}>
 					<span>
 						{route.charAt(0).toUpperCase() + route.slice(1)}
@@ -50,10 +51,8 @@
 <style>
 	nav {
 		width:100%;
-		height:60px;
-		position: sticky;
-		top:0;
-		background:#FFF;
+		height:48px;
+		position: relative;
 		text-align: center;
 		z-index:500;
 	}
@@ -101,15 +100,11 @@
 
 	a:hover {
 		text-decoration: none;
-		color:#26231E;;
+		color:blue;;
 	}
 
 	.active, .active:hover {
 		color:#26231E;
-	}
-
-	.active span, .active:hover span {
-		background:#FFF;
 	}
 
 	span {
@@ -118,7 +113,7 @@
 		line-height:48px;
 		border-radius: 6px;
 		overflow:hidden;
-		transition: all 400ms ease;
+		transition: all 100ms ease;
 	}
 
 	a:hover span {
