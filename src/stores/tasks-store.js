@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store'
 import { authStore } from '../stores/auth-store.js'
 
-export const timesStore = writable({
+export const tasksStore = writable({
 	json: {},
 	array: []
 })
@@ -9,7 +9,7 @@ export const timesStore = writable({
 let listener
 
 
-export function timesStoreInit() {
+export function tasksStoreInit() {
 	setListener()
 
 }
@@ -21,7 +21,7 @@ function setListener() {
 		}
 
 		if(authData.hasAuth) {
-			listener = firebase.db.collection('times').where('user', '==', authData.user.id).onSnapshot(snapshot =>
+			listener = firebase.db.collection('tasks').where('user', '==', authData.user.id).onSnapshot(snapshot =>
 				snapshot.docChanges().forEach(change => {
 								
 					if (change.type === 'added' || change.type === 'modified') {
@@ -30,13 +30,13 @@ function setListener() {
 							id: change.doc.id 
 						}, change.doc.data())
 
-						timesStore.update(data => {
+						tasksStore.update(data => {
 							data.json[entryData.id] = entryData
 							data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
 							return data
 						})
 					} else if (change.type === 'removed') {
-						timesStore.update(data => {
+						tasksStore.update(data => {
 							delete data.json[change.doc.id]
 							data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
 							return data
@@ -49,15 +49,13 @@ function setListener() {
 }
 
 
-export function timesStoreNewTime(day, cb) {
+export function tasksStoreNewTask(cb) {
 
 	const unsubscribe = authStore.subscribe(authData => {
-		firebase.db.collection('times').doc().set({
+		firebase.db.collection('tasks').doc().set({
 			user: authData.user.id,
-			day: day,
-			duration: 0,
+			title: '',
 			project: null,
-			comment: '',
 			updated: new Date(),
 			created: new Date()
 		}).then(() => {
@@ -72,41 +70,20 @@ export function timesStoreNewTime(day, cb) {
 }
 
 
-export function timesStoreGetEntry(id, cb) {
-	firebase.db.collection('times').doc(id).get().then(doc => cb(doc.data())).catch(err =>
-		console.log(err)
-	)
-}
-
-
-export function timesStoreChangeComment(id, comment) {
-	firebase.db.collection('times').doc(id).update({
-		comment,
+export function tasksStoreChangeTitle(id, title) {
+	firebase.db.collection('tasks').doc(id).update({
+		title,
 		updated: new Date()
 	})	
 
-	timesStore.update(data => {
-		data.json[id].comment = comment
+	tasksStore.update(data => {
+		data.json[id].title = title
 		data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
 		return data
 	})
 }
 
 
-export function timesStoreChangeDuration(id, duration) {
-	firebase.db.collection('times').doc(id).update({
-		duration,
-		updated: new Date()
-	})	
-
-	timesStore.update(data => {
-		data.json[id].duration = duration
-		data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
-		return data
-	})
-}
-
-
-export function timesStoreDeleteEntry(id) {
-	firebase.db.collection('times').doc(id).delete()
+export function tasksStoreDeleteEntry(id) {
+	firebase.db.collection('tasks').doc(id).delete()
 }

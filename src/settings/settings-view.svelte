@@ -3,6 +3,7 @@
 	import { routerStore } from '../stores/router-store.js'
 
 	import UiSubNav from '../ui/ui-sub-nav.svelte'
+	import TasksSubview from '../settings/tasks-subview.svelte'
 
 	onMount(() => {
 	
@@ -14,8 +15,8 @@
 	<UiSubNav />
 </section>
 
-{#if $routerStore.subview === 'projects'}
-	Projects
+{#if $routerStore.subview === 'tasks'}
+	<TasksSubview />
 {:else if $routerStore.subview === 'team'}
 	Team
 {:else if $routerStore.subview === 'appearance'}

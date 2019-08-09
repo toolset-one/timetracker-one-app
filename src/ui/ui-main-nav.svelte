@@ -25,7 +25,7 @@
 		{#each ROUTES as route}
 			<li>
 				<a 
-					href="/{route}/{route === 'timelog' ? dateToDatestring(new Date()) + '/' : ''}{route === 'settings' ? 'projects/' : ''}"
+					href="/{route}/{route === 'timelog' ? dateToDatestring(new Date()) + '/' : ''}{route === 'settings' ? 'tasks/' : ''}"
 					bind:this={ELEMENTS_MAP[route]}
 					class="{$routerStore.view === route ? 'active' : ''}"
 					on:mouseenter={e => hoverEl = ELEMENTS_MAP[route]}>
