@@ -107,6 +107,20 @@ export function timesStoreChangeDuration(id, duration) {
 }
 
 
+export function timesStoreChangeTask(id, task) {
+	firebase.db.collection('times').doc(id).update({
+		task,
+		updated: new Date()
+	})	
+
+	timesStore.update(data => {
+		data.json[id].task = task
+		data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
+		return data
+	})
+}
+
+
 export function timesStoreDeleteEntry(id) {
 	firebase.db.collection('times').doc(id).delete()
 }

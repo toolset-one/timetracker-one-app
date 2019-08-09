@@ -5,6 +5,7 @@
 	import UiButton from '../ui/ui-button.svelte'
 	import { dateGetHours, dateGetMinutes, dateGetSeconds } from '../helpers/helpers.js'
 	import { userStore, userSetStopwatch } from '../stores/user-store.js'
+	import { tasksStore } from '../stores/tasks-store.js'
 
 	export let data = {}
 	export let first = false
@@ -67,7 +68,7 @@
 		</div>
 		<div class="task" on:click={e => dispatch('openTask', data.id)}>
 			<div>
-				No Task
+				{(data.task && $tasksStore.json && $tasksStore.json[data.task]) ? $tasksStore.json[data.task].title : 'No Task'}
 			</div>
 		</div>
 		<div

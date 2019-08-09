@@ -2,6 +2,10 @@
 	import { onMount, createEventDispatcher } from 'svelte'
 	import { fade } from 'svelte/transition'
 	import UiButton from '../ui/ui-button.svelte'
+
+	import { timesStoreChangeTask } from '../stores/times-store.js'
+	import { tasksStore, tasksStoreNewTask } from '../stores/tasks-store.js'
+
 	import { dateGetHours, dateGetMinutes, dateGetSeconds } from '../helpers/helpers.js'
 
 	export let id = null
@@ -11,6 +15,10 @@
 		el,
 		top = 0,
 		left = 0
+
+	$: tasks = $tasksStore.array
+		.filter(val => val.title.toLowerCase().includes(value.toLowerCase()))
+		.sort((a, b) => a.title.localeCompare(b.title) )
 
 	const dispatch = createEventDispatcher()
 
@@ -22,6 +30,28 @@
 
 		el.focus()
 	})
+
+
+	function keydown(e) {
+		if(e.keyCode === 13) {
+
+			if(('no task').includes(value.toLowerCase()) && tasks.length === 0) {
+				save(null)
+			} else if(!('no task').includes(value.toLowerCase()) && tasks.length === 1) {
+				save(tasks[0].id)
+			}
+
+			
+		} else if(e.keyCode === 27) {
+			dispatch('close', '')
+		}
+	}
+
+
+	function save(taskId) {
+		timesStoreChangeTask(id, taskId)
+		dispatch('close', '')
+	}
 
 </script>
 
@@ -36,15 +66,19 @@
 		bind:this={el}
 		bind:value={value}
 		placeholder="Search Tasks"
-		on:keydown={e => (e.keyCode === 27 && dispatch('close', ''))}>
+		on:keydown={e => keydown(e)}>
 
 	<ul>
-		<li>
-			Testtask
-		</li>
-		<li>
-			Timetracker.One
-		</li>
+		{#if ('no task').includes(value.toLowerCase())}
+			<li on:click={e => save(null)}>
+				No Task
+			</li>
+		{/if}
+		{#each tasks as task}
+			<li on:click={e => save(task.id)}>
+				{task.title.length > 0 ? task.title : 'No title'}
+			</li>
+		{/each}
 	</ul>
 </div>
 <div
