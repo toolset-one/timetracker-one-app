@@ -266,12 +266,8 @@
 		right:0;
 		height:48px;
 		padding:6px;
-		background:transparent;
+		background:#FFF;
 		border-radius: 3px;
-	}
-
-	.hovered .nav {
-		background:#F5F3F0;
 	}
 
 	/* .nav:after {
