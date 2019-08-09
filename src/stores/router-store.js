@@ -7,7 +7,6 @@ export const routerStore = writable({
   view: 'index',
   subview: null
 })
-console.log('TESt')
 
 
 Page({
