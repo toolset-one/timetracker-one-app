@@ -72,7 +72,7 @@
 	}
 
 	.opened {
-		height:210px;
+		height:84px;
 		width:210px;
 		opacity:1;
 	}
