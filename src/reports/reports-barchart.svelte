@@ -14,14 +14,18 @@
 	})
 
 	let el,
+	elWidth = 960,
 	innerEl,
 	daysArray = [],
 	timeout,
 	scrollLeft
 
 	$: daysBetween = dateDaysBetweenDates($barchartStore.firstDate, $barchartStore.startDate)
+	$: periodWidth = elWidth / $reportsStore.period
 
 	onMount(() => {
+
+		elWidth = el.getBoundingClientRect().width
 		
 		barchartStore.subscribe(data => {
 
@@ -47,14 +51,17 @@
 	})
 
 
+	function timeoutFunction() {
+		let dateTmp = new Date($barchartStore.firstDate)
+		dateTmp.setDate(dateTmp.getDate() + Math.round((el.scrollLeft - 500000) / periodWidth) )
+		reportsStoreUpdateDate(dateTmp)
+	}
 
 	function scroll(e) {
-		console.log(el.scrollLeft)
 		barchartStore.update(data => {
-			let dateTmp = new Date($barchartStore.firstDate),
-			periodWidth = (960 / $reportsStore.period)
+			let dateTmp = new Date($barchartStore.firstDate)
 
-			dateTmp.setDate(dateTmp.getDate() + Math.floor((el.scrollLeft - 500000) / periodWidth) )
+			dateTmp.setDate(dateTmp.getDate() + Math.round((el.scrollLeft - 500000) / periodWidth) )
 
 			data.startDate = dateTmp
 			return data
@@ -64,18 +71,16 @@
 			clearTimeout(timeout)
 		}
 
-		timeout = setTimeout(() => {
-			let dateTmp = new Date($barchartStore.firstDate),
-				periodWidth = (960 / $reportsStore.period)
-			dateTmp.setDate(dateTmp.getDate() + Math.round((el.scrollLeft - 500000) / periodWidth) )
-			reportsStoreUpdateDate(dateTmp)
-		}, 100)
+		timeout = setTimeout(timeoutFunction, 50)
 
 	}
 
 </script>
 
-<div class="barchart-wrapper" style="{'--visible-items:'+ $reportsStore.period}">
+<div class="barchart-wrapper" style="{
+	'--chart-width:' + elWidth +'px;'+
+	'--visible-items:'+ $reportsStore.period +';'
+}">
 
 <div class="legend"></div>
 
@@ -93,7 +98,7 @@
 		class="inner"
 		bind:this={innerEl}>
 		{#each daysArray as day, i (day.daysSince)}
-			<div class="day-container" style="{'left:'+ (500000 + (day.daysSince - $reportsStore.period) * 960 / $reportsStore.period) +'px'}">
+			<div class="day-container" style="{'left:'+ (500000 + (day.daysSince - $reportsStore.period) * elWidth / $reportsStore.period) +'px'}">
 
 				{#if $reportsStore.dates[day.date.getFullYear() +'-'+ day.date.getMonth() +'-'+ day.date.getDate()]}
 					.
@@ -113,9 +118,6 @@
 </div>
 
 </div>
-
-<!-- {JSON.stringify($reportsStore.dates)} -->
-
 
 <style>
 	.barchart-wrapper {
@@ -148,8 +150,7 @@
 	.day-container {
 		position:absolute;
 		top:0;
-		/* border-right:1px #CCC solid; */
-		width:calc(960px / var(--visible-items));
+		width:calc(var(--chart-width) / var(--visible-items));
 		height:100%;
 		scroll-snap-align: start;
 		text-align: center;
@@ -158,10 +159,6 @@
 		border-bottom-right-radius: 6px;
 		border-bottom-left-radius: 6px;
 	}
-
-	/* .day-container:nth-child(odd) .date {
-		display:none;
-	}*/
 
 	.day-container:hover {
 		background:#F5F3F0;

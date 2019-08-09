@@ -32,7 +32,7 @@
 		display:flex;
 		flex-flow: row wrap;
 		max-width:960px;
-		margin:24px auto 24px auto;
+		margin:18px auto 24px auto;
 	}
 
 	.filter-header .button-wrapper {

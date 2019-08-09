@@ -53,12 +53,19 @@
 	}}>
 	<em></em>
 	<span>
-		{#if type === 'default'}	
+		{#if type === 'default' || type === 'icon-right' }	
 			{label}
 		{:else if type === 'icon' || type === 'entry' || type === 'entry has-stopwatch'}
 			<UiIcon type={icon} color="{color}" />
-		{/if}	
+		{/if}
 	</span>
+	{#if type === 'icon-right' }
+		<span class="">
+			<i style="display:block;transform:rotate(-90deg)">
+				<UiIcon type={icon} color="{color}" />
+			</i>	
+		</span>
+	{/if}
 </a>
 
 <style>
@@ -156,6 +163,28 @@
 
 	.has-stopwatch.hovered {
 		box-shadow: none;
+	}
+
+	.type-icon-right {
+		display:flex;
+		flex-flow: row wrap;
+	}
+
+	.type-icon-right span {
+		
+	}
+
+	.type-icon-right span:first-of-type {
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+	}
+
+	.type-icon-right span:last-of-type {
+		border-top-left-radius: 0;
+		border-bottom-left-radius: 0;
+		margin-left:1px;
+		width:40px;
+		padding:14px;
 	}
 
 	span {
