@@ -39,8 +39,7 @@
 			<input
 				type="text"
 				bind:value={searchValue}
-				placeholder="Search"
-				on:keydown={e => keydown(e)}>
+				placeholder="Search">
 
 			<ul>
 				{#each filteredOptions as option}
