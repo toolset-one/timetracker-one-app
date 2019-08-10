@@ -56,7 +56,7 @@ export function timesStoreNewTime(day, cb) {
 			user: authData.user.id,
 			day: day,
 			duration: 0,
-			project: null,
+			task: null,
 			comment: '',
 			updated: new Date(),
 			created: new Date()
