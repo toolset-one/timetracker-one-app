@@ -6,6 +6,8 @@
 	import { tasksStoreInit } from './stores/tasks-store.js'
 	import { userStoreInit } from './stores/user-store.js'
 	import { reportsStoreInit } from './stores/reports-store.js'
+	import { uiStore, uiStoreInit, uiStoreSetBreakpoint } from './stores/ui-store.js'
+	import { getWindowWidth } from './helpers/helpers.js'
 
 	import SignUp from './sign-in/sign-up-view.svelte'
 	import SignIn from './sign-in/sign-in-view.svelte'
@@ -26,6 +28,7 @@
 		tasksStoreInit()
 		userStoreInit()
 		reportsStoreInit()
+		uiStoreInit()
 	})
 
 	function resize() {
@@ -35,6 +38,8 @@
 			setTimeout(() => {
 				resizing = false
 			}, 10)
+
+			uiStoreSetBreakpoint(getWindowWidth())
 		}, 300)
 	}
 

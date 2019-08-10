@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 	import { routerStore } from '../stores/router-store.js'
 	import { timesStore, timesStoreControlDate, timesStoreNewTime } from '../stores/times-store.js'
+	import { uiStore } from '../stores/ui-store.js'
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateToDatabaseDate } from '../helpers/helpers.js'
 
 	import UiButton from '../ui/ui-button.svelte'
@@ -40,7 +41,7 @@
 
 </script>
 
-<header>
+<header class="{$uiStore.breakpoint}">
 	<div class="date-nav">
 		<div class="button-wrapper">
 			<UiButton 
@@ -77,7 +78,7 @@
 </ul>
 
 {#if entries.length > 0}
-	<div class="total">
+	<div class="total {$uiStore.breakpoint}">
 		<p>
 			{dateGetHours(total)}:{dateGetMinutes(total)} total
 		</p>
@@ -125,6 +126,10 @@
 		margin:24px auto 24px auto;
 	}
 
+	.bp-xs {
+		padding:0 12px;
+	}
+
 	.date-nav {
 		display:flex;
 		flex-flow: row wrap;
@@ -132,8 +137,11 @@
 		width:50%;
 	}
 
-	.button-wrapper {
+	.bp-xs .date-nav {
+		width:100%;
+	}
 
+	.button-wrapper {
 		margin-right:6px;
 	}
 
@@ -144,6 +152,13 @@
 	.add-button-wrapper {
 		flex: 1;
 		text-align: right;
+	}
+
+	.bp-xs .add-button-wrapper {
+		position:fixed;
+		bottom:12px;
+		left:50%;
+		transform: translateX(-50%);
 	}
 
 	.entries {
@@ -176,6 +191,10 @@
 		max-width:960px;
 		margin:18px auto 24px auto;
 		padding:0 0 0 54px;
+	}
+
+	.bp-xs.total {
+		padding:0 0 0 12px;
 	}
 
 	.total p {
