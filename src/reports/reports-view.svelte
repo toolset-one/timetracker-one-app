@@ -3,7 +3,7 @@
 	import { routerStore } from '../stores/router-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
-	import { reportsStore, reportsStoreSetPeriod } from '../stores/reports-store.js'
+	import { reportsStore, reportsStoreBarchartData, reportsStoreSetPeriod } from '../stores/reports-store.js'
 
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateGetWeek, dateGetMonth } from '../helpers/helpers.js'
 
@@ -109,8 +109,6 @@
 
 <section>
 	<ReportsBarchart />
-
-	{JSON.stringify($reportsStore)}
 </section>
 
 

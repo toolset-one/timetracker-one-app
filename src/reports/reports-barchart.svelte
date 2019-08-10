@@ -4,9 +4,9 @@
 	import { routerStore } from '../stores/router-store.js'
 	import { reportsStore, reportsStoreUpdateDate } from '../stores/reports-store.js'
 
-	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth} from '../helpers/helpers.js'
+	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth, dateToDatabaseDate} from '../helpers/helpers.js'
 
-	import UiButton from '../ui/ui-button.svelte'
+	import ReportsBarchartDay from '../reports/reports-barchart-day.svelte'
 
 	const barchartStore = writable({
 		startDate: new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
@@ -100,18 +100,7 @@
 		{#each daysArray as day, i (day.daysSince)}
 			<div class="day-container" style="{'left:'+ (500000 + (day.daysSince - $reportsStore.period) * elWidth / $reportsStore.period) +'px'}">
 
-				{#if $reportsStore.dates[day.date.getFullYear() +'-'+ day.date.getMonth() +'-'+ day.date.getDate()]}
-					.
-				{/if}
-
-				<div class="date">
-					<span>
-						{dateGetWeekday(day.date)}
-					</span>
-					<small>
-						{dateGetDay(day.date)} {dateGetMonth(day.date)}
-					</small>
-				</div>
+				<ReportsBarchartDay date={day.date} />
 			</div>
 		{/each}
 	</div>
@@ -166,38 +155,6 @@
 
 	.day-container:hover .date small {
 		opacity: 1;
-	}
-
-	.date {
-		position: absolute;
-		bottom:0;
-		left:50%;
-		transform: translateX(-50%);
-		text-align: center;
-	}
-
-	.day-container:hover .day-container {
-		background:rgba(0, 0, 0, .1);
-	}
-
-	.date span {
-		position: relative;
-		display: inline-block;
-		font-size:12px;
-		line-height:12px;
-		padding:6px 0;
-	}
-
-	.date small {
-		background:#F5F3F0;
-		display: block;
-		padding:0 6px;
-		font-size:12px;
-		line-height:24px;
-		white-space: nowrap;
-		font-weight:600;
-		opacity:0;
-		border-radius: 6px;
 	}
 
 	.legend {
