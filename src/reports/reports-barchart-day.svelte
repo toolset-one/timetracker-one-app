@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { routerStore } from '../stores/router-store.js'
 	import { reportsStoreBarchartData } from '../stores/reports-store.js'
+	import { tasksStore } from '../stores/tasks-store.js'
 
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth, dateToDatabaseDate} from '../helpers/helpers.js'
 
@@ -28,8 +29,8 @@
 					{#each Object.keys($reportsStoreBarchartData.days[databaseDate].tasks) as taskId}
 						<div class="segment" style="{
 							'height:' + $reportsStoreBarchartData.days[databaseDate].tasks[taskId] / (dayTotal / 100) +'%;' +
-							'background:#' + Math.round(Math.random() * 999999) + ';'
-						}"></div>
+							'background:' + ($tasksStore.json[taskId] ? $tasksStore.json[taskId].color : '#333') + ';'
+						} "></div>
 					{/each}
 				</div>
 		{/if}
@@ -44,7 +45,6 @@
 		{dateGetDay(date)} {dateGetMonth(date)}
 	</small>
 </div>
-
 
 <style>
 	
