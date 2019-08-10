@@ -2,7 +2,7 @@
 	import Page from 'page'
 	import { onMount } from 'svelte';
 	import { routerStore } from '../stores/router-store.js'
-	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
+	import { timesStore, timesStoreControlDate, timesStoreNewTime } from '../stores/times-store.js'
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateToDatabaseDate } from '../helpers/helpers.js'
 
 	import UiButton from '../ui/ui-button.svelte'
@@ -21,7 +21,11 @@
 
 	$: dateNow = dateStringToDate($routerStore.subview)
 	$: databaseDate = dateToDatabaseDate((dateStringToDate($routerStore.subview)))
-	$: entries = $timesStore.array.filter(entry => entry.day === databaseDate)
+	$: isDatabaseDateInDatabase = timesStoreControlDate(databaseDate)
+
+	$: entries = $timesStore.dayIndex[databaseDate] 
+		? Object.keys($timesStore.dayIndex[databaseDate]).map(entryId => $timesStore.times[entryId])
+		: []
 	$: total = entries.reduce((sum, entry) => entry.duration + sum, 0)
 
 	onMount(() => {

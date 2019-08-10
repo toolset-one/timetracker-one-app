@@ -2,50 +2,74 @@ import { writable } from 'svelte/store'
 import { authStore } from '../stores/auth-store.js'
 
 export const timesStore = writable({
-	json: {},
-	array: []
+	times: {},
+	dayIndex: {}
 })
 
-let listener
+// data.array = (Object.keys(data.times).map(el => data.times[el])).sort((a, b) => b.created.seconds - a.created.seconds)
+
+let listener,
+	userId = null,
+	monthListener = {}
 
 
 export function timesStoreInit() {
-	setListener()
+	authStore.subscribe(authData => {
+		if(authData.hasAuth) {
+			userId = authData.user.id
+		} else {
+			userId = null
+		}
 
+		Object.keys(monthListener).forEach(monthId => {
+			setListener(userId, monthId)
+		})
+	})
 }
 
-function setListener() {
-	authStore.subscribe(authData => {
-		if(listener) {
-			listener()
-		}
+function setListener(userId, monthId) {
 
-		if(authData.hasAuth) {
-			listener = firebase.db.collection('times').where('user', '==', authData.user.id).onSnapshot(snapshot =>
-				snapshot.docChanges().forEach(change => {
+	if(monthListener[monthId] && monthListener[monthId].listener) {
+		monthListener[monthId].listener()
+	}
+
+	monthListener[monthId].listener = firebase.db.collection('times').where('user', '==', userId).onSnapshot(snapshot =>
+		snapshot.docChanges().forEach(change => {
 								
-					if (change.type === 'added' || change.type === 'modified') {
+			if (change.type === 'added' || change.type === 'modified') {
 
-						const entryData = Object.assign({ 
-							id: change.doc.id 
-						}, change.doc.data())
+				const entryData = Object.assign({ 
+					id: change.doc.id 
+				}, change.doc.data())
 
-						timesStore.update(data => {
-							data.json[entryData.id] = entryData
-							data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
-							return data
-						})
-					} else if (change.type === 'removed') {
-						timesStore.update(data => {
-							delete data.json[change.doc.id]
-							data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
-							return data
-						})
+				timesStore.update(data => {
+					data.times[entryData.id] = entryData
+					if(!data.dayIndex[entryData.day]) {
+						data.dayIndex[entryData.day] = {}
 					}
+
+					data.dayIndex[entryData.day][entryData.id] = true
+					return data
 				})
-			)
-		}
-	})
+			} else if (change.type === 'removed') {
+				timesStore.update(data => {
+					delete data.times[change.doc.id]
+					delete data.dayIndex[change.doc.data().day][change.doc.id]
+					return data
+				})
+			}
+		})
+	)
+}
+
+
+export function timesStoreControlDate(databaseDate) {
+	const monthId = Math.floor(databaseDate / 100) * 100
+	if( !monthListener[monthId] ) {
+		monthListener[monthId] = {}
+		setListener(userId, monthId)
+	}
+	return true
 }
 
 
@@ -61,10 +85,8 @@ export function timesStoreNewTime(day, cb) {
 			updated: new Date(),
 			created: new Date()
 		}).then(() => {
-			console.log('document created');
 			cb(true)
 		}).catch(err => {
-			console.error('error: ', err);
 			cb(false)
 		})
 	})
@@ -86,8 +108,7 @@ export function timesStoreChangeComment(id, comment) {
 	})	
 
 	timesStore.update(data => {
-		data.json[id].comment = comment
-		data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
+		data.times[id].comment = comment
 		return data
 	})
 }
@@ -100,8 +121,7 @@ export function timesStoreChangeDuration(id, duration) {
 	})	
 
 	timesStore.update(data => {
-		data.json[id].duration = duration
-		data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
+		data.times[id].duration = duration
 		return data
 	})
 }
@@ -114,8 +134,7 @@ export function timesStoreChangeTask(id, task) {
 	})	
 
 	timesStore.update(data => {
-		data.json[id].task = task
-		data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
+		data.times[id].task = task
 		return data
 	})
 }
