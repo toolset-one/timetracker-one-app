@@ -62,30 +62,15 @@
 		position: relative;
 		width:540px;
 		margin:60px auto;
-		border:#CCC9C4 1px solid;
+		border:#CCC9C4 0px solid;
 		border-radius: 6px;
 		background:#FFF;
 		padding:0 30px 30px 30px;
-	}
-
-	.container:after {
-		content:'';
-		display:block;
-		position: absolute;
-		top:calc(100% + 1px);
-		left:3px;
-		right:3px;
-		height:3px;
-		background:#FFF;
-		border-bottom-right-radius: 3px;
-		border-bottom-left-radius: 3px;
-		border-right:#CCC9C4 1px solid;
-		border-bottom:#CCC9C4 1px solid;
-		border-left:#CCC9C4 1px solid;
+		box-shadow:0 1px 1px rgba(0, 0, 0, .05), 0 2px 3px rgba(0, 0, 0, .1);
 	}
 
 	h2 {
-		padding:23px 0 24px 0;
+		padding:24px 0;
 	}
 
 	span {

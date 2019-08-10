@@ -45,14 +45,16 @@
 			'width:' + (activeElWidth - 36) +'px;'}"></div>
 	{/if}
 </nav>
+<div class="spacer"></div>
 	
 
 <style>
 	nav {
 		width:100%;
 		height:48px;
-		position: sticky;
+		position: fixed;
 		top:0;
+		left:0;
 		background:#FFF;
 		text-align: center;
 		z-index:500;
@@ -124,7 +126,9 @@
 		background:#FAF9F7;
 	}
 
-
+	.spacer {
+		height:48px;
+	}
 
 	.indicator {
 		position:absolute;
