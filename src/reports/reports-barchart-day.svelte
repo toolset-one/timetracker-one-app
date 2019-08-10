@@ -1,5 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
+	import { slide } from 'svelte/transition'
+	import { cubicOut } from 'svelte/easing'
 	import { routerStore } from '../stores/router-store.js'
 	import { reportsStoreBarchartData } from '../stores/reports-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
@@ -27,7 +29,10 @@
 				style="{'height:' + barHeight + '%;'}">
 
 					{#each Object.keys($reportsStoreBarchartData.days[databaseDate].tasks) as taskId}
-						<div class="segment" style="{
+						<div 
+							class="segment" 
+							transition:slide={{ duration: 100, easing: cubicOut }}
+							style="{
 							'height:' + $reportsStoreBarchartData.days[databaseDate].tasks[taskId] / (dayTotal / 100) +'%;' +
 							'background:' + ($tasksStore.json[taskId] ? $tasksStore.json[taskId].color : '#333') + ';'
 						} "></div>
@@ -93,11 +98,14 @@
 		bottom:0;
 		left:50%;
 		width:90%;
-		background:rgba(0, 0, 0, .1);
 		transform:translateX(-50%);
+		display:flex;
+		flex-direction: column-reverse;
+		transition: all 100ms ease;
 	}
 
 	.segment {
 		width:100%;
+		transition: all 100ms ease;
 	}
 </style>

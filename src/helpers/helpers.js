@@ -118,8 +118,7 @@ export const dateGetSeconds = duration => {
 }
 
 export const dateDaysBetweenDates = (date1, date2) => {
-
-	return Math.round((date2.getTime() - date1.getTime())/(1000 * 60 * 60 * 24))
+	return Math.ceil((date2.getTime() - date1.getTime())/(1000 * 60 * 60 * 24))
 }
 
 

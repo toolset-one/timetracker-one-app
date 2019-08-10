@@ -1,6 +1,5 @@
 <script>
 	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 	import { routerStore } from '../stores/router-store.js'
 	import { reportsStore, reportsStoreUpdateDate } from '../stores/reports-store.js'
 
@@ -8,64 +7,58 @@
 
 	import ReportsBarchartDay from '../reports/reports-barchart-day.svelte'
 
-	const barchartStore = writable({
-		startDate: new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
-		firstDate: new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0)
-	})
-
 	let el,
 	elWidth = 960,
+	firstDate = new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
+	startDate = new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
 	innerEl,
 	daysArray = [],
 	timeout,
-	scrollLeft
+	scrollLeft,
+	tmp = 0
 
-	$: daysBetween = dateDaysBetweenDates($barchartStore.firstDate, $barchartStore.startDate)
+	$: daysBetween = dateDaysBetweenDates(firstDate, startDate)
 	$: periodWidth = elWidth / $reportsStore.period
+	$: daysArray = calculateDaysArray(startDate)
+
+	function calculateDaysArray(startDate) {
+		let dateTmp = new Date(startDate)
+		dateTmp.setDate(dateTmp.getDate() - $reportsStore.period)
+
+		let daysSince = daysBetween,
+			arrayTmp = []
+
+		for(var i = -1 * $reportsStore.period; i <= $reportsStore.period; i++) {
+			arrayTmp.push({
+				date: dateTmp,
+				daysSince
+			})
+
+			dateTmp = dateNextDate(dateTmp)
+			daysSince++
+		}
+
+		return arrayTmp
+	}
 
 	onMount(() => {
 
 		elWidth = el.getBoundingClientRect().width
-		
-		barchartStore.subscribe(data => {
-
-			let dateTmp = new Date(data.startDate)
-			dateTmp.setDate(dateTmp.getDate() - $reportsStore.period)
-
-			let daysSince = daysBetween,
-				arrayTmp = []
-
-			for(var i = -1 * $reportsStore.period; i <= $reportsStore.period; i++) {
-				arrayTmp.push({
-					date: dateTmp,
-					daysSince
-				})
-
-				dateTmp = dateNextDate(dateTmp)
-				daysSince++
-			}
-			daysArray = arrayTmp
-		})
-
-		el.scrollLeft = 500000		
+		el.scrollLeft = 500000
 	})
 
 
 	function timeoutFunction() {
-		let dateTmp = new Date($barchartStore.firstDate)
+		let dateTmp = new Date(firstDate)
 		dateTmp.setDate(dateTmp.getDate() + Math.round((el.scrollLeft - 500000) / periodWidth) )
 		reportsStoreUpdateDate(dateTmp)
 	}
 
+
 	function scroll(e) {
-		barchartStore.update(data => {
-			let dateTmp = new Date($barchartStore.firstDate)
-
-			dateTmp.setDate(dateTmp.getDate() + Math.round((el.scrollLeft - 500000) / periodWidth) )
-
-			data.startDate = dateTmp
-			return data
-		})
+		let dateTmp = new Date(firstDate)
+		dateTmp.setDate(dateTmp.getDate() + Math.round((el.scrollLeft - 500000) / periodWidth) )
+		startDate = dateTmp
 
 		if(timeout) {
 			clearTimeout(timeout)
@@ -98,7 +91,7 @@
 		class="inner"
 		bind:this={innerEl}>
 		{#each daysArray as day, i (day.daysSince)}
-			<div class="day-container" style="{'left:'+ (500000 + (day.daysSince - $reportsStore.period) * elWidth / $reportsStore.period) +'px'}">
+			<div class="day-container" style="{'left:'+ (500000 + (day.daysSince - $reportsStore.period) * periodWidth) +'px'}">
 
 				<ReportsBarchartDay date={day.date} />
 			</div>
@@ -107,6 +100,7 @@
 </div>
 
 </div>
+
 
 <style>
 	.barchart-wrapper {
