@@ -65,7 +65,10 @@
 		}
 
 		timeout = setTimeout(timeoutFunction, 50)
+	}
 
+	export function scrollToDate(date) {
+		el.scrollLeft = Math.floor(500000 + dateDaysBetweenDates(firstDate, date) * periodWidth)
 	}
 
 </script>

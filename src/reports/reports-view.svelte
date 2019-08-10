@@ -3,7 +3,7 @@
 	import { routerStore } from '../stores/router-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
-	import { reportsStore, reportsStoreBarchartData, reportsStoreSetPeriod } from '../stores/reports-store.js'
+	import { reportsStore, reportsStoreUpdateDate, reportsStoreBarchartData, reportsStoreSetPeriod } from '../stores/reports-store.js'
 
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateGetWeek, dateGetMonth } from '../helpers/helpers.js'
 
@@ -32,7 +32,8 @@
 
 	let period = 'week',
 		filterTasks,
-		filterTasksLength = 0
+		filterTasksLength = 0,
+		scrollToDateFunction
 
 	$: tasksToFilter = [...$tasksStore.array, {
 		title: 'No Task',
@@ -54,7 +55,6 @@
 	})
 
 	function getPeriodTitle(date) {
-
 		if(period === 'week') {
 			if( dateGetWeek(datePrevDate(date)) != dateGetWeek(date)) {
 				return 'Week Number ' + dateGetWeek(date)
@@ -70,6 +70,57 @@
 		}
 
 		return dateGetWeek(date)
+	}
+
+	function prevPeriod(date) {
+		if(period === 'week') {
+			if( dateGetWeek(datePrevDate(date)) != dateGetWeek(date)) {
+				var newDate = datePrevDate(date, 7)
+			} else {
+				while(dateGetWeek(datePrevDate(date)) === dateGetWeek(date)) {
+					date = datePrevDate(date)
+				}
+				var newDate = date
+			}
+		} else if(period === 'month') {
+			if( (datePrevDate(date)).getMonth() != date.getMonth()) {
+				date = datePrevDate(date)
+			} 
+
+			while(datePrevDate(date).getMonth() === date.getMonth()) {
+				date = datePrevDate(date)
+			}
+			var newDate = date
+		}
+
+		reportsStoreUpdateDate(newDate)
+		scrollToDateFunction(newDate)
+	}
+
+
+	function nextPeriod(date) {
+		if(period === 'week') {
+			if( dateGetWeek(datePrevDate(date)) != dateGetWeek(date)) {
+				var newDate = dateNextDate(date, 7)
+			} else {
+				while(dateGetWeek(datePrevDate(date)) === dateGetWeek(date)) {
+					date = dateNextDate(date)
+				}
+				var newDate = date
+			}
+		} else if(period === 'month') {
+			if(datePrevDate(date).getMonth() != date.getMonth()) {
+				date = dateNextDate(date)
+			}
+
+			while(datePrevDate(date).getMonth() === date.getMonth()) {
+				date = dateNextDate(date)
+			}
+			var newDate = date
+		}
+
+		reportsStoreUpdateDate(newDate)
+		scrollToDateFunction(newDate)
 	}
 
 </script>
@@ -96,12 +147,14 @@
 		<div class="button-wrapper">
 			<UiButton 
 				type="icon" 
-				icon="arrow-left" />
+				icon="arrow-left"
+				on:click={e => prevPeriod($reportsStore.date)} />
 		</div>
 		<div class="button-wrapper">
 			<UiButton 
 				type="icon"
-				icon="arrow-right" />
+				icon="arrow-right"
+				on:click={e => nextPeriod($reportsStore.date)} />
 		</div>
 		<h2>
 			{getPeriodTitle($reportsStore.date)}
@@ -114,7 +167,7 @@
 </section>
 
 <section>
-	<ReportsBarchart />
+	<ReportsBarchart bind:scrollToDate={scrollToDateFunction} />
 	<ReportsDistribution />
 </section>
 
