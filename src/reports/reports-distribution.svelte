@@ -1,11 +1,11 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount } from 'svelte'
+	import { fade } from 'svelte/transition'
+	import { cubicOut } from 'svelte/easing'
 	import { reportsStoreBarchartData } from '../stores/reports-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth, dateToDatabaseDate} from '../helpers/helpers.js'
-
-	let el
 
 	$: tasks = Object.keys($reportsStoreBarchartData.tasks).map(taskId => {
 		return {
@@ -14,12 +14,6 @@
 		}
 	}).sort((a, b) => b.duration - a.duration)
 
-
-	onMount(() => {
-
-		
-	})
-
 </script>
 
 <h2>
@@ -27,8 +21,11 @@
 </h2>
 
 <div class="distribution-wrapper">
-	{#each tasks as task}
-		<div class="segment" style="
+	{#each tasks as task, i (task.taskId)}
+		<div
+			transition:fade={{ duration: 100, easing: cubicOut }}
+			class="segment"
+			style="
 			width:{task.duration / ($reportsStoreBarchartData.total / 100)}%;
 			background:{$tasksStore.json[task.taskId] ? $tasksStore.json[task.taskId].color : '#333'};">
 				{dateGetHours(task.duration)}:{dateGetMinutes(task.duration)}
@@ -59,6 +56,7 @@
 		font-size:14px;
 		color:#FFF;
 		padding:0 0 0 3px;
+		transition: all 100ms ease;
 	}
 
 	.segment:first-child {
