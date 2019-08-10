@@ -11,6 +11,7 @@
 	import UiMultiselect from '../ui/ui-multiselect.svelte'
 	import UiRadio from '../ui/ui-radio.svelte'
 	import ReportsBarchart from '../reports/reports-barchart.svelte'
+	import ReportsDistribution from '../reports/reports-distribution.svelte'
 
 	const PERIOD_OPTIONS = [{
 		title: 'Week',
@@ -114,6 +115,7 @@
 
 <section>
 	<ReportsBarchart />
+	<ReportsDistribution />
 </section>
 
 
