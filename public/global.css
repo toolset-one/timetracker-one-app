@@ -1,3 +1,61 @@
+@font-face {
+    font-family: 'overpass';
+    src: url('/fonts/overpass/overpass-regular-webfont.woff2') format('woff2'),
+         url('/fonts/overpass/overpass-regular-webfont.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'overpass';
+    src: url('/fonts/overpass/overpass-italic-webfont.woff2') format('woff2'),
+         url('/fonts/overpass/overpass-italic-webfont.woff') format('woff');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'overpass';
+    src: url('/fonts/overpass/overpass-semibold-webfont.woff2') format('woff2'),
+         url('/fonts/overpass/overpass-semibold-webfont.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'overpass';
+    src: url('/fonts/overpass/overpass-semibold-italic-webfont.woff2') format('woff2'),
+         url('/fonts/overpass/overpass-semibold-italic-webfont.woff') format('woff');
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'overpass';
+    src: url('/fonts/overpass/overpass-bold-italic-webfont.woff2') format('woff2'),
+         url('/fonts/overpass/overpass-bold-italic-webfont.woff') format('woff');
+    font-weight: 600;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'overpass';
+    src: url('/fonts/overpass/overpass-bold-webfont.woff2') format('woff2'),
+         url('/fonts/overpass/overpass-bold-webfont.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'vollkorn';
+    src: url('/fonts/vollkorn/vollkorn-webfont.woff2') format('woff2'),
+         url('/fonts/vollkorn/vollkorn-webfont.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+
+
 html, body {
 	position: relative;
 	width: 100%;
@@ -9,7 +67,7 @@ body {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
-	font-family:Overpass, serif;
+	font-family:overpass, serif;
 	background:#F7F5F2;
 }
 
