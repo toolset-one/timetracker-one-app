@@ -6,10 +6,12 @@
 	import UiButton from '../ui/ui-button.svelte'
 	import TasksEntry from '../settings/tasks-entry.svelte'
 	import TasksTitleOverlay from '../settings/tasks-title-overlay.svelte'
+	import TasksColorOverlay from '../settings/tasks-color-overlay.svelte'
 	import TasksContextNav from '../settings/tasks-context-nav.svelte'
 
 
 	let openedTitleId,
+		openedColorId,
 		openContextNavId
 
 	$: entries = $tasksStore.array
@@ -44,6 +46,7 @@
 			first={i == 0}
 			last={i == entries.length - 1}
 			on:openTitle={e => openedTitleId = e.detail}
+			on:openColor={e => openedColorId = e.detail}
 			on:openContextNav={e => openContextNavId = e.detail} />
 	{/each}
 </ul>
@@ -60,6 +63,11 @@
 		id={openedTitleId}
 		title={$tasksStore.json[openedTitleId].title}
 		on:close={e => openedTitleId = null} />
+{:else if openedColorId}
+	<TasksColorOverlay
+		id={openedColorId}
+		color={$tasksStore.json[openedColorId].color}
+		on:close={e => openedColorId = null} />
 {:else if openContextNavId}
 	<TasksContextNav
 		id={openContextNavId}

@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store'
 import { authStore } from '../stores/auth-store.js'
+import { COLORS } from '../helpers/helpers.js'
 
 export const tasksStore = writable({
 	json: {},
@@ -56,6 +57,7 @@ export function tasksStoreNewTask(cb) {
 			user: authData.user.id,
 			title: '',
 			project: null,
+			color: COLORS[Math.floor(COLORS.length)],
 			updated: new Date(),
 			created: new Date()
 		}).then(() => {
@@ -78,6 +80,20 @@ export function tasksStoreChangeTitle(id, title) {
 
 	tasksStore.update(data => {
 		data.json[id].title = title
+		data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
+		return data
+	})
+}
+
+
+export function tasksStoreChangeColor(id, color) {
+	firebase.db.collection('tasks').doc(id).update({
+		color,
+		updated: new Date()
+	})	
+
+	tasksStore.update(data => {
+		data.json[id].color = color
 		data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
 		return data
 	})

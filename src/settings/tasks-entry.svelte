@@ -2,6 +2,9 @@
 	import { onMount, afterUpdate, createEventDispatcher } from 'svelte';
 	import { slide } from 'svelte/transition'
 	import { cubicOut } from 'svelte/easing'
+
+	import { COLORS } from '../helpers/helpers.js'
+
 	import UiButton from '../ui/ui-button.svelte'
 
 	export let data = {}
@@ -30,6 +33,11 @@
 			{ isNew ? 'new' : ''}"
 		on:mouseenter={e => hovered = true}
 		on:mouseleave={e => hovered = false}>
+		<div class="color" on:click={e => dispatch('openColor', data.id)}>
+			<div style="{'background-color:' + data.color + ';'}">
+				
+			</div>
+		</div>
 		<div class="title" on:click={e => dispatch('openTitle', data.id)}>
 			<div>
 				{data.title.length > 0 ? data.title : 'No title'}
@@ -74,6 +82,18 @@
 	.last {
 		border-bottom-left-radius:6px;
 		border-bottom-right-radius:6px;
+	}
+
+	.color {
+		padding:9px 0 9px 6px;
+	}
+
+	.color div {
+		width:30px;
+		height:30px;
+		border-radius: 6px;
+		background:#EEE;
+		cursor:pointer;
 	}
 
 	.title {

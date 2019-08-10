@@ -67,8 +67,10 @@
 			</div>
 		</div>
 		<div class="task" on:click={e => dispatch('openTask', data.id)}>
-			<div>
-				{(data.task && $tasksStore.json && $tasksStore.json[data.task]) ? $tasksStore.json[data.task].title : 'No Task'}
+			<div style="background-color:{$tasksStore.json[data.task] ? $tasksStore.json[data.task].color : '#333'};">
+				{(data.task && $tasksStore.json && $tasksStore.json[data.task]) 
+					? $tasksStore.json[data.task].title 
+					: 'No Task'}
 			</div>
 		</div>
 		<div

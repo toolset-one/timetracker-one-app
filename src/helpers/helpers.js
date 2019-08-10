@@ -24,6 +24,13 @@ const WEEKDAYS_SHORT = [
 	'Sat'
 ]
 
+export const COLORS = [
+  '#B33C24', '#B37D47', '#B3A147', '#A1B347', '#7DB347',
+  '#68B359', '#47B359', '#47B37D', '#47B3A1', '#47A1B3',
+  '#477DB3', '#4759B3', '#5947B3', '#7D47B3', '#A147B3',
+  '#B359A4', '#B3477D', '#B34759', '#4D4D4D'
+]
+
 
 export const dateToDatestring = date => {
 	const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
