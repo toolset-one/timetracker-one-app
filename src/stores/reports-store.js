@@ -18,6 +18,12 @@ export const reportsStoreBarchartData = writable({
 
 export function reportsStoreInit() {
 	reportsStoreUpdateDate(new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0))
+	timesStore.subscribe(() => {
+		const unsubscribe = reportsStore.subscribe(data => {
+			buildChartData(data)
+		})
+		unsubscribe()
+	})
 	reportsStore.subscribe(buildChartData)
 }
 
@@ -55,6 +61,9 @@ function buildChartData(reportsStore) {
 	}
 
 	const unsubscribe = timesStore.subscribe(timesStore => {
+
+		const allTasks = reportsStore.filterTasks.length === 0
+
 		Object.keys(reportsStore.dates).forEach(date => {
 			chartData.days[date] = {
 				total: 0,
@@ -64,12 +73,14 @@ function buildChartData(reportsStore) {
 			Object.keys(timesStore.dayIndex[date] || []).forEach(timeId => {
 				const { task, duration } = timesStore.times[timeId]
 
-				chartData.days[date].total += duration
+				if(allTasks || reportsStore.filterTasks.includes(task) ) {
+					chartData.days[date].total += duration
 
-				if(!chartData.days[date].tasks[task]) {
-					chartData.days[date].tasks[task] = 0
+					if(!chartData.days[date].tasks[task]) {
+						chartData.days[date].tasks[task] = 0
+					}
+					chartData.days[date].tasks[task] += duration
 				}
-				chartData.days[date].tasks[task] += duration
 			})
 
 			chartData.totalDayMax = Math.max( chartData.totalDayMax, chartData.days[date].total )

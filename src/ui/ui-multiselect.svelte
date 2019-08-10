@@ -17,7 +17,6 @@
 		.sort((a, b) => a.title.localeCompare(b.title) )
 
 	function toggle(id) {
-		console.log(id, value)
 		if(value.includes(id)) {
 			value = value.filter(val => val != id)
 		} else {

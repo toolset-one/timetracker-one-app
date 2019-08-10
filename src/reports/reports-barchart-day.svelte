@@ -23,7 +23,15 @@
 		{#if dayTotal > 0}
 			<div
 				class="bar"
-				style="{'height:' + barHeight + '%;'}"></div>
+				style="{'height:' + barHeight + '%;'}">
+
+					{#each Object.keys($reportsStoreBarchartData.days[databaseDate].tasks) as taskId}
+						<div class="segment" style="{
+							'height:' + $reportsStoreBarchartData.days[databaseDate].tasks[taskId] / (dayTotal / 100) +'%;' +
+							'background:#' + Math.round(Math.random() * 999999) + ';'
+						}"></div>
+					{/each}
+				</div>
 		{/if}
 	</div>
 {/if}
@@ -57,7 +65,6 @@
 	}
 
 	.date small {
-		background:#F5F3F0;
 		display: block;
 		padding:0 6px;
 		font-size:12px;
@@ -74,6 +81,11 @@
 		bottom:48px;
 		left:0;
 		width:100%;
+		z-index:500;
+	}
+
+	.bar-wrapper:hover + .date small {
+		opacity:1;
 	}
 
 	.bar {
@@ -83,5 +95,9 @@
 		width:90%;
 		background:rgba(0, 0, 0, .1);
 		transform:translateX(-50%);
+	}
+
+	.segment {
+		width:100%;
 	}
 </style>

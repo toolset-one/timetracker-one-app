@@ -33,6 +33,11 @@
 		filterTasks,
 		filterTasksLength = 0
 
+	$: tasksToFilter = [...$tasksStore.array, {
+		title: 'No Task',
+		id: null
+	}]
+
 	onMount(() => {
 
 	})
@@ -77,7 +82,7 @@
 			label="Tasks"
 			type="icon-right"
 			icon="arrow-left"
-			options={$tasksStore.array}
+			options={tasksToFilter}
 			bind:value={filterTasks} />
 	</div>
 	<!--<div class="button-wrapper">

@@ -92,19 +92,19 @@
 {#if openedDurationId}
 	<TimelogDurationOverlay
 		id={openedDurationId}
-		duration={$timesStore.json[openedDurationId].duration}
+		duration={$timesStore.times[openedDurationId].duration}
 		on:close={e => openedDurationId = null} />
 {:else if openTaskId}
-{#if $timesStore.json && $timesStore.json[openTaskId]}
+{#if $timesStore.times && $timesStore.times[openTaskId]}
 	<TimelogTaskOverlay
 		id={openTaskId}
-		task={$timesStore.json[openTaskId].task}
+		task={$timesStore.times[openTaskId].task}
 		on:close={e => openTaskId = null} />
 {/if}
 {:else if openCommentId}
 	<TimelogCommentOverlay
 		id={openCommentId}
-		comment={$timesStore.json[openCommentId].comment}
+		comment={$timesStore.times[openCommentId].comment}
 		on:close={e => openCommentId = null} />
 {:else if openContextNavId}
 	<TimelogContextNav

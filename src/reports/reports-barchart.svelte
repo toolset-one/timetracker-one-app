@@ -123,6 +123,7 @@
 		overflow-y:show;
 		scroll-snap-type: x mandatory;
 		backface-visibility: hidden;
+		z-index:300;
 	}
 
 	.barchart::-webkit-scrollbar {
@@ -150,7 +151,7 @@
 	}
 
 	.day-container:hover {
-		background:#F5F3F0;
+		background:rgba(0, 0, 0, .1);
 	}
 
 	.day-container:hover .date small {
