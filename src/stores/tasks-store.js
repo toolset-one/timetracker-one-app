@@ -57,7 +57,7 @@ export function tasksStoreNewTask(cb) {
 			user: authData.user.id,
 			title: '',
 			project: null,
-			color: COLORS[Math.floor(COLORS.length)],
+			color: COLORS[Math.floor(Math.random() * COLORS.length)],
 			updated: new Date(),
 			created: new Date()
 		}).then(() => {
