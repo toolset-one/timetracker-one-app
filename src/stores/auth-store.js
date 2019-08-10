@@ -15,10 +15,6 @@ export const authStore = writable({
 
 
 export function authInit() {
-	var timeStart = Date.now()
-
-	console.log(Date.now() - loadedTime)
-
 	const seemsToHaveAuth = localStorage.getItem('seemsToHaveAuth')
 	if(seemsToHaveAuth) {
 		authStore.update(data => {
@@ -28,7 +24,6 @@ export function authInit() {
 	}
 
 	firebase.auth().onAuthStateChanged(user => {
-		console.log('AUTH STATE CHANGED', Date.now() - timeStart, firebase.auth().currentUser)
 		if (user) {
 			authStore.set({
 				seemsToHaveAuth: true,

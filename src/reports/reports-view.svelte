@@ -1,12 +1,14 @@
 <script>
 	import { onMount } from 'svelte';
 	import { routerStore } from '../stores/router-store.js'
+	import { tasksStore } from '../stores/tasks-store.js'
 	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
 	import { reportsStore, reportsStoreSetPeriod } from '../stores/reports-store.js'
 
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateGetWeek, dateGetMonth } from '../helpers/helpers.js'
 
 	import UiButton from '../ui/ui-button.svelte'
+	import UiMultiselect from '../ui/ui-multiselect.svelte'
 	import UiRadio from '../ui/ui-radio.svelte'
 	import ReportsBarchart from '../reports/reports-barchart.svelte'
 
@@ -27,7 +29,8 @@
 		'year': 368
 	}
 
-	let period = 'week'
+	let period = 'week',
+		tasksActive
 
 	onMount(() => {
 
@@ -55,15 +58,20 @@
 </script>
 
 <section class="filter-header">
-	<div class="button-wrapper">
+	<!--<div class="button-wrapper">
 		<UiButton label="Team ▾" />
-	</div>
+	</div>-->
 	<div class="button-wrapper">
-		<UiButton label="Tasks ▾" />
+		<UiMultiselect
+			label="Tasks"
+			type="icon-right"
+			icon="arrow-left"
+			options={$tasksStore.array}
+			bind:value={tasksActive} />
 	</div>
-	<div class="button-wrapper">
+	<!--<div class="button-wrapper">
 		<UiButton label="Tags ▾" />
-	</div>
+	</div>-->
 </section>
 
 <section class="range-header">

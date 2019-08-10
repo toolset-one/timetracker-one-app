@@ -25,7 +25,7 @@
 		{#each ROUTES as route}
 			<li>
 				<a 
-					href="/{route}/{route === 'timelog' ? dateToDatestring(new Date()) + '/' : ''}{route === 'settings' ? 'projects/' : ''}"
+					href="/{route}/{route === 'timelog' ? dateToDatestring(new Date()) + '/' : ''}{route === 'settings' ? 'tasks/' : ''}"
 					bind:this={ELEMENTS_MAP[route]}
 					class="{$routerStore.view === route ? 'active' : ''}"
 					on:mouseenter={e => hoverEl = ELEMENTS_MAP[route]}>
@@ -50,7 +50,7 @@
 <style>
 	nav {
 		width:100%;
-		height:60px;
+		height:48px;
 		position: sticky;
 		top:0;
 		background:#FFF;
@@ -91,7 +91,7 @@
 
 	a {
 		display:block;
-		padding:6px 0;
+		padding:0;
 		position: relative;
 		font-size:14px;
 		font-weight:500;
@@ -116,7 +116,6 @@
 		display:block;
 		padding:0 18px;
 		line-height:48px;
-		border-radius: 6px;
 		overflow:hidden;
 		transition: all 400ms ease;
 	}

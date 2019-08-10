@@ -3,6 +3,7 @@
 	import { routerStore } from './stores/router-store.js'
 	import { authStore, authInit } from './stores/auth-store.js'
 	import { timesStoreInit } from './stores/times-store.js'
+	import { tasksStoreInit } from './stores/tasks-store.js'
 	import { userStoreInit } from './stores/user-store.js'
 	import { reportsStoreInit } from './stores/reports-store.js'
 
@@ -22,6 +23,7 @@
 	onMount(() => {
 		authInit()
 		timesStoreInit()
+		tasksStoreInit()
 		userStoreInit()
 		reportsStoreInit()
 	})

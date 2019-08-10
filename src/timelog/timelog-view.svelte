@@ -90,10 +90,12 @@
 		duration={$timesStore.json[openedDurationId].duration}
 		on:close={e => openedDurationId = null} />
 {:else if openTaskId}
+{#if $timesStore.json && $timesStore.json[openTaskId]}
 	<TimelogTaskOverlay
 		id={openTaskId}
 		task={$timesStore.json[openTaskId].task}
 		on:close={e => openTaskId = null} />
+{/if}
 {:else if openCommentId}
 	<TimelogCommentOverlay
 		id={openCommentId}

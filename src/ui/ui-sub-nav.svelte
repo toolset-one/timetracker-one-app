@@ -3,7 +3,7 @@
 	import { routerStore } from '../stores/router-store.js'
 	import { dateToDatestring } from '../helpers/helpers.js'
 
-	let ROUTES = ['projects', 'team', 'appearance', 'account'],
+	let ROUTES = ['tasks', 'team', 'appearance', 'account'],
 	ELEMENTS_MAP = {},
 
 	el,

@@ -1,5 +1,4 @@
-import { writable } from 'svelte/store';
-import { routerStore } from '../stores/router-store.js'
+import { writable } from 'svelte/store'
 import { authStore } from '../stores/auth-store.js'
 
 export const timesStore = writable({
@@ -7,8 +6,7 @@ export const timesStore = writable({
 	array: []
 })
 
-let listener,
-	textId
+let listener
 
 
 export function timesStoreInit() {
@@ -103,6 +101,20 @@ export function timesStoreChangeDuration(id, duration) {
 
 	timesStore.update(data => {
 		data.json[id].duration = duration
+		data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
+		return data
+	})
+}
+
+
+export function timesStoreChangeTask(id, task) {
+	firebase.db.collection('times').doc(id).update({
+		task,
+		updated: new Date()
+	})	
+
+	timesStore.update(data => {
+		data.json[id].task = task
 		data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
 		return data
 	})
