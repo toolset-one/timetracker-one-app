@@ -1,5 +1,5 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount, afterUpdate } from 'svelte';
 	import { routerStore } from '../stores/router-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
@@ -30,10 +30,21 @@
 	}
 
 	let period = 'week',
-		tasksActive
+		filterTasks,
+		filterTasksLength = 0
 
 	onMount(() => {
 
+	})
+
+	afterUpdate(() => {
+		if(filterTasksLength != filterTasks.length) {
+			reportsStore.update(data => {
+				filterTasksLength = filterTasks.length
+				data.filterTasks = filterTasks
+				return data
+			})
+		}
 	})
 
 	function getPeriodTitle(date) {
@@ -67,7 +78,7 @@
 			type="icon-right"
 			icon="arrow-left"
 			options={$tasksStore.array}
-			bind:value={tasksActive} />
+			bind:value={filterTasks} />
 	</div>
 	<!--<div class="button-wrapper">
 		<UiButton label="Tags ▾" />
@@ -98,6 +109,8 @@
 
 <section>
 	<ReportsBarchart />
+
+	{JSON.stringify($reportsStore)}
 </section>
 
 

@@ -5,7 +5,8 @@ import { dateNextDate } from '../helpers/helpers.js'
 export const reportsStore = writable({
 	date: new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
 	dates: {},
-	period: 7
+	period: 7,
+	filterTasks: []
 })
 
 
