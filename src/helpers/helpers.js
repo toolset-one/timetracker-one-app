@@ -32,6 +32,13 @@ export const dateToDatestring = date => {
 	return year + '-' + month + '-' + day
 }
 
+export const dateToDatabaseDate = date => {
+	const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
+		month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1,
+	year = date.getFullYear()
+	return parseInt(year + '' + month + '' + day)
+}
+
 export const dateStringToDate = string => {
   const tmp = string.split('-')
   return new Date(parseInt(tmp[0]), parseInt(tmp[1]) - 1, parseInt(tmp[2]) )

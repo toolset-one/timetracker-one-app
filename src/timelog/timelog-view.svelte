@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import { routerStore } from '../stores/router-store.js'
 	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
-	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes } from '../helpers/helpers.js'
+	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateToDatabaseDate } from '../helpers/helpers.js'
 
 	import UiButton from '../ui/ui-button.svelte'
 	import TimelogEntry from '../timelog/timelog-entry.svelte'
@@ -20,7 +20,8 @@
 		openContextNavId
 
 	$: dateNow = dateStringToDate($routerStore.subview)
-	$: entries = $timesStore.array.filter(entry => entry.day === $routerStore.subview)
+	$: databaseDate = dateToDatabaseDate((dateStringToDate($routerStore.subview)))
+	$: entries = $timesStore.array.filter(entry => entry.day === databaseDate)
 	$: total = entries.reduce((sum, entry) => entry.duration + sum, 0)
 
 	onMount(() => {
@@ -28,7 +29,7 @@
 	})
 
 	function newEntry() {
-		timesStoreNewTime(dateToDatestring(dateNow), success => {
+		timesStoreNewTime(dateToDatabaseDate(dateNow), success => {
 
 		})
 	}
