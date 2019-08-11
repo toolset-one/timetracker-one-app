@@ -64,7 +64,7 @@
 
 	<div class="attr duration">
 		<div class="attr-icon">
-			<UiIcon type='burger' />
+			<UiIcon type='clock-big' size="big" color="#26231E" />
 		</div>
 		<span class="attr-value">
 			{dateGetHours(displayDuration)}<span>:</span>{dateGetMinutes(displayDuration)}<small>{dateGetSeconds(displayDuration)}</small>
@@ -80,7 +80,7 @@
 	</div>
 	<div class="attr task">
 		<div class="attr-icon">
-			<UiIcon type='burger' />
+			<UiIcon type='checkmark-big' size="big" />
 		</div>
 		<span class="attr-value">
 			{(entryData && entryData.task && $tasksStore.json && $tasksStore.json[entryData.task]) 
@@ -90,7 +90,7 @@
 	</div>
 	<div class="attr comment">
 		<div class="attr-icon">
-			<UiIcon type='burger' />
+			<UiIcon type='pen-big' size="big" />
 		</div>
 		<span class="attr-value">
 			{entryData && entryData.comment.length > 0 ? entryData.comment : 'No comment'}
@@ -201,7 +201,7 @@
 	}
 
 	.attr-icon {
-		padding:15px;
+		padding:9px;
 		width:42px;
 		height:42px;
 	}
