@@ -29,6 +29,7 @@
 		userStoreInit()
 		reportsStoreInit()
 		uiStoreInit()
+		uiStoreSetBreakpoint(getWindowWidth())
 	})
 
 	function resize() {

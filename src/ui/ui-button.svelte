@@ -41,7 +41,8 @@
 	class="type-{type} {hovered ? 'hovered': ''}"
 	style="{
 		'--x:'+ (mousePosition.x - boundingRect.left) +'px;' +
-		'--y:'+ (mousePosition.y - boundingRect.top) +'px;'
+		'--y:'+ (mousePosition.y - boundingRect.top) +'px;' + 
+		'color:'+ color +';'
 	}"
 	bind:this={el}
 	on:click={e => click(e)}
@@ -196,7 +197,6 @@
 		padding:0 18px;
 		font-size:14px;
 		font-weight:600;
-		color:#26231E;
 	}
 
 	em {

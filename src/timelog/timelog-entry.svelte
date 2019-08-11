@@ -6,6 +6,7 @@
 	import { dateGetHours, dateGetMinutes, dateGetSeconds } from '../helpers/helpers.js'
 	import { userStore, userSetStopwatch } from '../stores/user-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
+	import { uiStore } from '../stores/ui-store.js'
 
 	export let data = {}
 	export let first = false
@@ -15,6 +16,8 @@
 		isNew = false,
 		interval,
 		stopwatchDuration = 0
+
+	$: animationDuration = $uiStore.breakpoint === 'xs' ? 0 : 100
 
 	const dispatch = createEventDispatcher()
 
@@ -28,6 +31,7 @@
 		isNew = data.created.seconds * 1000 >= Date.now() - 2000
 	)
 
+
 	userStore.subscribe(userData => {
 		if(userData.stopwatchEntryId === data.id) {
 			interval = setInterval(() => {
@@ -40,33 +44,58 @@
 		}
 	})
 
+
+	function dispatchDesktopAndKeyboard(event, eventData) {
+		const unsubscribe = uiStore.subscribe(data => {
+			if(!data.isTouchDevice && data.breakpoint != 'xs') {
+				dispatch(event, eventData)
+			}
+		})
+		unsubscribe()
+	}
+
+
+	function dispatchMobileOrTouch(event, eventData) {
+		const unsubscribe = uiStore.subscribe(data => {
+			if(data.isTouchDevice || data.breakpoint === 'xs') {
+				console.log(eventData)
+				dispatch(event, eventData)
+			}
+		})
+		unsubscribe()
+	}
+
 </script>
 
 	<li
 		id="entry-{data.id}"
-		in:slide={{ duration: 100, easing: cubicOut }}
+		in:slide={{ duration: animationDuration, easing: cubicOut }}
 		class="
+			bp-{$uiStore.breakpoint}
 			{first ? 'first' : ''}
 			{last ? 'last' : ''}
 			{hovered ? 'hovered' : ''}
 			{ isNew ? 'new' : ''}
 			{ hasStopwatch ? 'has-stopwatch' : ''}"
 		on:mouseenter={e => hovered = true}
-		on:mouseleave={e => hovered = false}>
-		<div class="stopwatch">
-			<UiButton
-				type="{hasStopwatch ? 'entry has-stopwatch' : 'entry'}"
-				icon="{hasStopwatch ? 'pause' : 'play'}"
-				hovered={hovered || hasStopwatch}
-				color="{hovered || hasStopwatch ? '#26231E' : '#E6E4E1'}"
-				on:click={e => userSetStopwatch(data.id, (Date.now() - data.duration * 1000))} />
-		</div>
-		<div class="duration" on:click={e => !hasStopwatch && dispatch('openDuration', data.id)}>
+		on:mouseleave={e => hovered = false}
+		on:click={e => dispatchMobileOrTouch('openEntry', data.id)}>
+		{#if $uiStore.breakpoint != 'xs'}
+			<div class="stopwatch">
+				<UiButton
+					type="{hasStopwatch ? 'entry has-stopwatch' : 'entry'}"
+					icon="{hasStopwatch ? 'pause' : 'play'}"
+					hovered={hovered || hasStopwatch}
+					color="{hovered || hasStopwatch ? '#26231E' : '#E6E4E1'}"
+					on:click={e => userSetStopwatch(data.id, (Date.now() - data.duration * 1000))} />
+			</div>
+		{/if}
+		<div class="duration" on:click={e => !hasStopwatch && dispatchDesktopAndKeyboard('openDuration', data.id)}>
 			<div>
 				{dateGetHours(displayDuration)}<span>:</span>{dateGetMinutes(displayDuration)}<small>{dateGetSeconds(displayDuration)}</small>
 			</div>
 		</div>
-		<div class="task" on:click={e => dispatch('openTask', data.id)}>
+		<div class="task" on:click={e => dispatchDesktopAndKeyboard('openTask', data.id)}>
 			<div style="background-color:{$tasksStore.json[data.task] ? $tasksStore.json[data.task].color : '#333'};">
 				{(data.task && $tasksStore.json && $tasksStore.json[data.task]) 
 					? $tasksStore.json[data.task].title 
@@ -75,19 +104,21 @@
 		</div>
 		<div
 			class="comment {data.comment.length === 0 ? 'no-comment' : ''}"
-			on:click={e => dispatch('openComment', data.id)}>
+			on:click={e => dispatchDesktopAndKeyboard('openComment', data.id)}>
 			<div>
 				{data.comment.length > 0 ? data.comment : 'No comment'}
 			</div>
 		</div>
-		<div class="nav">
-			<UiButton
-				type="entry"
-				icon="burger"
-				hovered={hovered}
-				color="{hovered ? '#26231E' : '#E6E4E1'}"
-				on:click={e => dispatch('openContextNav', data.id)} />
-		</div>
+		{#if $uiStore.breakpoint != 'xs'}
+			<div class="nav">
+				<UiButton
+					type="entry"
+					icon="burger"
+					hovered={hovered}
+					color="{hovered ? '#26231E' : '#E6E4E1'}"
+					on:click={e => dispatch('openContextNav', data.id)} />
+			</div>
+		{/if}
 	</li>
 <style>
 
@@ -103,7 +134,13 @@
 		box-shadow:0 1px 1px rgba(0, 0, 0, .05), 0 2px 3px rgba(0, 0, 0, .1);
 	}
 
-	/*li:after {
+	li.bp-xs {
+		box-shadow:none;
+		border-radius: 0;
+		margin:0;
+	}
+
+	li.bp-xs:after {
 		content:'';
 		position: absolute;
 		bottom:0;
@@ -114,19 +151,15 @@
 	}
 
 	@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
-		li:after {
+		li.bp-xs:after {
 			background:#CCC9C4;
 			transform:scale(1, 0.5);
 			transform-origin: 0 100%;
 		}
-	}*/
+	}
 
 	.new {
 		min-height:0;
-	}
-
-	.hovered {
-		/* background:#F5F3F0; */
 	}
 
 	.first {
@@ -139,11 +172,8 @@
 		border-bottom-right-radius:6px;
 	}
 
-	.has-stopwatch {
-		/* background:#F0F3F5; */
-	}
-
-	.has-stopwatch .duration >div, .has-stopwatch.hovered .duration >div {
+	.has-stopwatch .duration >div,
+	.has-stopwatch.hovered .duration >div {
 		min-width:63px;
 		background:#477DB3;
 		color:#FFF;
@@ -152,6 +182,14 @@
 		padding-left:12px;
 		border-top-left-radius:0;
 		border-bottom-left-radius:0;
+	}
+
+	.bp-xs.has-stopwatch .duration >div,
+	.bp-xs.has-stopwatch.hovered .duration >div {
+		border-top-left-radius:6px;
+		border-bottom-left-radius:6px;
+		margin-left:0;
+		padding-left:12px;
 	}
 
 	.has-stopwatch .duration span {
@@ -183,6 +221,10 @@
 		height:48px;
 		padding:0;
 		cursor:pointer;
+	}
+
+	.bp-xs .duration {
+		padding-left:6px;
 	}
 
 	.duration:hover >div {
@@ -239,6 +281,13 @@
 		overflow:hidden;
 	}
 
+	.bp-xs .comment {
+		flex:none;
+		width:100%;
+		padding:0 12px 0 72px;
+		height:auto;
+	}
+
 	.comment:hover >div {
 		background:rgba(0, 0, 0, .05);
 	}
@@ -256,6 +305,13 @@
 		white-space: nowrap;
 		overflow:hidden;
 		text-overflow:ellipsis;
+	}
+
+	.bp-xs .comment >div {
+		height:auto;
+		line-height:24px;
+		white-space:normal;
+		overflow:visible;
 	}
 
 	.no-comment {

@@ -68,7 +68,6 @@ export function timesStoreControlDate(databaseDate) {
 	if( !monthListener[monthId] ) {
 		monthListener[monthId] = {}
 		setListener(userId, monthId)
-		console.log('NEW')
 	}
 	return true
 }

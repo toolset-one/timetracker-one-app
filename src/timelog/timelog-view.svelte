@@ -12,13 +12,15 @@
 	import TimelogTaskOverlay from '../timelog/timelog-task-overlay.svelte'
 	import TimelogCommentOverlay from '../timelog/timelog-comment-overlay.svelte'
 	import TimelogContextNav from '../timelog/timelog-context-nav.svelte'
+	import TimelogEntryOverlay from '../timelog/timelog-entry-overlay.svelte'
 
 
 
 	let openedDurationId,
 		openTaskId,
 		openCommentId,
-		openContextNavId
+		openContextNavId,
+		openEntryId
 
 	$: dateNow = dateStringToDate($routerStore.subview)
 	$: databaseDate = dateToDatabaseDate((dateStringToDate($routerStore.subview)))
@@ -29,9 +31,6 @@
 		: []
 	$: total = entries.reduce((sum, entry) => entry.duration + sum, 0)
 
-	onMount(() => {
-
-	})
 
 	function newEntry() {
 		timesStoreNewTime(dateToDatabaseDate(dateNow), success => {
@@ -41,7 +40,7 @@
 
 </script>
 
-<header class="{$uiStore.breakpoint}">
+<header class="bp-{$uiStore.breakpoint}">
 	<div class="date-nav">
 		<div class="button-wrapper">
 			<UiButton 
@@ -64,7 +63,7 @@
 	</div>
 </header>
 
-<ul class="entries">
+<ul class="entries bp-{$uiStore.breakpoint}">
 	{#each entries as entry, i (entry.id)}
 		<TimelogEntry
 			data={entry}
@@ -73,12 +72,13 @@
 			on:openDuration={e => openedDurationId = e.detail}
 			on:openTask={e => openTaskId = e.detail}
 			on:openComment={e => openCommentId = e.detail}
-			on:openContextNav={e => openContextNavId = e.detail} />
+			on:openContextNav={e => openContextNavId = e.detail}
+			on:openEntry={e => openEntryId = e.detail} />
 	{/each}
 </ul>
 
 {#if entries.length > 0}
-	<div class="total {$uiStore.breakpoint}">
+	<div class="total bp-{$uiStore.breakpoint}">
 		<p>
 			{dateGetHours(total)}:{dateGetMinutes(total)} total
 		</p>
@@ -96,12 +96,10 @@
 		duration={$timesStore.times[openedDurationId].duration}
 		on:close={e => openedDurationId = null} />
 {:else if openTaskId}
-{#if $timesStore.times && $timesStore.times[openTaskId]}
 	<TimelogTaskOverlay
 		id={openTaskId}
 		task={$timesStore.times[openTaskId].task}
 		on:close={e => openTaskId = null} />
-{/if}
 {:else if openCommentId}
 	<TimelogCommentOverlay
 		id={openCommentId}
@@ -114,6 +112,10 @@
 		on:openDuration={e => openedDurationId = e.detail}
 		on:openTask={e => openTaskId = e.detail}
 		on:openComment={e => openCommentId = e.detail} />
+{:else if openEntryId}
+	<TimelogEntryOverlay
+		id={openEntryId}
+		on:close={e => openEntryId = null} />
 {/if}
 
 <style>
@@ -126,8 +128,8 @@
 		margin:24px auto 24px auto;
 	}
 
-	.bp-xs {
-		padding:0 12px;
+	header.bp-xs {
+		margin:12px;
 	}
 
 	.date-nav {
@@ -167,6 +169,10 @@
 		margin:24px auto 12px auto;
 		padding:0;
 		list-style: none;
+	}
+
+	.bp-xs.entries {
+		margin:12px auto;
 	}
 
 	/* .entries:after {

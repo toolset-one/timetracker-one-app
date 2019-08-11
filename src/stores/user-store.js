@@ -45,10 +45,8 @@ export function updateUser() {
 		if(authData.hasAuth) {
 			let unsubscribeUser = userStore.subscribe(userData =>
 				firebase.db.collection('users').doc(authData.user.id).set(userData).then(res => {
-					console.log('updateUser', res)
-				}).catch(err => {
-					console.log(err)
-				})
+			
+				}).catch(err => {})
 			)
 			unsubscribeUser()
 		}
