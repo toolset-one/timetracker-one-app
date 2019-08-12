@@ -199,6 +199,7 @@
 		max-height:294px;
 		overflow-x:hidden;
 		overflow-y:auto;
+		-webkit-overflow-scrolling:touch;
 		scroll-snap-type: y mandatory;
 	}
 
