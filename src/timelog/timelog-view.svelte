@@ -9,6 +9,7 @@
 	import UiButton from '../ui/ui-button.svelte'
 	import TimelogEntry from '../timelog/timelog-entry.svelte'
 	import TimelogDurationOverlay from '../timelog/timelog-duration-overlay.svelte'
+	import TimelogMobileDurationOverlay from '../timelog/timelog-mobile-duration-overlay.svelte'
 	import TimelogTaskOverlay from '../timelog/timelog-task-overlay.svelte'
 	import TimelogCommentOverlay from '../timelog/timelog-comment-overlay.svelte'
 	import TimelogContextNav from '../timelog/timelog-context-nav.svelte'
@@ -17,6 +18,7 @@
 
 
 	let openedDurationId,
+		openedMobileDurationId,
 		openTaskId,
 		openCommentId,
 		openContextNavId,
@@ -95,6 +97,13 @@
 		id={openedDurationId}
 		duration={$timesStore.times[openedDurationId].duration}
 		on:close={e => openedDurationId = null} />
+{:else if openedMobileDurationId}
+	{#if $timesStore.times[openedMobileDurationId]}
+	<TimelogMobileDurationOverlay
+		id={openedMobileDurationId}
+		duration={$timesStore.times[openedMobileDurationId].duration}
+		on:close={e => openedMobileDurationId = null} />
+	{/if}
 {:else if openTaskId}
 	<TimelogTaskOverlay
 		id={openTaskId}
@@ -115,6 +124,7 @@
 {:else if openEntryId}
 	<TimelogEntryOverlay
 		id={openEntryId}
+		on:openMobileDuration={e => openedMobileDurationId = e.detail}
 		on:close={e => openEntryId = null} />
 {/if}
 

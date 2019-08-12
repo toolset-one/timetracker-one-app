@@ -58,7 +58,6 @@
 	function dispatchMobileOrTouch(event, eventData) {
 		const unsubscribe = uiStore.subscribe(data => {
 			if(data.isTouchDevice || data.breakpoint === 'xs') {
-				console.log(eventData)
 				dispatch(event, eventData)
 			}
 		})

@@ -17,7 +17,8 @@
 	let opened = false,
 		hovered = false,
 		interval,
-		stopwatchDuration = 0
+		stopwatchDuration = 0,
+		offset = false
 
 	$: entryData = $timesStore.times ? $timesStore.times[id] : {
 		task: null
@@ -50,9 +51,16 @@
 		}
 	})
 
+	function openDuration(e) {
+		console.log('T')
+		e.stopPropagation()
+		offset = true
+		dispatch('openMobileDuration', id)
+	}
+
 </script>
 
-<div class="wrapper {opened ? 'opened' : ''}">
+<div class="wrapper {opened ? 'opened' : ''} {offset ? 'offset' : ''}">
 	<header>
 		Edit Time
 
@@ -62,7 +70,9 @@
 	</header>
 
 
-	<div class="attr duration">
+	<div
+		class="attr duration"
+		on:click={e => openDuration(e)}>
 		<div class="attr-icon">
 			<UiIcon type='clock-big' size="big" color="#26231E" />
 		</div>
@@ -133,6 +143,10 @@
 		opacity:0;
 		transform:translateX(-50%) translateY(-50%) scale(0);
 		transition: transform 100ms ease, opacity 100ms ease;
+	}
+
+	.offset {
+		margin:0 -6px -6px 0;
 	}
 
 	.opened {
