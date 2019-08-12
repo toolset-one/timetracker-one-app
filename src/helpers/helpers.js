@@ -33,16 +33,16 @@ export const COLORS = [
 
 
 export const dateToDatestring = date => {
-	const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
-		month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1,
-	year = date.getFullYear()
+	const day = trailingZero(date.getDate()),
+		month = trailingZero((date.getMonth() + 1)),
+		year = date.getFullYear()
 	return year + '-' + month + '-' + day
 }
 
 export const dateToDatabaseDate = date => {
-	const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
-		month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1,
-	year = date.getFullYear()
+	const day = trailingZero(date.getDate()),
+		month = trailingZero((date.getMonth() + 1)),
+		year = date.getFullYear()
 	return parseInt(year + '' + month + '' + day)
 }
 
@@ -121,6 +121,11 @@ export const dateDaysBetweenDates = (date1, date2) => {
 	return Math.ceil((date2.getTime() - date1.getTime())/(1000 * 60 * 60 * 24))
 }
 
+
+
+export const trailingZero = number => {
+	return number < 10 ? '0' + number : number
+}
 
 
 export const getWindowWidth = () => {

@@ -1,7 +1,7 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
 	import { fade } from 'svelte/transition'
-	import { getWindowWidth } from '../helpers/helpers.js'
+	import { getWindowWidth, trailingZero } from '../helpers/helpers.js'
 	import { userStore, userSetStopwatch } from '../stores/user-store.js'
 	import { timesStore, timesStoreChangeDuration } from '../stores/times-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
@@ -30,7 +30,7 @@
 		}
 
 		for(var i = 0; i <= 59; i++) {
-			minutes.push(i)
+			minutes.push(trailingZero(i))
 		}
 
 		hours = hours
@@ -101,7 +101,6 @@
 		width:100%;
 		height:100%;
 		background:rgba(0, 0, 0, .5);
-		/* -webkit-backdrop-filter: blur(1px); */
 		z-index:1000;
 	}
 
@@ -229,6 +228,7 @@
 		padding:0 12px;
 		line-height:42px;
 		font-size:18px;
+		font-family:monospace; /* TODO: OVERPASS */
 		scroll-snap-align: start;
 	}
 </style>
