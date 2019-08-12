@@ -1,6 +1,5 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
-	import { fade } from 'svelte/transition'
 	import UiButton from '../ui/ui-button.svelte'
 
 	import { timesStoreChangeTask } from '../stores/times-store.js'
@@ -81,22 +80,7 @@
 		{/each}
 	</ul>
 </div>
-<div
-	class="backdrop"
-	transition:fade="{{delay: 0, duration: 100}}"
-	on:click={e => dispatch('close', '')}></div>
 <style>
-	.backdrop {
-		position:fixed;
-		top:0;
-		left:0;
-		width:100%;
-		height:100%;
-		background:rgba(0, 0, 0, .15);
-		/* -webkit-backdrop-filter: blur(1px); */
-		z-index:1000;
-	}
-
 	.input-wrapper {
 		position: absolute;
 		top:0;

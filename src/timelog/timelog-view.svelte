@@ -7,6 +7,8 @@
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateToDatabaseDate } from '../helpers/helpers.js'
 
 	import UiButton from '../ui/ui-button.svelte'
+	import UiBackdrop from '../ui/ui-backdrop.svelte'
+
 	import TimelogEntry from '../timelog/timelog-entry.svelte'
 	import TimelogDurationOverlay from '../timelog/timelog-duration-overlay.svelte'
 	import TimelogMobileDurationOverlay from '../timelog/timelog-mobile-duration-overlay.svelte'
@@ -128,6 +130,18 @@
 		on:close={e => openEntryId = null} />
 {/if}
 
+{#if openedDurationId || openedMobileDurationId || openTaskId || openCommentId || openContextNavId || openEntryId}
+	<UiBackdrop
+		on:close={e => {
+			openedDurationId = null
+			openedMobileDurationId = null
+			openTaskId = null
+			openCommentId = null
+			openContextNavId = null
+			openEntryId = null
+		}}/>
+{/if}
+
 <style>
 
 	header {
@@ -184,24 +198,6 @@
 	.bp-xs.entries {
 		margin:12px auto;
 	}
-
-	/* .entries:after {
-		content:'';
-		position: absolute;
-		top:0;
-		left:0;
-		width:100%;
-		height: 1px;
-		background:#E6E4E1;
-	}
-
-	@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
-		.entries:after {
-			background:#CCC9C4;
-			transform:scale(1, 0.5);
-			transform-origin: 0 0;
-		}
-	}*/
 
 	.total {
 		max-width:960px;

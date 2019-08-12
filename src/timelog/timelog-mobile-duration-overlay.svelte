@@ -1,6 +1,5 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
-	import { fade } from 'svelte/transition'
 	import { getWindowWidth, trailingZero } from '../helpers/helpers.js'
 	import { userStore, userSetStopwatch } from '../stores/user-store.js'
 	import { timesStore, timesStoreChangeDuration } from '../stores/times-store.js'
@@ -89,21 +88,7 @@
 		</div>
 	</div>
 </div>
-<div
-	class="backdrop"
-	transition:fade="{{delay: 0, duration: 100}}"
-	on:click={e => save()}></div>
 <style>
-	.backdrop {
-		position:fixed;
-		top:0;
-		left:0;
-		width:100%;
-		height:100%;
-		background:rgba(0, 0, 0, .5);
-		z-index:1000;
-	}
-
 	.wrapper {
 		position: fixed;
 		bottom:0;

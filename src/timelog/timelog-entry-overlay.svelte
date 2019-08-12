@@ -1,6 +1,5 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
-	import { fade } from 'svelte/transition'
 	import { getWindowWidth } from '../helpers/helpers.js'
 	import { userStore, userSetStopwatch } from '../stores/user-store.js'
 	import { timesStore, timesStoreGetEntry, timesStoreDeleteEntry } from '../stores/times-store.js'
@@ -122,21 +121,8 @@
 			on:click={e => timesStoreDeleteEntry(id)} />
 	</footer>
 </div>
-<div
-	class="backdrop"
-	transition:fade="{{delay: 0, duration: 100}}"
-	on:click={e => close()}></div>
-<style>
-	.backdrop {
-		position:fixed;
-		top:0;
-		left:0;
-		width:100%;
-		height:100%;
-		background:rgba(0, 0, 0, .5);
-		z-index:1000;
-	}
 
+<style>
 	.wrapper {
 		position: fixed;
 		bottom:0;
