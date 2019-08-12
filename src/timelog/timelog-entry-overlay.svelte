@@ -138,18 +138,17 @@
 	}
 
 	.wrapper {
-		position: absolute;
+		position: fixed;
 		bottom:0;
-		left:50%;
+		left:12px;
+		right:12px;
 		z-index:1010;
 		background:#FFF;
 		border-top-left-radius: 6px;
 		border-top-right-radius: 6px;
-		box-shadow:0 4px 0 -2px rgba(0, 0, 0, .05),  0 3px 6px rgba(0, 0, 0, .1);
 		overflow:hidden;
-		width:300px;
 		opacity:0;
-		transform:translateX(-50%) translateY(100%);
+		transform:translateY(100%);
 		transition: transform 200ms ease, opacity 200ms ease;
 	}
 
@@ -158,7 +157,7 @@
 	}
 
 	.opened {
-		transform:translateX(-50%) translateY(0);
+		transform:translateY(0);
 		opacity:1;
 	}
 
