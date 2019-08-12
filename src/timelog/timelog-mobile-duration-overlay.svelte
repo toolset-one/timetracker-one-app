@@ -46,18 +46,23 @@
 	function save() {
 		const newDuration = Math.floor(hoursEl.scrollTop / 42) * 60 * 60 + Math.floor(minutesEl.scrollTop / 42) * 60
 		timesStoreChangeDuration(id, newDuration)
-		dispatch('close', '')
+
+		opened = false
+		setTimeout(() => {
+			dispatch('close', '')
+		}, 100)
+		
 	}
 
 </script>
 
 <div class="wrapper {opened ? 'opened' : ''}">
 	<header>
-		Edit Time
+		Edit Duration
 
-		<div class="icon" on:click={e => save()}>
+		<!--<div class="icon" on:click={e => save()}>
 			<UiIcon type='cross' />
-		</div>
+		</div>-->
 	</header>
 
 	<div class="swiper">
@@ -102,21 +107,22 @@
 
 	.wrapper {
 		position: absolute;
-		top:50%;
+		bottom:0;
 		left:50%;
 		z-index:1010;
 		background:#FFF;
-		border-radius: 6px;
+		border-top-left-radius: 6px;
+		border-top-right-radius: 6px;
 		box-shadow:0 4px 0 -2px rgba(0, 0, 0, .05),  0 3px 6px rgba(0, 0, 0, .1);
 		overflow:hidden;
 		width:300px;
 		opacity:0;
-		transform:translateX(-50%) translateY(-50%) scale(0);
+		transform:translateX(-50%) translateY(100%);
 		transition: transform 100ms ease, opacity 100ms ease;
 	}
 
 	.opened {
-		transform:translateX(-50%) translateY(-50%) scale(1);
+		transform:translateX(-50%) translateY(0);
 		opacity:1;
 	}
 

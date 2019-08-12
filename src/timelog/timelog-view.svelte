@@ -22,7 +22,7 @@
 		openTaskId,
 		openCommentId,
 		openContextNavId,
-		openEntryId
+		openEntryId = 'CHs2Jb2UA1sDEHywKRWk'
 
 	$: dateNow = dateStringToDate($routerStore.subview)
 	$: databaseDate = dateToDatabaseDate((dateStringToDate($routerStore.subview)))

@@ -58,16 +58,24 @@
 		dispatch('openMobileDuration', id)
 	}
 
+
+	function close() {
+		opened = false
+		setTimeout(() => {
+			dispatch('close', '')
+		}, 100)
+	}
+
 </script>
 
 <div class="wrapper {opened ? 'opened' : ''} {offset ? 'offset' : ''}">
-	<header>
-		Edit Time
+	<!--<header>
+		Edit Time {id}
 
-		<div class="icon" on:click={e => dispatch('close', '')}>
+		<div class="icon" on:click={e => close()}>
 			<UiIcon type='cross' />
 		</div>
-	</header>
+	</header>-->
 
 
 	<div
@@ -117,7 +125,7 @@
 <div
 	class="backdrop"
 	transition:fade="{{delay: 0, duration: 100}}"
-	on:click={e => dispatch('close', '')}></div>
+	on:click={e => close()}></div>
 <style>
 	.backdrop {
 		position:fixed;
@@ -126,23 +134,23 @@
 		width:100%;
 		height:100%;
 		background:rgba(0, 0, 0, .5);
-		/* -webkit-backdrop-filter: blur(1px); */
 		z-index:1000;
 	}
 
 	.wrapper {
 		position: absolute;
-		top:50%;
+		bottom:0;
 		left:50%;
 		z-index:1010;
 		background:#FFF;
-		border-radius: 6px;
+		border-top-left-radius: 6px;
+		border-top-right-radius: 6px;
 		box-shadow:0 4px 0 -2px rgba(0, 0, 0, .05),  0 3px 6px rgba(0, 0, 0, .1);
 		overflow:hidden;
 		width:300px;
 		opacity:0;
-		transform:translateX(-50%) translateY(-50%) scale(0);
-		transition: transform 100ms ease, opacity 100ms ease;
+		transform:translateX(-50%) translateY(100%);
+		transition: transform 200ms ease, opacity 200ms ease;
 	}
 
 	.offset {
@@ -150,7 +158,7 @@
 	}
 
 	.opened {
-		transform:translateX(-50%) translateY(-50%) scale(1);
+		transform:translateX(-50%) translateY(0);
 		opacity:1;
 	}
 
