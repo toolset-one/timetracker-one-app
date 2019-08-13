@@ -13,6 +13,7 @@
 	import TimelogDurationOverlay from '../timelog/timelog-duration-overlay.svelte'
 	import TimelogMobileDurationOverlay from '../timelog/timelog-mobile-duration-overlay.svelte'
 	import TimelogTaskOverlay from '../timelog/timelog-task-overlay.svelte'
+	import TimelogMobileTaskOverlay from '../timelog/timelog-mobile-task-overlay.svelte'
 	import TimelogCommentOverlay from '../timelog/timelog-comment-overlay.svelte'
 	import TimelogContextNav from '../timelog/timelog-context-nav.svelte'
 	import TimelogEntryOverlay from '../timelog/timelog-entry-overlay.svelte'
@@ -22,9 +23,10 @@
 	let openedDurationId,
 		openedMobileDurationId,
 		openTaskId,
+		openedMobileTaskId,
 		openCommentId,
 		openContextNavId,
-		openEntryId = 'CHs2Jb2UA1sDEHywKRWk'
+		openEntryId
 
 	$: dateNow = dateStringToDate($routerStore.subview)
 	$: databaseDate = dateToDatabaseDate((dateStringToDate($routerStore.subview)))
@@ -106,6 +108,13 @@
 		duration={$timesStore.times[openedMobileDurationId].duration}
 		on:close={e => openedMobileDurationId = null} />
 	{/if}
+{:else if openedMobileTaskId}
+	{#if $timesStore.times[openedMobileTaskId]}
+	<TimelogMobileTaskOverlay
+		id={openedMobileTaskId}
+		task={$timesStore.times[openedMobileTaskId].task}
+		on:close={e => openedMobileTaskId = null} />
+	{/if}
 {:else if openTaskId}
 	<TimelogTaskOverlay
 		id={openTaskId}
@@ -127,15 +136,17 @@
 	<TimelogEntryOverlay
 		id={openEntryId}
 		on:openMobileDuration={e => openedMobileDurationId = e.detail}
+		on:openMobileTask={e => openedMobileTaskId = e.detail}
 		on:close={e => openEntryId = null} />
 {/if}
 
-{#if openedDurationId || openedMobileDurationId || openTaskId || openCommentId || openContextNavId || openEntryId}
+{#if openedDurationId || openedMobileDurationId || openTaskId || openedMobileTaskId || openCommentId || openContextNavId || openEntryId}
 	<UiBackdrop
 		on:close={e => {
 			openedDurationId = null
 			openedMobileDurationId = null
 			openTaskId = null
+			openedMobileTaskId = null
 			openCommentId = null
 			openContextNavId = null
 			openEntryId = null

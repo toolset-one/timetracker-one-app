@@ -51,10 +51,13 @@
 	})
 
 	function openDuration(e) {
-		console.log('T')
 		e.stopPropagation()
-		offset = true
 		dispatch('openMobileDuration', id)
+	}
+
+	function openTask(e) {
+		e.stopPropagation()
+		dispatch('openMobileTask', id)
 	}
 
 
@@ -95,7 +98,8 @@
 				on:click={e => userSetStopwatch(id, (Date.now() - entryData.duration * 1000))} />
 		</div>
 	</div>
-	<div class="attr task">
+	<div class="attr task"
+		on:click={e => openTask(e)}>
 		<div class="attr-icon">
 			<UiIcon type='checkmark-big' size="big" />
 		</div>

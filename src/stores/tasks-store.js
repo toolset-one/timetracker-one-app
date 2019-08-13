@@ -33,13 +33,13 @@ function setListener() {
 
 						tasksStore.update(data => {
 							data.json[entryData.id] = entryData
-							data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
+							data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => a.title.localeCompare(b.title))
 							return data
 						})
 					} else if (change.type === 'removed') {
 						tasksStore.update(data => {
 							delete data.json[change.doc.id]
-							data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => b.created.seconds - a.created.seconds)
+							data.array = (Object.keys(data.json).map(el => data.json[el])).sort((a, b) => a.title.localeCompare(b.title))
 							return data
 						})
 					}
