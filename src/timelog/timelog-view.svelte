@@ -210,7 +210,7 @@
 	}
 
 	.bp-xs.entries {
-		margin:12px auto;
+		margin:0 auto 12px auto;
 	}
 
 	.total {
