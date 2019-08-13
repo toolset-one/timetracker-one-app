@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { routerStore } from '../stores/router-store.js'
+	import { uiStore } from '../stores/ui-store.js'
 	import { dateToDatestring } from '../helpers/helpers.js'
 
 	let ROUTES = ['timelog', 'reports', 'settings'],
@@ -20,7 +21,7 @@
 
 </script>
 
-<nav>
+<nav class="bp-{$uiStore.breakpoint}">
 	<ul>
 		{#each ROUTES as route}
 			<li>
@@ -45,7 +46,7 @@
 			'width:' + (activeElWidth - 36) +'px;'}"></div>
 	{/if}
 </nav>
-<div class="spacer"></div>
+<div class="spacer bp-{$uiStore.breakpoint}"></div>
 	
 
 <style>
@@ -58,6 +59,11 @@
 		background:#FFF;
 		text-align: center;
 		z-index:500;
+	}
+
+	nav.bp-xs {
+		top:auto;
+		bottom:0;
 	}
 
 	nav:after {
@@ -76,6 +82,11 @@
 			transform:scale(1, 0.5);
 			transform-origin: 0 100%;
 		}
+	}
+
+	nav.bp-xs:after {
+		bottom:auto;
+		top:0;
 	}
 
 	ul {
@@ -128,6 +139,10 @@
 
 	.spacer {
 		height:48px;
+	}
+
+	.bp-xs.spacer {
+		display:none;
 	}
 
 	.indicator {

@@ -180,9 +180,10 @@
 
 	.bp-xs .add-button-wrapper {
 		position:fixed;
-		bottom:12px;
+		bottom:60px;
 		left:50%;
 		transform: translateX(-50%);
+		z-index: 500;
 	}
 
 	.entries {
@@ -204,7 +205,7 @@
 	}
 
 	.bp-xs.total {
-		padding:0 0 0 12px;
+		padding:0 0 90px 12px;
 	}
 
 	.total p {
