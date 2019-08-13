@@ -11,15 +11,13 @@
 
 	let opened = false,
 		el,
-		value,
-		sizeTestEl,
-		maxWidth,
-		width,
-		height
+		value
 
 	onMount(async () => {
 		value = comment.replace(/\n/g, '')
 		opened = true
+
+		el.focus()
 	})
 
 
@@ -35,16 +33,6 @@
 
 	export function externalClose() {
 		save()
-	}
-
-	function sizeTestChange() {
-		const boundingRect = sizeTestEl.getBoundingClientRect()
-		width = boundingRect.width
-		height = boundingRect.height
-
-		if(regex.test(value)) {
-			value = value.replace(regex, '')
-		}
 	}
 
 	function keydown(e) {
@@ -69,10 +57,8 @@
 		bind:value={value}
 		placeholder="No comment"
 		on:blur={e => save()}
-		on:keydown={e => keydown(e)}
-		on:input={e => sizeTestChange()}></textarea>
+		on:keydown={e => keydown(e)}></textarea>
 </div>
-<div bind:this={sizeTestEl} class="size-test" style="{'max-width:'+ maxWidth +'px;'}">{value}</div>
 <style>
 	.wrapper {
 		position: fixed;
@@ -134,24 +120,13 @@
 		border:0;
 		margin:0;
 		padding:12px;
-		line-height: 24px;
-		font-size: 14px;
+		line-height: 30px;
+		font-size: 16.5px;
 		font-weight:400;
 		resize: none;
 		overflow:hidden;
 		width:100%;
 		min-height:210px;
 		outline:none;
-	}
-
-	.size-test {
-		display:inline-block;
-		line-height: 24px;
-		padding:12px;
-		font-size:14px;
-		font-weight:400;
-		position: absolute;
-		top:-1000px;
-		pointer-events: none;
 	}
 </style>
