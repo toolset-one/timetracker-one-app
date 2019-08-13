@@ -66,6 +66,14 @@
 		})
 	}
 
+	function openComment(e) {
+		e.stopPropagation()
+		dispatch('open', {
+			component: 'mobileComment',
+			id
+		})
+	}
+
 
 	function close() {
 		opened = false
@@ -119,7 +127,9 @@
 					: 'No Task'}
 		</span>
 	</div>
-	<div class="attr comment">
+	<div
+		class="attr comment"
+		on:click={e => openComment(e)}>
 		<div class="attr-icon">
 			<UiIcon type='pen-big' size="big" />
 		</div>

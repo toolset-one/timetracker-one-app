@@ -15,6 +15,7 @@
 	import TimelogTaskOverlay from '../timelog/timelog-task-overlay.svelte'
 	import TimelogMobileTaskOverlay from '../timelog/timelog-mobile-task-overlay.svelte'
 	import TimelogCommentOverlay from '../timelog/timelog-comment-overlay.svelte'
+	import TimelogMobileCommentOverlay from '../timelog/timelog-mobile-comment-overlay.svelte'
 	import TimelogContextNav from '../timelog/timelog-context-nav.svelte'
 	import TimelogEntryOverlay from '../timelog/timelog-entry-overlay.svelte'
 
@@ -33,6 +34,7 @@
 		mobileEntry: TimelogEntryOverlay,
 		mobileDuration: TimelogMobileDurationOverlay,
 		mobileTask: TimelogMobileTaskOverlay,
+		mobileComment: TimelogMobileCommentOverlay,
 
 		duration: TimelogDurationOverlay,
 		task: TimelogTaskOverlay,
@@ -113,7 +115,7 @@
 
 <!-- on:open={e => openOverlayComponent(e.detail)} -->
 
-{#if overlayComponent}
+{#if overlayComponent && $timesStore.times[entryIdActive]}
 	<svelte:component
 		this={overlayComponent}
 		bind:this={overlayEl}

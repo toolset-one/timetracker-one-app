@@ -53,7 +53,7 @@
 </script>
 
 <div class="wrapper {opened ? 'opened' : ''}">
-	<header on:click={e => save()}>
+	<header>
 		Edit Task
 	</header>
 
