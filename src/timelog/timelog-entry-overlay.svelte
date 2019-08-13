@@ -52,12 +52,18 @@
 
 	function openDuration(e) {
 		e.stopPropagation()
-		dispatch('openMobileDuration', id)
+		dispatch('open', {
+			component: 'mobileDuration',
+			id
+		})
 	}
 
 	function openTask(e) {
 		e.stopPropagation()
-		dispatch('openMobileTask', id)
+		dispatch('open', {
+			component: 'mobileTask',
+			id
+		})
 	}
 
 
@@ -66,6 +72,10 @@
 		setTimeout(() => {
 			dispatch('close', '')
 		}, 100)
+	}
+
+	export function externalClose() {
+		close()
 	}
 
 </script>

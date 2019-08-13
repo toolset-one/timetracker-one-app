@@ -44,7 +44,10 @@
 		setTimeout(() => {
 			dispatch('close', '')
 		}, 100)
-		
+	}
+
+	export function externalClose() {
+		save()
 	}
 
 </script>

@@ -15,13 +15,11 @@
 
 	$: hasStopwatch = $userStore.stopwatchEntryId === id
 
-	onMount(async () => {
+	onMount(() => {
 
 		const boundingRect = document.querySelector('#entry-'+ id +' .nav a').getBoundingClientRect()
 		top = boundingRect.top
 		right = getWindowWidth() - boundingRect.left - 36
-
-		setTimeout(() => {}, 10)
 
 		opened = true
 
@@ -47,13 +45,13 @@
 		</li>
 		<li 
 			class="border {hasStopwatch ? 'disabled' : ''}"
-			on:click={e => !hasStopwatch ? dispatch('openDuration', id) : ''}>
+			on:click={e => !hasStopwatch ? dispatch('open', { component: 'duration', id}) : ''}>
 			Edit Duration
 		</li>
-		<li on:click={e => dispatch('openProject', id)}>
-			Edit Project
+		<li on:click={e => dispatch('open', { component: 'task', id})}>
+			Edit Task
 		</li>
-		<li on:click={e => dispatch('openComment', id)}>
+		<li on:click={e => dispatch('open', { component: 'comment', id})}>
 			Edit Comment
 		</li>
 		<li class="border" on:click={e => timesStoreDeleteEntry(id)}>

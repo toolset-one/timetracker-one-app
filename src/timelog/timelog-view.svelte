@@ -26,7 +26,22 @@
 		openedMobileTaskId,
 		openCommentId,
 		openContextNavId,
-		openEntryId
+		openEntryId,
+		testEl
+
+	let overlays = {
+		mobileEntry: TimelogEntryOverlay,
+		mobileDuration: TimelogMobileDurationOverlay,
+		mobileTask: TimelogMobileTaskOverlay,
+
+		duration: TimelogDurationOverlay,
+		task: TimelogTaskOverlay,
+		comment: TimelogCommentOverlay,
+		contextNav: TimelogContextNav
+	},
+	overlayEl,
+	overlayComponent = null,
+	entryIdActive = null
 
 	$: dateNow = dateStringToDate($routerStore.subview)
 	$: databaseDate = dateToDatabaseDate((dateStringToDate($routerStore.subview)))
@@ -42,6 +57,11 @@
 		timesStoreNewTime(dateToDatabaseDate(dateNow), success => {
 
 		})
+	}
+
+	function openOverlayComponent(e) {
+		overlayComponent = overlays[e.component]
+		entryIdActive = e.id
 	}
 
 </script>
@@ -75,11 +95,7 @@
 			data={entry}
 			first={i == 0}
 			last={i == entries.length - 1}
-			on:openDuration={e => openedDurationId = e.detail}
-			on:openTask={e => openTaskId = e.detail}
-			on:openComment={e => openCommentId = e.detail}
-			on:openContextNav={e => openContextNavId = e.detail}
-			on:openEntry={e => openEntryId = e.detail} />
+			on:open={e => openOverlayComponent(e.detail)} />
 	{/each}
 </ul>
 
@@ -95,62 +111,31 @@
 	</p>
 {/if}
 
+<!-- on:open={e => openOverlayComponent(e.detail)} -->
 
-{#if openedDurationId}
-	<TimelogDurationOverlay
-		id={openedDurationId}
-		duration={$timesStore.times[openedDurationId].duration}
-		on:close={e => openedDurationId = null} />
-{:else if openedMobileDurationId}
-	{#if $timesStore.times[openedMobileDurationId]}
-	<TimelogMobileDurationOverlay
-		id={openedMobileDurationId}
-		duration={$timesStore.times[openedMobileDurationId].duration}
-		on:close={e => openedMobileDurationId = null} />
-	{/if}
-{:else if openedMobileTaskId}
-	{#if $timesStore.times[openedMobileTaskId]}
-	<TimelogMobileTaskOverlay
-		id={openedMobileTaskId}
-		task={$timesStore.times[openedMobileTaskId].task}
-		on:close={e => openedMobileTaskId = null} />
-	{/if}
-{:else if openTaskId}
-	<TimelogTaskOverlay
-		id={openTaskId}
-		task={$timesStore.times[openTaskId].task}
-		on:close={e => openTaskId = null} />
-{:else if openCommentId}
-	<TimelogCommentOverlay
-		id={openCommentId}
-		comment={$timesStore.times[openCommentId].comment}
-		on:close={e => openCommentId = null} />
-{:else if openContextNavId}
-	<TimelogContextNav
-		id={openContextNavId}
-		on:close={e => openContextNavId = null}
-		on:openDuration={e => openedDurationId = e.detail}
-		on:openTask={e => openTaskId = e.detail}
-		on:openComment={e => openCommentId = e.detail} />
-{:else if openEntryId}
-	<TimelogEntryOverlay
-		id={openEntryId}
-		on:openMobileDuration={e => openedMobileDurationId = e.detail}
-		on:openMobileTask={e => openedMobileTaskId = e.detail}
-		on:close={e => openEntryId = null} />
-{/if}
+{#if overlayComponent}
+	<svelte:component
+		this={overlayComponent}
+		bind:this={overlayEl}
+		id={entryIdActive}
+		duration={$timesStore.times[entryIdActive].duration}
+		task={$timesStore.times[entryIdActive].task}
+		comment={$timesStore.times[entryIdActive].comment}
+		on:open={e => openOverlayComponent(e.detail)}
+		on:close={e => {
+			overlayComponent = null
+			entryIdActive = null
+		}} />
 
-{#if openedDurationId || openedMobileDurationId || openTaskId || openedMobileTaskId || openCommentId || openContextNavId || openEntryId}
 	<UiBackdrop
 		on:close={e => {
-			openedDurationId = null
-			openedMobileDurationId = null
-			openTaskId = null
-			openedMobileTaskId = null
-			openCommentId = null
-			openContextNavId = null
-			openEntryId = null
-		}}/>
+			if(overlayEl.externalClose) {
+				overlayEl.externalClose()
+			} else {
+				overlayComponent = null
+				entryIdActive = null
+			}
+		}} />
 {/if}
 
 <style>

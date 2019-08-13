@@ -42,15 +42,18 @@
 	})
 
 
-	function save() {
+	export function save() {
 		const newDuration = Math.floor(hoursEl.scrollTop / 42) * 60 * 60 + Math.floor(minutesEl.scrollTop / 42) * 60
 		timesStoreChangeDuration(id, newDuration)
 
 		opened = false
 		setTimeout(() => {
 			dispatch('close', '')
-		}, 100)
-		
+		}, 100)	
+	}
+
+	export function externalClose() {
+		save()
 	}
 
 </script>

@@ -78,7 +78,7 @@
 			{ hasStopwatch ? 'has-stopwatch' : ''}"
 		on:mouseenter={e => hovered = true}
 		on:mouseleave={e => hovered = false}
-		on:click={e => dispatchMobileOrTouch('openEntry', data.id)}>
+		on:click={e => dispatchMobileOrTouch('open', { component: 'mobileEntry', id: data.id})}>
 		{#if $uiStore.breakpoint != 'xs'}
 			<div class="stopwatch">
 				<UiButton
@@ -89,12 +89,12 @@
 					on:click={e => userSetStopwatch(data.id, (Date.now() - data.duration * 1000))} />
 			</div>
 		{/if}
-		<div class="duration" on:click={e => !hasStopwatch && dispatchDesktopAndKeyboard('openDuration', data.id)}>
+		<div class="duration" on:click={e => !hasStopwatch && dispatchDesktopAndKeyboard('open', { component: 'duration', id: data.id})}>
 			<div>
 				{dateGetHours(displayDuration)}<span>:</span>{dateGetMinutes(displayDuration)}<small>{dateGetSeconds(displayDuration)}</small>
 			</div>
 		</div>
-		<div class="task" on:click={e => dispatchDesktopAndKeyboard('openTask', data.id)}>
+		<div class="task" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'task', id: data.id})}>
 			<div style="background-color:{$tasksStore.json[data.task] ? $tasksStore.json[data.task].color : '#333'};">
 				{(data.task && $tasksStore.json && $tasksStore.json[data.task]) 
 					? $tasksStore.json[data.task].title 
@@ -103,7 +103,7 @@
 		</div>
 		<div
 			class="comment {data.comment.length === 0 ? 'no-comment' : ''}"
-			on:click={e => dispatchDesktopAndKeyboard('openComment', data.id)}>
+			on:click={e => dispatchDesktopAndKeyboard('open', { component: 'comment', id: data.id})}>
 			<div>
 				{data.comment.length > 0 ? data.comment : 'No comment'}
 			</div>
@@ -115,7 +115,7 @@
 					icon="burger"
 					hovered={hovered}
 					color="{hovered ? '#26231E' : '#E6E4E1'}"
-					on:click={e => dispatch('openContextNav', data.id)} />
+					on:click={e => dispatch('open', { component: 'contextNav', id: data.id})} />
 			</div>
 		{/if}
 	</li>
