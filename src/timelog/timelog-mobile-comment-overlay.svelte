@@ -62,6 +62,7 @@
 <style>
 	.wrapper {
 		position: fixed;
+		top:12px;
 		bottom:0;
 		left:12px;
 		right:12px;
@@ -126,7 +127,7 @@
 		resize: none;
 		overflow:hidden;
 		width:100%;
-		min-height:210px;
+		min-height:100%;
 		outline:none;
 	}
 </style>

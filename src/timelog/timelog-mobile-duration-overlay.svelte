@@ -163,6 +163,7 @@
 		left:0;
 		background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 12px,rgba(255, 255, 255, .5) 66.66666%);
 		pointer-events: none;
+		z-index: 100;
 	}
 
 	.swiper:after {
