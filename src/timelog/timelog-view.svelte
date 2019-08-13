@@ -90,6 +90,9 @@
 		<UiButton label="Add Entry" on:click={e => newEntry()} />
 	</div>
 </header>
+{#if $uiStore.breakpoint === 'xs'}
+	<div class="spacer"></div>
+{/if}
 
 <ul class="entries bp-{$uiStore.breakpoint}">
 	{#each entries as entry, i (entry.id)}
@@ -151,7 +154,19 @@
 	}
 
 	header.bp-xs {
-		margin:12px;
+		margin:0;
+		padding:12px;
+		height:66px;
+		position: fixed;
+		top:0;
+		left:0;
+		width:100%;
+		z-index:500;
+		background: linear-gradient(to bottom, rgba(247, 245, 242, 1) 57px,rgba(247, 245, 242, 0) 66px);
+	}
+
+	.spacer {
+		height:66px;
 	}
 
 	.date-nav {
