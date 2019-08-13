@@ -25,6 +25,7 @@
 	$: displayDuration = hasStopwatch
 		? stopwatchDuration
 		: data.duration
+	$: taskColor = $tasksStore.json[data.task] ? $tasksStore.json[data.task].color : '#333'
 
 
 	onMount(() =>
@@ -71,6 +72,7 @@
 		in:slide={{ duration: animationDuration, easing: cubicOut }}
 		class="
 			bp-{$uiStore.breakpoint}
+			{$uiStore.isTouchDevice ? 'touch' : 'mouse'}
 			{first ? 'first' : ''}
 			{last ? 'last' : ''}
 			{hovered ? 'hovered' : ''}
@@ -95,7 +97,11 @@
 			</div>
 		</div>
 		<div class="task" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'task', id: data.id})}>
-			<div style="background-color:{$tasksStore.json[data.task] ? $tasksStore.json[data.task].color : '#333'};">
+			<div style="{$uiStore.breakpoint === 'xs' ? 'color' : 'background-color'}:{taskColor};">
+				{#if $uiStore.breakpoint === 'xs'}
+					<span style="background-color:{taskColor};"></span>
+				{/if}
+
 				{(data.task && $tasksStore.json && $tasksStore.json[data.task]) 
 					? $tasksStore.json[data.task].title 
 					: 'No Task'}
@@ -224,9 +230,10 @@
 
 	.bp-xs .duration {
 		padding-left:6px;
+		width:72px;
 	}
 
-	.duration:hover >div {
+	.mouse .duration:hover >div {
 		background:rgba(0, 0, 0, .05);
 	}
 
@@ -258,18 +265,33 @@
 		cursor:pointer;
 	}
 
-	.task:hover >div {
+	.mouse .task:hover >div {
 		box-shadow: 0 0 0 60px rgba(0, 0, 0, .05) inset;
 	}
 
 	.task >div {
+		position: relative;
 		line-height:36px;
 		font-size:14px;
-		background:#68B359;
+		background:transparent;
 		border-radius: 6px;
 		padding:0 12px;
 		font-weight:600;
 		color:#FFF;
+	}
+
+	.bp-xs .task >div {
+		padding-left:18px;
+	}
+
+	.task >div span {
+		position: absolute;
+		top:11px;
+		left:0;
+		display:block;
+		width:12px;
+		height:12px;
+		border-radius: 3px;
 	}
 
 	.comment {
@@ -281,13 +303,14 @@
 	}
 
 	.bp-xs .comment {
+		margin-top:-12px;
 		flex:none;
 		width:100%;
-		padding:0 12px 0 72px;
+		padding:0 12px 6px 72px;
 		height:auto;
 	}
 
-	.comment:hover >div {
+	.mouse .comment:hover >div {
 		background:rgba(0, 0, 0, .05);
 	}
 

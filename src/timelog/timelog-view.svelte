@@ -42,8 +42,8 @@
 		contextNav: TimelogContextNav
 	},
 	overlayEl,
-	overlayComponent = null,
-	entryIdActive = null
+	overlayComponent,
+	entryIdActive
 
 	$: dateNow = dateStringToDate($routerStore.subview)
 	$: databaseDate = dateToDatabaseDate((dateStringToDate($routerStore.subview)))
