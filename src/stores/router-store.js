@@ -14,12 +14,7 @@ Page({
 	hashbang: true
 })
 
-Page('/', () => 
-	routerStore.set({
-		view: 'index',
-		subview: null
-	})
-)
+Page('/', () => Page('/timelog/' + dateToDatestring(new Date()) + '/'))
 
 Page('/timelog/', () => Page('/timelog/' + dateToDatestring(new Date()) + '/'))
 
