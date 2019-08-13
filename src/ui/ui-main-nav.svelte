@@ -19,6 +19,12 @@
 	$: activeElOffset = activeEl ? activeEl.getBoundingClientRect().left : 0
 	$: activeElWidth = activeEl ? activeEl.getBoundingClientRect().width : 0
 
+	onMount(() => {
+		setTimeout(() => {
+			activeEl = activeEl
+		}, 50)
+	})
+
 </script>
 
 <nav class="bp-{$uiStore.breakpoint}">
@@ -109,7 +115,7 @@
 		font-size:14px;
 		font-weight:500;
 		color:#66625C;
-		transition: all 100ms ease;
+		transition: color 100ms ease;
 	}
 
 	a:hover {
@@ -130,7 +136,7 @@
 		padding:0 18px;
 		line-height:48px;
 		overflow:hidden;
-		transition: all 400ms ease;
+		transition: background-color 400ms ease;
 	}
 
 	a:hover span {
