@@ -16,8 +16,7 @@
 	let opened = false,
 		hovered = false,
 		interval,
-		stopwatchDuration = 0,
-		offset = false
+		stopwatchDuration = 0
 
 	$: entryData = $timesStore.times ? $timesStore.times[id] : {
 		task: null
@@ -88,16 +87,7 @@
 
 </script>
 
-<div class="wrapper {opened ? 'opened' : ''} {offset ? 'offset' : ''}">
-	<!--<header>
-		Edit Time {id}
-
-		<div class="icon" on:click={e => close()}>
-			<UiIcon type='cross' />
-		</div>
-	</header>-->
-
-
+<div class="wrapper {opened ? 'opened' : ''}">
 	<div
 		class="attr duration"
 		on:click={e => openDuration(e)}>
@@ -162,48 +152,9 @@
 		transition: transform 200ms ease, opacity 200ms ease;
 	}
 
-	.offset {
-		margin:0 -6px -6px 0;
-	}
-
 	.opened {
 		transform:translateY(0);
 		opacity:1;
-	}
-
-	header {
-		position: relative;
-		height:42px;
-		background:#FaFaFa;
-		line-height: 42px;
-		font-size:14px;
-		padding:0 12px;
-	}
-
-	header .icon {
-		position: absolute;
-		top:0;
-		right:0;
-		padding:15px;
-		cursor: pointer;
-	}
-
-	header:after {
-		content:'';
-		position: absolute;
-		bottom:0;
-		left:0;
-		width:100%;
-		height: 1px;
-		background:#E6E4E1;
-	}
-
-	@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
-		header:after {
-			background:#CCC9C4;
-			transform:scale(1, 0.5);
-			transform-origin: 0 100%;
-		}
 	}
 
 	.attr {

@@ -28,6 +28,7 @@
 	}
 
 	function click(e) {
+		e.stopPropagation()
 		if(!link) {
 			e.preventDefault()
 		}
