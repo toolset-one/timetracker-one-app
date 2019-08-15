@@ -6,7 +6,7 @@
 	import { dateGetHours, dateGetMinutes, dateGetSeconds } from '../helpers/helpers.js'
 	import { userStore, userSetStopwatch } from '../stores/user-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
-	import { uiStore } from '../stores/ui-store.js'
+	import { uiStore, uiStopwatchStore } from '../stores/ui-store.js'
 
 	export let data = {}
 	export let first = false
@@ -22,29 +22,12 @@
 	const dispatch = createEventDispatcher()
 
 	$: hasStopwatch = $userStore.stopwatchEntryId === data.id
-	$: displayDuration = hasStopwatch
-		? stopwatchDuration
-		: data.duration
 	$: taskColor = $tasksStore.json[data.task] ? $tasksStore.json[data.task].color : '#333'
 
 
 	onMount(() =>
 		isNew = data.created.seconds * 1000 >= Date.now() - 2000
 	)
-
-
-	userStore.subscribe(userData => {
-		if(userData.stopwatchEntryId === data.id) {
-			interval = setInterval(() => {
-				stopwatchDuration = Math.floor((Date.now() - $userStore.stopwatchStartTime) / 1000)
-			}, 1000)
-
-			stopwatchDuration = Math.floor((Date.now() - $userStore.stopwatchStartTime) / 1000)
-		} else {
-			clearInterval(interval)
-		}
-	})
-
 
 	function dispatchDesktopAndKeyboard(event, eventData) {
 		const unsubscribe = uiStore.subscribe(data => {
@@ -93,7 +76,11 @@
 		{/if}
 		<div class="duration" on:click={e => !hasStopwatch && dispatchDesktopAndKeyboard('open', { component: 'duration', id: data.id})}>
 			<div>
-				{dateGetHours(displayDuration)}<span>:</span>{dateGetMinutes(displayDuration)}<small>{dateGetSeconds(displayDuration)}</small>
+				{#if hasStopwatch}
+					{$uiStopwatchStore.hours}<span>:</span>{$uiStopwatchStore.minutes}<small>{$uiStopwatchStore.seconds}</small>
+				{:else}
+					{dateGetHours(data.duration)}<span>:</span>{dateGetMinutes(data.duration)}<small>{dateGetSeconds(data.duration)}</small>
+				{/if}
 			</div>
 		</div>
 		<div class="task" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'task', id: data.id})}>

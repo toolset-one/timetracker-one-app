@@ -9,7 +9,12 @@ export const userStore = writable({
 	stopwatchStartTime: 0,
 })
 
-let listener
+export const userStopwatchStore = writable({
+	duration: 0
+})
+
+let listener,
+	interval
 
 export function userStoreInit() {
 	setListener()
@@ -76,3 +81,29 @@ export function userSetStopwatch(id, startTime) {
 
 	updateUser()
 }
+
+
+userStore.subscribe(userStoreData => {
+	if(userStoreData.stopwatchEntryId) {
+		interval = setInterval(() => {
+			userStopwatchStore.update(data => {
+				return {
+					duration: Math.floor((Date.now() - userStoreData.stopwatchStartTime) / 1000)
+				}
+			})
+		}, 1000)
+		
+		userStopwatchStore.update(data => {
+			return {
+				duration: Math.floor((Date.now() - userStoreData.stopwatchStartTime) / 1000)
+			}
+		})
+	} else {
+		clearInterval(interval)
+			userStopwatchStore.update(data => {
+				return {
+					duration: 0
+				}
+			})
+	}
+})

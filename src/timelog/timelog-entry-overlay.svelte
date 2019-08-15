@@ -4,6 +4,7 @@
 	import { timesStore, timesStoreGetEntry, timesStoreDeleteEntry } from '../stores/times-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 	import { dateGetHours, dateGetMinutes, dateGetSeconds } from '../helpers/helpers.js'
+	import { uiStopwatchStore } from '../stores/ui-store.js'
 
 	import UiButton from '../ui/ui-button.svelte'
 	import UiIcon from '../ui/ui-icon.svelte'
@@ -22,9 +23,6 @@
 	}
 
 	$: hasStopwatch = $userStore.stopwatchEntryId === id
-	$: displayDuration = hasStopwatch
-		? stopwatchDuration
-		: entryData ? entryData.duration : 0
 
 	onMount(async () => {
 		opened = true
@@ -35,18 +33,6 @@
 	function setStopwatch() {
 		userSetStopwatch(id, (Date.now() - entryData.duration * 1000))
 	}
-
-	userStore.subscribe(userData => {
-		if(userData.stopwatchEntryId === id) {
-			interval = setInterval(() => {
-				stopwatchDuration = Math.floor((Date.now() - $userStore.stopwatchStartTime) / 1000)
-			}, 1000)
-
-			stopwatchDuration = Math.floor((Date.now() - $userStore.stopwatchStartTime) / 1000)
-		} else {
-			clearInterval(interval)
-		}
-	})
 
 	function openDuration(e) {
 		e.stopPropagation()
@@ -94,7 +80,11 @@
 			<UiIcon type='clock-big' size="big" color="#26231E" />
 		</div>
 		<span class="attr-value">
-			{dateGetHours(displayDuration)}<span>:</span>{dateGetMinutes(displayDuration)}<small>{dateGetSeconds(displayDuration)}</small>
+			{#if hasStopwatch}
+				{$uiStopwatchStore.hours}<span>:</span>{$uiStopwatchStore.minutes}<small>{$uiStopwatchStore.seconds}</small>
+			{:else}
+				{dateGetHours(entryData.duration)}<span>:</span>{dateGetMinutes(entryData.duration)}<small>{dateGetSeconds(entryData.duration)}</small>
+			{/if}
 		</span>
 		<div class="attr-button">
 			<UiButton
