@@ -13,7 +13,8 @@
 	export let first = false
 	export let last = false
 
-	let isNew = false
+	let isNew = false,
+		hovered = false
 
 	const dispatch = createEventDispatcher()
 
@@ -21,6 +22,25 @@
 	onMount(() =>
 		isNew = data.created.seconds * 1000 >= Date.now() - 2000
 	)
+
+	function dispatchDesktopAndKeyboard(event, eventData) {
+		const unsubscribe = uiStore.subscribe(data => {
+			if(!data.isTouchDevice && data.breakpoint != 'xs') {
+				dispatch(event, eventData)
+			}
+		})
+		unsubscribe()
+	}
+
+
+	function dispatchMobileOrTouch(event, eventData) {
+		const unsubscribe = uiStore.subscribe(data => {
+			if(data.isTouchDevice || data.breakpoint === 'xs') {
+				dispatch(event, eventData)
+			}
+		})
+		unsubscribe()
+	}
 
 </script>
 
@@ -32,13 +52,16 @@
 			{$uiStore.isTouchDevice ? 'touch' : 'mouse'}
 			{first ? 'first' : ''}
 			{last ? 'last' : ''}
-			{ isNew ? 'new' : ''}">
-		<div class="color" on:click={e => dispatch('openColor', data.id)}>
+			{ isNew ? 'new' : ''}"
+		on:mouseenter={e => hovered = true}
+		on:mouseleave={e => hovered = false}
+		on:click={e => dispatchMobileOrTouch('open', { component: 'mobileEntry', id: data.id})}>
+		<div class="color" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'color', id: data.id})}>
 			<div style="{'background-color:' + data.color + ';'}">
 				
 			</div>
 		</div>
-		<div class="title" on:click={e => dispatch('openTitle', data.id)}>
+		<div class="title" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'title', id: data.id})}>
 			<div>
 				{data.title.length > 0 ? data.title : 'No title'}
 			</div>
@@ -50,7 +73,7 @@
 					icon="burger"
 					hovered={hovered}
 					color="{hovered ? '#26231E' : '#E6E4E1'}"
-					on:click={e => dispatch('openContextNav', data.id)} />
+					on:click={e => dispatch('open', { component: 'contextNav', id: data.id})} />
 			</div>
 		{/if}
 	</li>

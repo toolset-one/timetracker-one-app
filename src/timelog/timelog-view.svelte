@@ -20,16 +20,6 @@
 	import TimelogEntryOverlay from '../timelog/timelog-entry-overlay.svelte'
 
 
-
-	let openedDurationId,
-		openedMobileDurationId,
-		openTaskId,
-		openedMobileTaskId,
-		openCommentId,
-		openContextNavId,
-		openEntryId,
-		testEl
-
 	let overlays = {
 		mobileEntry: TimelogEntryOverlay,
 		mobileDuration: TimelogMobileDurationOverlay,
@@ -116,7 +106,6 @@
 	</p>
 {/if}
 
-<!-- on:open={e => openOverlayComponent(e.detail)} -->
 
 {#if overlayComponent && $timesStore.times[entryIdActive]}
 	<svelte:component

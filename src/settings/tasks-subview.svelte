@@ -5,15 +5,28 @@
 	import { uiStore } from '../stores/ui-store.js'
 
 	import UiButton from '../ui/ui-button.svelte'
+	import UiBackdrop from '../ui/ui-backdrop.svelte'
 	import TasksEntry from '../settings/tasks-entry.svelte'
+
+	import TasksEntryOverlay from '../settings/tasks-entry-overlay.svelte'
 	import TasksTitleOverlay from '../settings/tasks-title-overlay.svelte'
 	import TasksColorOverlay from '../settings/tasks-color-overlay.svelte'
 	import TasksContextNav from '../settings/tasks-context-nav.svelte'
 
 
-	let openedTitleId,
-		openedColorId,
-		openContextNavId
+	let overlays = {
+		mobileEntry: TasksEntryOverlay,
+		/*mobileDuration: TimelogMobileDurationOverlay,
+		mobileTask: TimelogMobileTaskOverlay,
+		mobileComment: TimelogMobileCommentOverlay,*/
+
+		color: TasksColorOverlay,
+		title: TasksTitleOverlay,
+		contextNav: TasksContextNav
+	},
+	overlayEl,
+	overlayComponent,
+	entryIdActive
 
 	$: entries = $tasksStore.array
 
@@ -25,6 +38,11 @@
 		tasksStoreNewTask(success => {
 
 		})
+	}
+
+	function openOverlayComponent(e) {
+		overlayComponent = overlays[e.component]
+		entryIdActive = e.id
 	}
 
 </script>
@@ -46,9 +64,7 @@
 			data={entry}
 			first={i == 0}
 			last={i == entries.length - 1}
-			on:openTitle={e => openedTitleId = e.detail}
-			on:openColor={e => openedColorId = e.detail}
-			on:openContextNav={e => openContextNavId = e.detail} />
+			on:open={e => openOverlayComponent(e.detail)} />
 	{/each}
 </ul>
 
@@ -59,21 +75,28 @@
 {/if}
 
 
-{#if openedTitleId}
-	<TasksTitleOverlay
-		id={openedTitleId}
-		title={$tasksStore.json[openedTitleId].title}
-		on:close={e => openedTitleId = null} />
-{:else if openedColorId}
-	<TasksColorOverlay
-		id={openedColorId}
-		color={$tasksStore.json[openedColorId].color}
-		on:close={e => openedColorId = null} />
-{:else if openContextNavId}
-	<TasksContextNav
-		id={openContextNavId}
-		on:close={e => openContextNavId = null}
-		on:openTitle={e => openedTitleId = e.detail} />
+{#if overlayComponent && $tasksStore.json[entryIdActive]}
+	<svelte:component
+		this={overlayComponent}
+		bind:this={overlayEl}
+		id={entryIdActive}
+		color={$tasksStore.json[entryIdActive].color}
+		title={$tasksStore.json[entryIdActive].title}
+		on:open={e => openOverlayComponent(e.detail)}
+		on:close={e => {
+			overlayComponent = null
+			entryIdActive = null
+		}} />
+
+	<UiBackdrop
+		on:close={e => {
+			if(overlayEl.externalClose) {
+				overlayEl.externalClose()
+			} else {
+				overlayComponent = null
+				entryIdActive = null
+			}
+		}} />
 {/if}
 
 

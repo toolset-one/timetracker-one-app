@@ -1,6 +1,5 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
-	import { getWindowWidth } from '../helpers/helpers.js'
 	import { userStore, userSetStopwatch } from '../stores/user-store.js'
 	import { timesStore, timesStoreGetEntry, timesStoreDeleteEntry } from '../stores/times-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
