@@ -132,7 +132,7 @@
 		<UiButton
 			label="Delete"
 			color="red"
-			on:click={e => timesStoreDeleteEntry(id)} />
+			on:click={e => timesStoreDeleteEntry(id) && dispatch('close')} />
 	</footer>
 </div>
 
