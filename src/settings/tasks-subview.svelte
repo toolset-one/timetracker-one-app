@@ -9,6 +9,8 @@
 	import TasksEntry from '../settings/tasks-entry.svelte'
 
 	import TasksEntryOverlay from '../settings/tasks-entry-overlay.svelte'
+	import TasksMobileTitleOverlay from '../settings/tasks-mobile-title-overlay.svelte'
+
 	import TasksTitleOverlay from '../settings/tasks-title-overlay.svelte'
 	import TasksColorOverlay from '../settings/tasks-color-overlay.svelte'
 	import TasksContextNav from '../settings/tasks-context-nav.svelte'
@@ -16,8 +18,8 @@
 
 	let overlays = {
 		mobileEntry: TasksEntryOverlay,
-		/*mobileDuration: TimelogMobileDurationOverlay,
-		mobileTask: TimelogMobileTaskOverlay,
+		mobileTitle: TasksMobileTitleOverlay,
+		/*mobileTask: TimelogMobileTaskOverlay,
 		mobileComment: TimelogMobileCommentOverlay,*/
 
 		color: TasksColorOverlay,
