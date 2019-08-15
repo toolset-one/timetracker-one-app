@@ -10,6 +10,7 @@
 
 	import TasksEntryOverlay from '../settings/tasks-entry-overlay.svelte'
 	import TasksMobileTitleOverlay from '../settings/tasks-mobile-title-overlay.svelte'
+	import TasksMobileColorOverlay from '../settings/tasks-mobile-color-overlay.svelte'
 
 	import TasksTitleOverlay from '../settings/tasks-title-overlay.svelte'
 	import TasksColorOverlay from '../settings/tasks-color-overlay.svelte'
@@ -19,8 +20,7 @@
 	let overlays = {
 		mobileEntry: TasksEntryOverlay,
 		mobileTitle: TasksMobileTitleOverlay,
-		/*mobileTask: TimelogMobileTaskOverlay,
-		mobileComment: TimelogMobileCommentOverlay,*/
+		mobileColor: TasksMobileColorOverlay,
 
 		color: TasksColorOverlay,
 		title: TasksTitleOverlay,
@@ -75,7 +75,6 @@
 		No tasks created.
 	</p>
 {/if}
-
 
 {#if overlayComponent && $tasksStore.json[entryIdActive]}
 	<svelte:component
