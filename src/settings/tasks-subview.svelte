@@ -2,6 +2,7 @@
 	import Page from 'page'
 	import { onMount } from 'svelte';
 	import { tasksStore, tasksStoreNewTask } from '../stores/tasks-store.js'
+	import { uiStore } from '../stores/ui-store.js'
 
 	import UiButton from '../ui/ui-button.svelte'
 	import TasksEntry from '../settings/tasks-entry.svelte'
@@ -28,7 +29,7 @@
 
 </script>
 
-<header>
+<header class="bp-{$uiStore.breakpoint}">
 	<div class="subview-title">
 		<h2>
 			Tasks
@@ -39,7 +40,7 @@
 	</div>
 </header>
 
-<ul class="entries">
+<ul class="entries bp-{$uiStore.breakpoint}">
 	{#each entries as entry, i (entry.id)}
 		<TasksEntry
 			data={entry}
@@ -87,6 +88,10 @@
 		margin:24px auto 24px auto;
 	}
 
+	header.bp-xs {
+		margin:12px;
+	}
+
 	.subview-title {
 		display:flex;
 		flex-flow: row wrap;
@@ -99,12 +104,24 @@
 		text-align: right;
 	}
 
+	.bp-xs .add-button-wrapper {
+		position:fixed;
+		bottom:60px;
+		left:50%;
+		transform: translateX(-50%);
+		z-index: 500;
+	}
+
 	.entries {
 		position: relative;
 		max-width:960px;
 		margin:24px auto 12px auto;
 		padding:0;
 		list-style: none;
+	}
+
+	.bp-xs.entries {
+		margin:12px auto;
 	}
 
 </style>

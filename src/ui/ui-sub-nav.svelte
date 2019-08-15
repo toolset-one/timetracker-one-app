@@ -3,6 +3,8 @@
 	import { routerStore } from '../stores/router-store.js'
 	import { dateToDatestring } from '../helpers/helpers.js'
 
+	import { uiStore } from '../stores/ui-store.js'
+
 	let ROUTES = ['tasks', 'team', 'appearance', 'account'],
 	ELEMENTS_MAP = {},
 
@@ -21,7 +23,7 @@
 
 </script>
 
-<nav bind:this={el}>
+<nav bind:this={el} class="bp-{$uiStore.breakpoint}">
 	<ul>
 		{#each ROUTES as route}
 			<li>
@@ -42,8 +44,8 @@
 		<div
 		class="indicator"
 		style="{
-			'left:' + (activeElOffset + 18) +'px;' + 
-			'width:' + (activeElWidth - 36) +'px;'}"></div>
+			'left:' + (activeElOffset + ($uiStore.breakpoint === 'xs' ? 9 : 18)) +'px;' + 
+			'width:' + (activeElWidth - ($uiStore.breakpoint === 'xs' ? 18 : 36)) +'px;'}"></div>
 	{/if}
 </nav>
 	
@@ -90,7 +92,7 @@
 
 	a {
 		display:block;
-		padding:6px 0;
+		padding:0;
 		position: relative;
 		font-size:14px;
 		font-weight:500;
@@ -120,6 +122,9 @@
 		background:#FAF9F7;
 	}
 
+	.bp-xs span {
+		padding:0 9px;
+	}
 
 
 	.indicator {

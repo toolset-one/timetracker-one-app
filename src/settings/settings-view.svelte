@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { routerStore } from '../stores/router-store.js'
+	import { uiStore } from '../stores/ui-store.js'
 
 	import UiSubNav from '../ui/ui-sub-nav.svelte'
 	import TasksSubview from '../settings/tasks-subview.svelte'
@@ -11,7 +12,7 @@
 
 </script>
 
-<section >
+<section class="bp-{$uiStore.breakpoint}">
 	<UiSubNav />
 </section>
 
@@ -33,6 +34,10 @@
 		flex-flow: row wrap;
 		max-width:960px;
 		margin:18px auto 24px auto;
+	}
+
+	section.bp-xs {
+		margin:6px 12px 12px 12px;
 	}
 
 	.filter-header .button-wrapper {
