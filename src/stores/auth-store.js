@@ -66,6 +66,10 @@ export function authSignUp(email, password, cb) {
 	})
 }
 
+export function authSignOut() {
+	firebase.auth().signOut();
+}
+
 
 export function authStoreNewPassword(email, cb) {
 
