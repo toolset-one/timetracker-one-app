@@ -4,6 +4,8 @@ import { authStore } from '../stores/auth-store.js'
 import { timesStoreChangeDuration } from '../stores/times-store.js'
 
 export const userStore = writable({
+	username: '',
+	language: 'EN',
 	termsAccepted: 0,
 	stopwatchEntryId: null,
 	stopwatchStartTime: 0,
@@ -45,13 +47,19 @@ function setListener() {
 }
 
 
-export function updateUser() {
+export function updateUser(cb) {
 	let unsubscribe = authStore.subscribe(authData => {
 		if(authData.hasAuth) {
 			let unsubscribeUser = userStore.subscribe(userData =>
 				firebase.db.collection('users').doc(authData.user.id).set(userData).then(res => {
-			
-				}).catch(err => {})
+					if(cb) {
+						cb(true)
+					}
+				}).catch(err => {
+					if(cb) {
+						cb(false)
+					}
+				})
 			)
 			unsubscribeUser()
 		}
@@ -80,6 +88,16 @@ export function userSetStopwatch(id, startTime) {
 	})
 
 	updateUser()
+}
+
+
+export function userStoreSetUsername(username, cb) {
+	userStore.update(data => {
+		data.username = username
+		return data
+	})
+
+	updateUser(cb)
 }
 
 

@@ -7,27 +7,57 @@
 	export let type = 'text'
 	export let value = ''
 
-	let focussed = false
+	let focused = false
+
+	function focus(e) {
+		focused = true
+		dispatch('focus')
+	}
+
+	function blur(e) {
+		focused = false
+		dispatch('blur')
+	}
+
+	function keydown(e) {
+		dispatch('keydown', e.keyCode)
+	}
 
 </script>
 
-<div class="input-wrapper {focussed ? 'focussed' : ''} {value.length > 0 ? 'filled' : ''}">
+<div 
+	class="input-wrapper 
+		{focused ? 'focused' : ''}
+		{value.length > 0 ? 'filled' : ''}"
+	on:keydown={e => keydown(e)}>
 	<label>
 		{label}
 	</label>
 	{#if type === 'email'}
-		<input type="email" bind:value={value} on:focus={e => focussed = true} on:blur={e => focussed = false}>
+		<input
+			type="email"
+			bind:value={value}
+			on:focus={e => focus(e)}
+			on:blur={e => blur(e)}>
 	{:else if type === 'password'}
-		<input type="password" bind:value={value} on:focus={e => focussed = true} on:blur={e => focussed = false}>
+		<input
+			type="password"
+			bind:value={value}
+			on:focus={e => focus(e)}
+			on:blur={e => blur(e)}>
 	{:else}
-		<input type="text" bind:value={value} on:focus={e => focussed = true} on:blur={e => focussed = false}>
+		<input
+			type="text"
+			bind:value={value}
+			on:focus={e => focus(e)}
+			on:blur={e => blur(e)}>
 	{/if}
 </div>
 
 <style>
 .input-wrapper {
 	position:relative;
-	margin:0 0 30px 0;
+	margin:0;
 	max-width:100%;
 }
 
