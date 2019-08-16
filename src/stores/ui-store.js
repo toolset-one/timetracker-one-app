@@ -36,7 +36,7 @@ export function uiStoreInit() {
 export function uiStoreSetBreakpoint(windowWidth) {
 	uiStore.update(data => {
 
-		if(windowWidth < 600) {
+		if(windowWidth < 800) {
 			var breakpoint = 'xs'
 		} else {
 			var breakpoint = 'l'

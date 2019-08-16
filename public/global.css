@@ -121,7 +121,7 @@ h2 {
     color:#66625C;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 800px) {
     h2 {
         font-size: 25px;
     }
