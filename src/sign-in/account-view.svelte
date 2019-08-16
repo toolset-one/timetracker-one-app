@@ -83,7 +83,7 @@
 <style>
 	.container {
 		position: relative;
-		width:540px;
+		max-width:540px;
 		margin:60px auto;
 		border:#CCC9C4 0px solid;
 		border-radius: 6px;
