@@ -1,5 +1,6 @@
-import { writable } from 'svelte/store'
+import { writable, get } from 'svelte/store'
 import { authStore } from '../stores/auth-store.js'
+import { teamStore } from '../stores/team-store.js'
 import { COLORS } from '../helpers/helpers.js'
 
 export const tasksStore = writable({
@@ -16,13 +17,13 @@ export function tasksStoreInit() {
 }
 
 function setListener() {
-	authStore.subscribe(authData => {
+	teamStore.subscribe(teamData => {
 		if(listener) {
 			listener()
 		}
 
-		if(authData.hasAuth) {
-			listener = firebase.db.collection('tasks').where('user', '==', authData.user.id).onSnapshot(snapshot =>
+		if(teamData.active) {
+			listener = firebase.db.collection('tasks').where('team', '==', teamData.active.id).onSnapshot(snapshot =>
 				snapshot.docChanges().forEach(change => {
 								
 					if (change.type === 'added' || change.type === 'modified') {
@@ -52,23 +53,24 @@ function setListener() {
 
 export function tasksStoreNewTask(cb) {
 
-	const unsubscribe = authStore.subscribe(authData => {
-		firebase.db.collection('tasks').doc().set({
-			user: authData.user.id,
-			title: '',
-			project: null,
-			color: COLORS[Math.floor(Math.random() * COLORS.length)],
-			updated: new Date(),
-			created: new Date()
-		}).then(() => {
-			console.log('document created');
-			cb(true)
-		}).catch(err => {
-			console.error('error: ', err);
-			cb(false)
-		})
+	const { user } = get(authStore),
+		{ active } = get(teamStore)
+
+	firebase.db.collection('tasks').doc().set({
+		user: user.id,
+		team: active.id,
+		title: '',
+		project: null,
+		color: COLORS[Math.floor(Math.random() * COLORS.length)],
+		updated: new Date(),
+		created: new Date()
+	}).then(() => {
+		console.log('document created');
+		cb(true)
+	}).catch(err => {
+		console.error('error: ', err);
+		cb(false)
 	})
-	unsubscribe()
 }
 
 

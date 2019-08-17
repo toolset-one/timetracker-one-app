@@ -4,7 +4,6 @@ import { authStore } from '../stores/auth-store.js'
 import { timesStoreChangeDuration } from '../stores/times-store.js'
 
 export const userStore = writable({
-	username: '',
 	language: 'EN',
 	termsAccepted: 0,
 	stopwatchEntryId: null,

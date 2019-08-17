@@ -27,6 +27,8 @@
 		<TeamEmpty />
 	{/if}
 
+	{$teamStore.active ? $teamStore.active.title : 'NO TEAM TITLE'}
+
 	
 </section>
 

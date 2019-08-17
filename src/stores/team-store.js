@@ -32,7 +32,7 @@ function setListener() {
 		}
 
 		if(authData.hasAuth) {
-			const ref = firebase.db.collection('teams').where('members', 'array-contains', authData.user.id)
+			const ref = firebase.db.collection('teams').where('admins', 'array-contains', authData.user.id)
 
 			ref.get().then(snapshot => {
 				if (snapshot.empty) {
@@ -47,7 +47,6 @@ function setListener() {
 					return
 				}	
 
-
 				teamStore.update(data => {
 					
 					snapshot.forEach(doc => {
@@ -60,9 +59,6 @@ function setListener() {
 					})
 					return data
 				})
-			})
-			.catch(err => {
-				console.log('Error getting documents', err)
 			})
 
 
@@ -92,16 +88,17 @@ export function teamStoreNewTeam(cb) {
 
 		let teamData = {
 			title: '',
-			members: [ auth.user.id ],
+			admins: [ auth.user.id ],
+			members: [],
 			memberData: {},
 			created: new Date(),
 			updated: new Date()
 		}
 
 		teamData.memberData[auth.user.id] = {
-			role: 'ADMIN',
 			email: auth.user.email,
-			name: auth.user.name
+			name: auth.user.name,
+			picture: null
 		}
 
 		const ref = firebase.db.collection('teams').doc()
