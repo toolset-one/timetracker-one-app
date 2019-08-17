@@ -1,43 +1,41 @@
 <script>
 	import Page from 'page'
 	import { onMount } from 'svelte';
-	import { authSignOut } from '../stores/auth-store.js'
 	import { uiStore } from '../stores/ui-store.js'
-	import { teamStore,teamStoreChangeTitle } from '../stores/team-store.js'
+	import { teamStore, teamStoreChangeTitle } from '../stores/team-store.js'
 
 	import UiButton from '../ui/ui-button.svelte'
 	import UiInput from '../ui/ui-input.svelte'
 
-	import TeamEmpty from '../settings/team-empty.svelte'
-
 	let newTeamTitle = ''
-
-
-
-	onMount(() => {
-
-	})
 
 </script>
 
 
-<section>
+<div class="container">
+	<h2>
+		Want to track togehter?
+	</h2>
+			
+	<p>
+		You are tracking solo right now. If you like to create a team, please go ahead:
+	</p>
 
-	{#if !$teamStore.active || ($teamStore.active.title.length === 0 && $teamStore.teams.length === 1)}
-		<TeamEmpty />
-	{/if}
+	<div class="form-item">
+		<UiInput
+			label="Title of new team"
+			bind:value={newTeamTitle} />
+	</div>
+	<UiButton
+		label="Create New Team"
+		disabled={newTeamTitle.length === 0}
+		on:click={e => teamStoreChangeTitle($teamStore.active.id, newTeamTitle)} />
 
-	
-</section>
+</div>
 
 <style>
 
-	section {
-		max-width:960px;
-		margin:24px auto 24px auto;
-	}
-
-	/* .container {
+	.container {
 		position: relative;
 		margin:0 auto 24px auto;
 		border-radius: 6px;
@@ -56,6 +54,6 @@
 
 	.form-item {
 		margin:0 0 24px 0;
-	} */
+	}
 
 </style>

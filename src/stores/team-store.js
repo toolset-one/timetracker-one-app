@@ -12,6 +12,16 @@ let listener,
 	interval
 
 export function teamStoreInit() {
+
+	const teamActive = localStorage.getItem('teamActive')
+	if(teamActive) {
+
+		teamStore.update(data => {
+			data.active = JSON.parse(teamActive)
+			return data
+		})
+	}
+
 	setListener()
 }
 
@@ -26,10 +36,11 @@ function setListener() {
 
 			ref.get().then(snapshot => {
 				if (snapshot.empty) {
-					teamStoreNewTeam((err, team) => {
+					teamStoreNewTeam((err, teamData) => {
 						teamStore.update(data => {
-							data.teams = [team]
-							data.active = team
+							data.teams = [teamData]
+							data.active = teamData
+							localStorage.setItem('teamActive', JSON.stringify(teamData))
 							return data
 						})
 					})
@@ -45,6 +56,7 @@ function setListener() {
 						}, doc.data())
 						data.teams.push(teamData)
 						data.active = teamData
+						localStorage.setItem('teamActive', JSON.stringify(teamData))
 					})
 					return data
 				})
@@ -101,5 +113,24 @@ export function teamStoreNewTeam(cb) {
 			cb(err, null)
 		})
 	}
+}
+
+
+export function teamStoreChangeTitle(id, title) {
+	firebase.db.collection('teams').doc(id).update({
+		title,
+		updated: new Date()
+	})	
+
+	teamStore.update(data => {
+		data.active.title = title
+
+		data.teams = data.teams.map(val => {
+			val.title = val.id === id ? title : val.title
+			return val
+		})
+
+		return data
+	})
 }
 

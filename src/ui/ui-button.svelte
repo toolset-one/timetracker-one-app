@@ -12,6 +12,7 @@
 	export let hovered = false
 	export let color = '#26231E'
 	export let link = null
+	export let disabled = false
 
 
 
@@ -39,7 +40,7 @@
 
 <a
 	href="{link ? link : '#'}"
-	class="type-{type} {hovered ? 'hovered': ''}"
+	class="type-{type} {hovered ? 'hovered': ''} {disabled ? 'disabled': ''}"
 	style="{
 		'--x:'+ (mousePosition.x - boundingRect.left) +'px;' +
 		'--y:'+ (mousePosition.y - boundingRect.top) +'px;' + 
@@ -108,6 +109,11 @@
 		transition: all 100ms ease;
 	}
 
+	a.disabled {
+		cursor:default;
+		box-shadow: none;
+		pointer-events:none;
+	}
 
 	.type-icon {
 		width:42px;
@@ -198,6 +204,11 @@
 		padding:0 18px;
 		font-size:14px;
 		font-weight:600;
+		-webkit-font-smoothing:antialiased;
+	}
+
+	.disabled span {
+		color:#CCC9C4;
 	}
 
 	em {

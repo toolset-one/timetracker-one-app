@@ -5,7 +5,7 @@
 	import { timesStoreInit } from './stores/times-store.js'
 	import { tasksStoreInit } from './stores/tasks-store.js'
 	import { userStoreInit } from './stores/user-store.js'
-	import { teamStoreInit } from './stores/team-store.js'
+	import { teamStore, teamStoreInit } from './stores/team-store.js'
 	import { reportsStoreInit } from './stores/reports-store.js'
 	import { uiStore, uiStoreInit, uiStoreSetBreakpoint } from './stores/ui-store.js'
 	import { getWindowWidth } from './helpers/helpers.js'
@@ -67,7 +67,7 @@ const COLORS = [
 		{:else}
 			<SignIn />
 		{/if}
-	{:else if $authStore.seemsToHaveAuth}
+	{:else if $authStore.seemsToHaveAuth && $teamStore.active}
 		<MainNav />
 
 		{#if $routerStore.view === 'timelog'}

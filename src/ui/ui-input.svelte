@@ -58,7 +58,8 @@
 .input-wrapper {
 	position:relative;
 	margin:0;
-	max-width:100%;
+	width:100%;
+	max-width:560px;
 }
 
 .input-wrapper label {
