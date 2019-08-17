@@ -132,8 +132,6 @@
 	<div class="button-wrapper">
 		<UiMultiselect
 			label="Tasks"
-			type="icon-right"
-			icon="arrow-left"
 			options={tasksToFilter}
 			bind:value={filterTasks} />
 	</div>
