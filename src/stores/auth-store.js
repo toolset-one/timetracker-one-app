@@ -31,7 +31,8 @@ export function authInit() {
 				hasAuth: true,
 				user: {
 					id: user.uid,
-					email: user.email
+					email: user.email,
+					name: user.displayName // user.photoURL
 				}
 			})
 			localStorage.setItem('seemsToHaveAuth', true)

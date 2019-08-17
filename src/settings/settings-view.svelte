@@ -5,6 +5,7 @@
 
 	import UiSubNav from '../ui/ui-sub-nav.svelte'
 	import TasksSubview from '../settings/tasks-subview.svelte'
+	import TeamSubview from '../settings/team-subview.svelte'
 	import AccountSubview from '../settings/account-subview.svelte'
 
 	onMount(() => {
@@ -20,7 +21,7 @@
 {#if $routerStore.subview === 'tasks'}
 	<TasksSubview />
 {:else if $routerStore.subview === 'team'}
-	Team
+	<TeamSubview />
 {:else if $routerStore.subview === 'appearance'}
 	Appearance
 {:else if $routerStore.subview === 'account'}
