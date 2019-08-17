@@ -66,7 +66,7 @@
 				{data.title.length > 0 ? data.title : 'No title'}
 			</div>
 		</div>
-		{#if $uiStore.breakpoint != 'xs'}
+		{#if $uiStore.breakpoint != 'xs' && !$uiStore.isTouchDevice}
 			<div class="nav">
 				<UiButton
 					type="entry"

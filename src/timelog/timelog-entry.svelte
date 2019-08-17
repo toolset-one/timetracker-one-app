@@ -64,7 +64,7 @@
 		on:mouseenter={e => hovered = true}
 		on:mouseleave={e => hovered = false}
 		on:click={e => dispatchMobileOrTouch('open', { component: 'mobileEntry', id: data.id})}>
-		{#if $uiStore.breakpoint != 'xs'}
+		{#if $uiStore.breakpoint != 'xs' && !$uiStore.isTouchDevice}
 			<div class="stopwatch">
 				<UiButton
 					type="{hasStopwatch ? 'entry has-stopwatch' : 'entry'}"
@@ -101,7 +101,7 @@
 				{data.comment.length > 0 ? data.comment : 'No comment'}
 			</div>
 		</div>
-		{#if $uiStore.breakpoint != 'xs'}
+		{#if $uiStore.breakpoint != 'xs' && !$uiStore.isTouchDevice}
 			<div class="nav">
 				<UiButton
 					type="entry"
