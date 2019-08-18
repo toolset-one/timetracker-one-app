@@ -1,7 +1,6 @@
 import { writable, get } from 'svelte/store';
 import { routerStore } from '../stores/router-store.js'
 import { authStore } from '../stores/auth-store.js'
-import { timesStoreChangeDuration } from '../stores/times-store.js'
 
 export const teamStore = writable({
 	teams: [],

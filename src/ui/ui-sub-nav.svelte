@@ -5,7 +5,7 @@
 
 	import { uiStore } from '../stores/ui-store.js'
 
-	let ROUTES = ['tasks', 'team', 'appearance', 'account'],
+	let ROUTES = ['tasks', 'team', 'account'],
 	ELEMENTS_MAP = {},
 
 	el,
