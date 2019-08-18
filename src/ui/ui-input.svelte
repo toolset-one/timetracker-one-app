@@ -103,10 +103,11 @@
 	caret-color:#26231E;
 	box-shadow:0 0 0 100px #FFF inset;
 	outline-style:solid;
-		outline-color:rgba(0, 0, 255, .25);
-		outline-width:0;
-		outline-offset:2px;
-		color:#26231E;
+	outline-color:rgba(0, 0, 255, .25);
+	outline-width:0;
+	outline-offset:2px;
+	color:#26231E;
+	transition: border-color 100ms ease;
 }
 
 .input-wrapper:hover input, .input-wrapper:focus input {

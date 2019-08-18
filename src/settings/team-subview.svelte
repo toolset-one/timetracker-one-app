@@ -5,13 +5,23 @@
 	import { uiStore } from '../stores/ui-store.js'
 	import { teamStore,teamStoreChangeTitle } from '../stores/team-store.js'
 
+	import UiBackdrop from '../ui/ui-backdrop.svelte'
 	import UiButton from '../ui/ui-button.svelte'
 	import UiInput from '../ui/ui-input.svelte'
 
 	import TeamEmpty from '../settings/team-empty.svelte'
 	import TeamEntry from '../settings/team-entry.svelte'
 
-	let newTeamTitle = ''
+	import TeamInviteOverlay from '../settings/team-invite-overlay.svelte'
+
+	let overlays = {
+		invite: TeamInviteOverlay
+	},
+	overlayEl,
+	overlayComponent,
+	entryIdActive,
+
+	newTeamTitle = ''
 
 
 
@@ -45,7 +55,7 @@
 				</h2>
 			</div>
 			<div class="add-button-wrapper">
-				<UiButton label="Invite Member" on:click={e => newEntry()} />
+				<UiButton label="Invite Member" on:click={e => openOverlayComponent({ component: 'invite', id: null })} />
 			</div>
 		</header>
 
@@ -60,10 +70,32 @@
 		</ul>
 	{/if}
 
-		
-
-	
 </section>
+
+
+{#if overlayComponent}
+	<svelte:component
+		this={overlayComponent}
+		bind:this={overlayEl}
+		id={entryIdActive}
+		on:open={e => openOverlayComponent(e.detail)}
+		on:close={e => {
+			overlayComponent = null
+			entryIdActive = null
+		}} />
+
+	<UiBackdrop
+		on:close={e => {
+			if(overlayEl.externalClose) {
+				overlayEl.externalClose()
+			} else {
+				overlayComponent = null
+				entryIdActive = null
+			}
+		}} />
+{/if}
+
+
 
 <style>
 

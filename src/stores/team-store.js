@@ -130,3 +130,7 @@ export function teamStoreChangeTitle(id, title) {
 	})
 }
 
+
+export function teamStoreInvite(email, username) {
+	
+}
