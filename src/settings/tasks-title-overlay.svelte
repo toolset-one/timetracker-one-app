@@ -1,6 +1,5 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
-	import { fade } from 'svelte/transition'
 	import { tasksStoreChangeTitle } from '../stores/tasks-store.js'
 
 	export let id = null
@@ -57,19 +56,7 @@
 		on:blur={e => save()}
 		on:keydown={e => keydown(e)}>
 </div>
-<div class="backdrop" transition:fade="{{delay: 0, duration: 100}}"></div>
 <style>
-	.backdrop {
-		position:fixed;
-		top:0;
-		left:0;
-		width:100%;
-		height:100%;
-		background:rgba(0, 0, 0, .15);
-		/* -webkit-backdrop-filter: blur(1px); */
-		z-index:1000;
-	}
-
 	.input-wrapper {
 		position: absolute;
 		top:0;

@@ -58,7 +58,6 @@
 		position: relative;
 		max-width:540px;
 		margin:60px auto;
-		border:#CCC9C4 0px solid;
 		border-radius: 6px;
 		background:#FFF;
 		padding:0 30px 30px 30px;
