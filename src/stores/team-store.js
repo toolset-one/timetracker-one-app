@@ -131,6 +131,18 @@ export function teamStoreChangeTitle(id, title) {
 }
 
 
-export function teamStoreInvite(email, username) {
-	
+export function teamStoreInvite(email, username, cb) {
+
+	const { active } = get(teamStore)
+
+	const ref = firebase.db.collection('invitations').doc().set({
+		team: active.id,
+		email,
+		username
+	}).then(() => {
+		cb(null)
+	}).catch(err => {
+		console.error('error: ', err);
+		cb(err)
+	})
 }

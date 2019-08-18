@@ -7,7 +7,7 @@
 	import UiInput from '../ui/ui-input.svelte'
 	import UiButton from '../ui/ui-button.svelte'
 
-	let email = '',
+	let email = 'Benjamin.Kowalski.1987@gmail.com',
 		username = '',
 		emailEl,
 		top = 0,
@@ -41,8 +41,8 @@
 
 	function save() {
 		if(!alreadyClosed) {
-			teamStoreInvite(email, username, success => {
-				console.log('SUCCESS')
+			teamStoreInvite(email, username, (err, res) => {
+				console.log('SUCCESS?', err)
 			})
 
 			opened = false
