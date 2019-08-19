@@ -144,5 +144,10 @@ export const getUrlParameter = (attr, url) => {
     	regex = new RegExp(regexS),
     	results = regex.exec( url )
     return results == null ? null : results[1]
+}
 
+
+export function isEmailValid(email) {
+	var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	return re.test(String(email).toLowerCase());
 }

@@ -1,6 +1,9 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount } from 'svelte'
+	import { get } from 'svelte/store'
+	import { isEmailValid } from '../helpers/helpers.js'
 	import { authStore, authSignUp } from '../stores/auth-store.js'
+	import { routerStore } from '../stores/router-store.js'
 
 	import UiInput from '../ui/ui-input.svelte'
 	import UiButton from '../ui/ui-button.svelte'
@@ -11,11 +14,21 @@
 		'auth/weak-password': 'The provided password is not long enough.'
 	}
 
-	let email = '',
+	let isInvitation = false,
+		email = '',
 		password = '',
 		error = ''
 
 	onMount(() => {
+		const routerStoreData = get(routerStore)
+
+		if(routerStoreData.key && routerStoreData.email && isEmailValid(routerStoreData.email)) {
+			// TODO: Why is UiInput not reactive without setTimeout?
+			setTimeout(() => {
+				isInvitation = true
+				email = routerStoreData.email
+			}, 10)
+		}
 		
 	})
 
@@ -31,8 +44,14 @@
 <section class="container">
 
 	<h2>
-		Sign up to Timetracker.One
+		Sign up to {isInvitation ? 'your team' : 'Timetracker.One'}
 	</h2>
+
+	{#if isInvitation}
+		<p>
+			You followed an invitation email to timetracker.one. Please set a passwort below, and you'll be added directly to the team.
+		</p>
+	{/if}
 
 	{#if error.length > 0}
 		<p>
@@ -42,16 +61,28 @@
 
 	<form on:submit|preventDefault={e => signUp(e)}>
 
-		<UiInput label="E-Mail" type="email" bind:value={email} />
-		<UiInput label="Password" type="password" bind:value={password} />
+		<div class="form-item">
+			<UiInput
+				label="E-Mail"
+				type="email"
+				bind:value={email}
+				disabled={isInvitation} />
+		</div>
+		<div class="form-item">
+			<UiInput label="Password" type="password" bind:value={password} />
+		</div>
 		
-		<UiButton label="Create New Account" on:click={e => signUp(e)} />
-		<span>
-			or
-			<a href="/sign-in/">
-				go to sign in
-			</a>
-		</span>
+		<UiButton
+			label="{isInvitation ? 'Join The Team' : 'Create New Account'}"
+			on:click={e => signUp(e)} />
+		{#if !isInvitation}
+			<span>
+				or
+				<a href="/sign-in/">
+					go to sign in
+				</a>
+			</span>
+		{/if}
 	</form>
 
 </section>
@@ -76,6 +107,14 @@
 	span {
 		display:inline-block;
 		padding:0 0 0 12px;
+	}
+
+	.form-item {
+		margin:0 0 24px 0;
+	}
+
+	p {
+		margin:0 0 24px 0;
 	}
 
 </style>

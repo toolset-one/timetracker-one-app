@@ -39,7 +39,9 @@
 
 	<form on:submit|preventDefault={e => getNewPassword(e)}>
 
-		<UiInput label="E-Mail" type="email" bind:value={email} />
+		<div class="form-item">
+			<UiInput label="E-Mail" type="email" bind:value={email} />
+		</div>
 		
 		<UiButton label="Get New Password" on:click={e => getNewPassword(e)} />
 		<span>
@@ -71,6 +73,10 @@
 	span {
 		display:inline-block;
 		padding:0 0 0 12px;
+	}
+
+	.form-item {
+		margin:0 0 24px 0;
 	}
 
 </style>

@@ -1,7 +1,7 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
 	import { fade } from 'svelte/transition'
-	import { getWindowWidth } from '../helpers/helpers.js'
+	import { getWindowWidth, isEmailValid } from '../helpers/helpers.js'
 	import { teamStoreInvite } from '../stores/team-store.js'
 
 	import UiInput from '../ui/ui-input.svelte'
@@ -16,7 +16,7 @@
 		opened = false,
 		el
 
-	$: emailValid = validateEmail(email)
+	$: emailValid = isEmailValid(email)
 
 	const dispatch = createEventDispatcher()
 
@@ -48,11 +48,6 @@
 			opened = false
 			dispatch('close', '')
 		}
-	}
-
-	function validateEmail(email) {
-		var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-		return re.test(String(email).toLowerCase());
 	}
 
 </script>

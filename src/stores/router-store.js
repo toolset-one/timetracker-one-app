@@ -32,5 +32,13 @@ Page('/:view/:subview/', data =>
 	})
 )
 
+Page('/sign-up/:key/:email/', data => {
+	routerStore.set({
+		view: 'sign-up',
+		key: data.params.key,
+		email: data.params.email
+	})
+})
+
 
 Page()

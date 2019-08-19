@@ -42,8 +42,12 @@
 
 	<form on:submit|preventDefault={e => signIn(e)}>
 
-		<UiInput label="E-Mail" type="email" bind:value={email} />
-		<UiInput label="Password" type="password" bind:value={password} />
+		<div class="form-item">
+			<UiInput label="E-Mail" type="email" bind:value={email} />
+		</div>
+		<div class="form-item">
+			<UiInput label="Password" type="password" bind:value={password} />
+		</div>
 		
 		<UiButton label="Sign In" on:click={e => signIn(e)} />
 		<span>
@@ -93,6 +97,10 @@
 
 	.password-link a {
 		color:#999;
+	}
+
+	.form-item {
+		margin:0 0 24px 0;
 	}
 
 </style>

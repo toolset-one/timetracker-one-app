@@ -6,8 +6,11 @@
 	export let label = 'No Label'
 	export let type = 'text'
 	export let value = ''
+	export let disabled = false
 
 	let focused = false
+
+	$: disabledVal = disabled ? 'disabled' : ''
 
 	function focus(e) {
 		focused = true
@@ -26,8 +29,9 @@
 </script>
 
 <div 
-	class="input-wrapper 
+	class="wrapper 
 		{focused ? 'focused' : ''}
+		{disabled ? 'disabled' : ''}
 		{value.length > 0 ? 'filled' : ''}"
 	on:keydown={e => keydown(e)}>
 	<label>
@@ -38,31 +42,35 @@
 			type="email"
 			bind:value={value}
 			on:focus={e => focus(e)}
-			on:blur={e => blur(e)}>
+			on:blur={e => blur(e)}
+			{disabled}>
 	{:else if type === 'password'}
 		<input
 			type="password"
 			bind:value={value}
 			on:focus={e => focus(e)}
-			on:blur={e => blur(e)}>
+			on:blur={e => blur(e)}
+			{disabled}>
 	{:else}
 		<input
 			type="text"
 			bind:value={value}
 			on:focus={e => focus(e)}
-			on:blur={e => blur(e)}>
+			on:blur={e => blur(e)}
+			{disabled}>
 	{/if}
+
 </div>
 
 <style>
-.input-wrapper {
+.wrapper {
 	position:relative;
 	margin:0;
 	width:100%;
 	max-width:560px;
 }
 
-.input-wrapper label {
+.wrapper label {
 	line-height:12px;
 	position:absolute;
 	top:50%;
@@ -76,18 +84,26 @@
 	pointer-events:none;
 }
 
-.input-wrapper.focussed label,
-.input-wrapper.filled label {
+.wrapper.focussed label,
+.wrapper.filled label {
 	top:15px;
 	color:#26231E;
 }
 
-.input-wrapper.focussed input,
-.input-wrapper.filled input {
+.wrapper.focussed input,
+.wrapper.filled input {
 	padding:22px 17px 6px 17px;
 }
 
-.input-wrapper input {
+.wrapper.disabled input {
+	border-color:#F7F5F2;
+}
+
+.wrapper.disabled:hover input, .wrapper.disabled:focus input {
+	border-color:#F7F5F2;
+}
+
+.wrapper input {
 	-webkit-appearance:none;
 	width:100%;
 	max-width:100%;
@@ -110,7 +126,7 @@
 	transition: border-color 100ms ease;
 }
 
-.input-wrapper:hover input, .input-wrapper:focus input {
+.wrapper:hover input, .wrapper:focus input {
 	border-color:#26231E;
 }
 </style>
