@@ -26,7 +26,7 @@
 
 
 	onMount(() => {
-		teamStore.subscribe(data => console.log(data))
+
 	})
 
 
@@ -68,6 +68,20 @@
 					on:open={e => openOverlayComponent(e.detail)} />
 			{/each}
 		</ul>
+
+		{#if Object.keys($teamStore.invitations).length > 0}
+			<h3>
+				Invitations to the team
+			</h3>
+			<ul class="entries">
+				{#each Object.keys($teamStore.invitations) as invitation, i}
+					<TeamEntry data={$teamStore.invitations[invitation]}
+						invitation={true}
+						first={i == 0}
+						last={i == Object.keys($teamStore.invitations).length - 1} />
+				{/each}
+			</ul>
+		{/if}
 	{/if}
 
 </section>
@@ -146,6 +160,13 @@
 
 	.bp-xs.entries {
 		margin:12px auto;
+	}
+
+	h3 {
+		font-size:20px;
+		line-height: 24px;
+		margin:48px 0 0 0;
+		padding:0;
 	}
 
 </style>

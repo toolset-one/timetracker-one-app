@@ -4,10 +4,12 @@ import { authStore } from '../stores/auth-store.js'
 
 export const teamStore = writable({
 	teams: [],
-	active: null
+	active: null,
+	invitations: {}
 })
 
 let listener,
+	invitationListener,
 	interval
 
 export function teamStoreInit() {
@@ -43,6 +45,7 @@ function setListener() {
 							return data
 						})
 					})
+					setInvitationListener()
 					return
 				}	
 
@@ -58,6 +61,7 @@ function setListener() {
 					})
 					return data
 				})
+				setInvitationListener()
 			})
 
 
@@ -77,6 +81,41 @@ function setListener() {
 			})*/
 		}
 	})
+}
+
+
+function setInvitationListener() {
+	if(invitationListener) {
+		invitationListener()
+		teamStore.update(data => {
+			data.invitations = {}
+			return data
+		})
+	}
+
+	const { active } = get(teamStore)
+
+	listener = firebase.db.collection('invitations').where('team', '==', active.id).onSnapshot(snapshot =>
+		snapshot.docChanges().forEach(change => {
+
+			if (change.type === 'added' || change.type === 'modified') {
+
+				const invitationData = Object.assign({ 
+					id: change.doc.id 
+				}, change.doc.data())
+
+				teamStore.update(data => {
+					data.invitations[change.doc.id] = invitationData
+					return data
+				})
+			} else if (change.type === 'removed') {
+				teamStore.update(data => {
+					delete data.invitations[change.doc.id]
+					return data
+				})
+			}
+		})
+	)
 }
 
 

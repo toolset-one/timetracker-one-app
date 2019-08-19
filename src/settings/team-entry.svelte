@@ -10,6 +10,7 @@
 	import UiButton from '../ui/ui-button.svelte'
 
 	export let data = {}
+	export let invitation = false
 	export let first = false
 	export let last = false
 
@@ -51,11 +52,13 @@
 		on:mouseenter={e => hovered = true}
 		on:mouseleave={e => hovered = false}
 		on:click={e => dispatchMobileOrTouch('open', { component: 'mobileEntry', id: data.id})}>
-		<div class="color" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'color', id: data.id})}>
-			<div style="{'background-color:' + data.color + ';'}">
-				
+		{#if !invitation}
+			<div class="color" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'color', id: data.id})}>
+				<div style="{'background-color:' + data.color + ';'}">
+					
+				</div>
 			</div>
-		</div>
+		{/if}
 		<div class="name" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'name', id: data.id })}>
 			<div>
 				{data.name && data.name.length > 0 ? data.name : 'No name'}
@@ -66,12 +69,14 @@
 				{data.email && data.email.length > 0 ? data.email : 'No email address'}
 			</div>
 		</div>
-		<div class="role" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'role', id: data.id })}>
-			<div>
-				Admin
+		{#if !invitation}
+			<div class="role" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'role', id: data.id })}>
+				<div>
+					Admin
+				</div>
 			</div>
-		</div>
-		{#if $uiStore.breakpoint != 'xs' && !$uiStore.isTouchDevice}
+		{/if}
+		{#if !invitation && $uiStore.breakpoint != 'xs' && !$uiStore.isTouchDevice}
 			<div class="nav">
 				<UiButton
 					type="entry"
