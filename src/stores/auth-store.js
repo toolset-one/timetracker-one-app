@@ -32,6 +32,7 @@ export function authInit() {
 						seemsToHaveAuth: true,
 						inited: true,
 						hasAuth: true,
+						hasTeam: true,
 						user: {
 							id: user.uid,
 							email: user.email,
@@ -40,12 +41,17 @@ export function authInit() {
 					})
 					localStorage.setItem('seemsToHaveAuth', true)
 				} else {
-					console.log('NOPELICIOUS')
 
-					console.log({
-						action: 'newUser',
-						user: user.uid
-						// TODO: KEY FROM INVITATION
+					authStore.set({
+						seemsToHaveAuth: true,
+						inited: true,
+						hasAuth: true,
+						hasTeam: false,
+						user: {
+							id: user.uid,
+							email: user.email,
+							name: user.displayName // user.photoURL
+						}
 					})
 
 					firebase.db.collection('queue').doc('new-user-' + user.uid).set({
@@ -65,6 +71,7 @@ export function authInit() {
 				seemsToHaveAuth: false,
 				inited: true,
 				hasAuth: false,
+				hasTeam: false,
 				user: null
 			})
 
