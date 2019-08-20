@@ -25,17 +25,41 @@ export function authInit() {
 
 	firebase.auth().onAuthStateChanged(user => {
 		if (user) {
-			authStore.set({
-				seemsToHaveAuth: true,
-				inited: true,
-				hasAuth: true,
-				user: {
-					id: user.uid,
-					email: user.email,
-					name: user.displayName // user.photoURL
+			user.getIdTokenResult().then(idToken => {
+	
+				if((idToken.claims.admin && Object.keys(idToken.claims.admin)) > 0 || (idToken.claims.member && Object.keys(idToken.claims.member))) {
+					authStore.set({
+						seemsToHaveAuth: true,
+						inited: true,
+						hasAuth: true,
+						user: {
+							id: user.uid,
+							email: user.email,
+							name: user.displayName // user.photoURL
+						}
+					})
+					localStorage.setItem('seemsToHaveAuth', true)
+				} else {
+					console.log('NOPELICIOUS')
+
+					console.log({
+						action: 'newUser',
+						user: user.uid
+						// TODO: KEY FROM INVITATION
+					})
+
+					firebase.db.collection('queue').doc('new-user-' + user.uid).set({
+						action: 'newUser',
+						user: 'SsmjhJiN6pbT4InSCuZwiFYMMrW2'
+						// TODO: KEY FROM INVITATION
+					}).then(() => {
+						console.log('OKAY')
+					}).catch(err => {
+						console.error('ERROR: ', err)
+					})
+
 				}
 			})
-			localStorage.setItem('seemsToHaveAuth', true)
 		} else {
 			authStore.set({
 				seemsToHaveAuth: false,

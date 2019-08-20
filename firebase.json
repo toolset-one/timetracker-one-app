@@ -24,5 +24,10 @@
   },
   "storage": {
     "rules": "storage.rules"
+  },
+  "emulators": {
+    "hosting": {
+      "port": 6000
+    }
   }
 }

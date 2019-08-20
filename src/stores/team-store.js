@@ -33,11 +33,29 @@ function setListener() {
 		}
 
 		if(authData.hasAuth) {
+			console.log(authData)
 			const ref = firebase.db.collection('teams').where('admins', 'array-contains', authData.user.id)
 
 			ref.get().then(snapshot => {
 				if (snapshot.empty) {
-					teamStoreNewTeam((err, teamData) => {
+
+
+					const { key, email } = get(routerStore)
+					console.log('YA', key, email)
+
+					const ref = firebase.db.collection('invitations').doc(key).get().then(snapshot => {
+						console.log('YU', snapshot.data().team)
+
+						firebase.db.collection('teams').doc(snapshot.data().team).update({
+							members: firebase.firestore.FieldValue.arrayUnion(authData.user.id),
+							invitation: key
+						})
+
+
+					}) // resource.data.members.hasAny([request.auth.uid])
+					// request.resource.data.arrayField.hasAll(resource.data.arrayField)
+
+					/*teamStoreNewTeam((err, teamData) => {
 						teamStore.update(data => {
 							data.teams = [teamData]
 							data.active = teamData
@@ -45,7 +63,7 @@ function setListener() {
 							return data
 						})
 					})
-					setInvitationListener()
+					setInvitationListener()*/
 					return
 				}	
 

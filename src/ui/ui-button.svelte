@@ -29,8 +29,8 @@
 	}
 
 	function click(e) {
-		e.stopPropagation()
 		if(!link) {
+			e.stopPropagation()
 			e.preventDefault()
 		}
 		dispatch('click', '')

@@ -67,3 +67,4 @@ node_modules/
 .DS_Store
 public/bundle.*
 
+timetracker-one-app-firebase-adminsdk.json

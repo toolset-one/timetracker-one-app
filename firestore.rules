@@ -1,31 +1,40 @@
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    /*
-      TODO: Structure of object
-    */
+
+
     match /users/{user} {
       allow read, update, delete: if request.auth.uid == user;
       allow create: if request.auth.uid != null;
     }
+    
+    
+    
+    match /queue/{queueId} {
+      allow read, update, delete: if false;
+      allow create: if request.auth.uid != null && request.resource.data.user == request.auth.uid
+    }
 
 
 
-    /*
-    TODO: Structure of object
-    */
+    function hasInvitation(team) {
+      return request.resource.data.members.size() == (resource.data.members.size() + 1) 
+        && request.resource.data.members.hasAll(resource.data.members) 
+        && request.resource.data.members.hasAll([request.auth.uid]) 
+        && get(/databases/$(database)/documents/invitations/$(request.resource.data.invitation)).data.email == request.auth.token.email
+        && get(/databases/$(database)/documents/invitations/$(request.resource.data.invitation)).data.team == team;
+    }
+
+
 
     match /teams/{team} {
       allow read, list: if resource.data.members.hasAny([request.auth.uid]) || resource.data.admins.hasAny([request.auth.uid]);
-      allow update, delete: if resource.data.admins.hasAny([request.auth.uid]);
+      allow update: if hasInvitation(team)
+      allow delete: if resource.data.admins.hasAny([request.auth.uid]);
       allow create: if request.auth.uid != null && request.resource.data.admins.hasAny([request.auth.uid]);
     }
     
     
-    
-    /*
-    TODO: Structure of object
-    */
 
     match /tasks/{task} {
       allow read, list: if request.auth.uid != null && get(/databases/$(database)/documents/teams/$(resource.data.team)).data.admins.hasAny([request.auth.uid]);
@@ -35,10 +44,6 @@ service cloud.firestore {
     }
     
     
-    
-    /*
-    TODO: Structure of object
-    */
 
     match /times/{time} {
       allow read, list: if request.auth.uid != null && get(/databases/$(database)/documents/teams/$(resource.data.team)).data.admins.hasAny([request.auth.uid]);
@@ -48,16 +53,13 @@ service cloud.firestore {
     }
     
     
-    /*
-    TODO: Structure of object
-    */
 
     match /invitations/{invitation} {
-      allow read: if request.auth.email == resource.email || get(/databases/$(database)/documents/teams/$(resource.data.team)).data.admins.hasAny([request.auth.uid]);
+      allow read: if resource.data.email == request.auth.token.email || get(/databases/$(database)/documents/teams/$(resource.data.team)).data.admins.hasAny([request.auth.uid]);
       allow list: if get(/databases/$(database)/documents/teams/$(resource.data.team)).data.admins.hasAny([request.auth.uid]);
       allow create: if request.auth.uid != null && get(/databases/$(database)/documents/teams/$(request.resource.data.team)).data.admins.hasAny([request.auth.uid])
       allow update: if false
-      allow delete: if request.auth.email == resource.email || get(/databases/$(database)/documents/teams/$(resource.data.team)).data.admins.hasAny([request.auth.uid])
+      allow delete: if resource.data.email == request.auth.token.email || get(/databases/$(database)/documents/teams/$(resource.data.team)).data.admins.hasAny([request.auth.uid])
     }
   }
 }
