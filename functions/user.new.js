@@ -56,6 +56,7 @@ exports.setClaims = functions.https.onRequest((req, res) => {
 		}
 	}).then(() => {
 		console.log('SUCCESS SET CLAIMS')
+		return
 	}).catch(err => {
 		console.log(err)
 	})
@@ -69,6 +70,7 @@ exports.unsetClaims = functions.https.onRequest((req, res) => {
 		}
 	}).then(() => {
 		console.log('SUCCESS UNSET CLAIMS')
+		return
 	}).catch(err => {
 		console.log(err)
 	})
