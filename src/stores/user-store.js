@@ -1,9 +1,10 @@
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
 import { routerStore } from '../stores/router-store.js'
-import { authStore } from '../stores/auth-store.js'
+import { authStore, authStoreControlUserToken } from '../stores/auth-store.js'
 import { timesStoreChangeDuration } from '../stores/times-store.js'
 
 export const userStore = writable({
+	firstTeam: 0,
 	language: 'EN',
 	termsAccepted: 0,
 	stopwatchEntryId: null,
@@ -31,12 +32,18 @@ function setListener() {
 			listener = firebase.db.collection('users').doc(authData.user.id).onSnapshot(snapshot => {
 		
 				if(snapshot.data()) {
-					let userStoreUnsubscribe = userStore.subscribe(userData => {
-						if(JSON.stringify(snapshot.data()) != JSON.stringify(userData)) {
-							userStore.update(data => snapshot.data())
-						}
-					})
-					userStoreUnsubscribe()
+					const { firstTeam } = get(userStore)
+
+					console.log( firstTeam, snapshot.data().firstTeam)
+
+					if(firstTeam != snapshot.data().firstTeam) {
+						authStoreControlUserToken()
+					}
+
+					if(JSON.stringify(snapshot.data()) != JSON.stringify(get(userStore))) {
+						userStore.update(data => snapshot.data())
+					}
+
 				} else {
 					updateUser()
 				}
@@ -45,25 +52,26 @@ function setListener() {
 	})
 }
 
-
+// TODO: Let's do everythin async
+// TODO: Invitation
 export function updateUser(cb) {
-	let unsubscribe = authStore.subscribe(authData => {
-		if(authData.hasAuth) {
-			let unsubscribeUser = userStore.subscribe(userData =>
-				firebase.db.collection('users').doc(authData.user.id).set(userData).then(res => {
-					if(cb) {
-						cb(true)
-					}
-				}).catch(err => {
-					if(cb) {
-						cb(false)
-					}
-				})
-			)
-			unsubscribeUser()
-		}
-	})
-	unsubscribe()
+	const authData = get(authStore)
+
+	if(authData.hasAuth) {
+
+		const userData = get(userStore)
+
+		firebase.db.collection('users').doc(authData.user.id).set(userData).then(res => {
+			if(cb) {
+				cb(true)
+			}
+		}).catch(err => {
+			if(cb) {
+				cb(false)
+			}
+		})
+
+	}
 }
 
 

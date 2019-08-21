@@ -2,7 +2,7 @@ const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const serviceAccount = require('./timetracker-one-app-firebase-adminsdk.json')
 
-const { newUser, setClaims, unsetClaims } = require('./user.new.js')
+const { newUserTrigger, newUser, setClaims, unsetClaims } = require('./user.new.js')
 
 try {
 	admin.initializeApp({
@@ -13,26 +13,6 @@ try {
 	admin.initializeApp()
 }
 
+exports.newUserTrigger = newUserTrigger
 exports.setClaims = setClaims
 exports.unsetClaims = unsetClaims
-
-
-exports.queue = functions.firestore.document('queue/{queueId}').onWrite((change, context) => {
-	queue(change.after.data())
-	return
-})
-
-
-const queue = (queueId, data) => {
-	switch(data.action) {
-		case 'newUser':
-			newUser(queueId, data.user, data.team)
-		break;
-	}
-}
-
-/*
-exports.test = functions.https.onRequest((req, res) => {
-	newUser('something', 'SsmjhJiN6pbT4InSCuZwiFYMMrW2')
-})
-*/

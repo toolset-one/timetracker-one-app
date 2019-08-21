@@ -46,9 +46,13 @@ service cloud.firestore {
     
 
     match /times/{time} {
-      allow read, list: if request.auth.uid != null && get(/databases/$(database)/documents/teams/$(resource.data.team)).data.admins.hasAny([request.auth.uid]);
-      allow create: if request.auth.uid != null && request.resource.data.user == request.auth.uid && get(/databases/$(database)/documents/teams/$(request.resource.data.team)).data.admins.hasAny([request.auth.uid])
-      allow update: if request.auth.uid == resource.data.user && request.resource.data.team == resource.data.team
+      allow read, list: if request.auth.uid != null 
+        && request.auth.token.admin[resource.data.team] == true
+      allow create: if request.auth.uid != null 
+        && request.resource.data.user == request.auth.uid 
+        && request.auth.token.admin[request.resource.data.team] == true
+      allow update: if request.auth.uid == resource.data.user
+        && request.resource.data.team == resource.data.team
       allow delete: if request.auth.uid == resource.data.user
     }
     

@@ -27,44 +27,24 @@ export function authInit() {
 		if (user) {
 			user.getIdTokenResult().then(idToken => {
 	
-				if((idToken.claims.admin && Object.keys(idToken.claims.admin)) > 0 || (idToken.claims.member && Object.keys(idToken.claims.member))) {
-					authStore.set({
-						seemsToHaveAuth: true,
-						inited: true,
-						hasAuth: true,
-						hasTeam: true,
-						user: {
-							id: user.uid,
-							email: user.email,
-							name: user.displayName // user.photoURL
-						}
-					})
-					localStorage.setItem('seemsToHaveAuth', true)
-				} else {
+				const isAdmin = idToken.claims.admin && Object.keys(idToken.claims.admin).length > 0,
+					isMember = idToken.claims.member && Object.keys(idToken.claims.member).length > 0,
+					hasTeam = isAdmin || isMember
 
-					authStore.set({
-						seemsToHaveAuth: true,
-						inited: true,
-						hasAuth: true,
-						hasTeam: false,
-						user: {
-							id: user.uid,
-							email: user.email,
-							name: user.displayName // user.photoURL
-						}
-					})
-
-					firebase.db.collection('queue').doc('new-user-' + user.uid).set({
-						action: 'newUser',
-						user: 'SsmjhJiN6pbT4InSCuZwiFYMMrW2'
-						// TODO: KEY FROM INVITATION
-					}).then(() => {
-						console.log('OKAY')
-					}).catch(err => {
-						console.error('ERROR: ', err)
-					})
-
-				}
+				authStore.set({
+					seemsToHaveAuth: true,
+					inited: true,
+					hasAuth: true,
+					hasTeam,
+					user: {
+						id: user.uid,
+						email: user.email,
+						name: user.displayName,
+						admin: idToken.claims.admin,
+						member: idToken.claims.member
+					}
+				})
+				localStorage.setItem('seemsToHaveAuth', hasTeam)
 			})
 		} else {
 			authStore.set({
@@ -77,6 +57,26 @@ export function authInit() {
 
 			localStorage.setItem('seemsToHaveAuth', false)
 		}
+	})
+}
+
+
+export function authStoreControlUserToken() {
+	firebase.auth().currentUser.getIdToken(true).then(() => {
+		firebase.auth().currentUser.getIdTokenResult().then(idToken => {
+			const isAdmin = idToken.claims.admin && Object.keys(idToken.claims.admin).length > 0,
+				isMember = idToken.claims.member && Object.keys(idToken.claims.member).length > 0,
+				hasTeam = isAdmin || isMember
+
+			authStore.update(data => {
+				if(data.hasAuth) {
+					data.hasTeam = hasTeam
+					data.user.admin = idToken.claims.admin
+					data.user.member = idToken.claims.member
+				}
+				return data
+			})
+		})
 	})
 }
 
