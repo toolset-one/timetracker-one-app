@@ -19,6 +19,7 @@ exports.unsetClaims = unsetClaims
 
 exports.queue = functions.firestore.document('queue/{queueId}').onWrite((change, context) => {
 	queue(change.after.data())
+	return
 })
 
 
@@ -30,7 +31,8 @@ const queue = (queueId, data) => {
 	}
 }
 
-
+/*
 exports.test = functions.https.onRequest((req, res) => {
 	newUser('something', 'SsmjhJiN6pbT4InSCuZwiFYMMrW2')
 })
+*/
