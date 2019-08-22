@@ -9,12 +9,15 @@ export const authStore = writable({
 	seemsToHaveAuth: false,
 	inited: false,
 	hasAuth: false,
+	hasTeam: false,
 	user: null
 })
 
 
 
 export function authInit() {
+
+	// Looks wether this user was already signed in or not
 	const seemsToHaveAuth = localStorage.getItem('seemsToHaveAuth')
 	if(seemsToHaveAuth) {
 		authStore.update(data => {
@@ -23,30 +26,28 @@ export function authInit() {
 		})
 	}
 
-	firebase.auth().onAuthStateChanged(user => {
+	firebase.auth().onAuthStateChanged(async user => {
 		if (user) {
-			user.getIdTokenResult().then(idToken => {
-	
-				const isAdmin = idToken.claims.admin && Object.keys(idToken.claims.admin).length > 0,
-					isMember = idToken.claims.member && Object.keys(idToken.claims.member).length > 0,
-					hasTeam = isAdmin || isMember
 
-				authStore.set({
-					seemsToHaveAuth: true,
-					inited: true,
-					hasAuth: true,
-					hasTeam,
-					user: {
-						id: user.uid,
-						email: user.email,
-						name: user.displayName,
-						admin: idToken.claims.admin,
-						member: idToken.claims.member
-					}
-				})
-				localStorage.setItem('seemsToHaveAuth', hasTeam)
+			authStore.update(data => {
+				data.seemsToHaveAuth = true
+				data.inited = true
+				data.hasAuth = true
+
+				if(!data.user) {
+					data.user = {}
+				}
+
+				data.user.id = user.uid
+				data.user.email = user.email
+				data.user.name = user.displayName
+				return data
 			})
+
+			await authStoreControlUserToken()
+
 		} else {
+
 			authStore.set({
 				seemsToHaveAuth: false,
 				inited: true,
@@ -61,23 +62,23 @@ export function authInit() {
 }
 
 
-export function authStoreControlUserToken() {
-	firebase.auth().currentUser.getIdToken(true).then(() => {
-		firebase.auth().currentUser.getIdTokenResult().then(idToken => {
-			const isAdmin = idToken.claims.admin && Object.keys(idToken.claims.admin).length > 0,
-				isMember = idToken.claims.member && Object.keys(idToken.claims.member).length > 0,
-				hasTeam = isAdmin || isMember
+export async function authStoreControlUserToken() {
 
-			authStore.update(data => {
-				if(data.hasAuth) {
-					data.hasTeam = hasTeam
-					data.user.admin = idToken.claims.admin
-					data.user.member = idToken.claims.member
-				}
-				return data
-			})
-		})
+	await firebase.auth().currentUser.getIdToken(true)
+		
+	const idToken = await firebase.auth().currentUser.getIdTokenResult(),
+		isAdmin = idToken.claims.admin && Object.keys(idToken.claims.admin).length > 0,
+		isMember = idToken.claims.member && Object.keys(idToken.claims.member).length > 0,
+		hasTeam = isAdmin || isMember
+
+	authStore.update(data => {
+		data.hasTeam = hasTeam
+		data.user.admin = idToken.claims.admin
+		data.user.member = idToken.claims.member
+		return data
 	})
+
+	localStorage.setItem('seemsToHaveAuth', hasTeam)
 }
 
 
@@ -99,7 +100,7 @@ export function authSignUp(email, password, cb) {
 }
 
 export function authSignOut() {
-	firebase.auth().signOut();
+	firebase.auth().signOut()
 }
 
 

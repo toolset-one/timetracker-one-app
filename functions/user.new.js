@@ -13,8 +13,8 @@ const newUser = async (userRef, user, team, invitation) => {
 
 		try {
 			const userRecord = await admin.auth().getUser(user),
-				isAdmin = userRecord.customClaims.admin && Object.keys(userRecord.customClaims.admin).length > 0,
-				isMember = userRecord.customClaims.member && Object.keys(userRecord.customClaims.member).length > 0
+				isAdmin = userRecord.customClaims && userRecord.customClaims.admin && Object.keys(userRecord.customClaims.admin).length > 0,
+				isMember = userRecord.customClaims && userRecord.customClaims.member && Object.keys(userRecord.customClaims.member).length > 0
 		
 
 			if(!isAdmin && !isMember) {
@@ -48,7 +48,7 @@ const newUser = async (userRef, user, team, invitation) => {
 
 				// UPDATE USER DOC
 				await userRef.update({
-					firstTeam: ref.id
+					hasAnyTeam: true
 				})
 
 				console.log('EVERYTHING DONE?')

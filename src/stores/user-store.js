@@ -4,7 +4,7 @@ import { authStore, authStoreControlUserToken } from '../stores/auth-store.js'
 import { timesStoreChangeDuration } from '../stores/times-store.js'
 
 export const userStore = writable({
-	firstTeam: 0,
+	hasAnyTeam: false,
 	language: 'EN',
 	termsAccepted: 0,
 	stopwatchEntryId: null,
@@ -15,8 +15,10 @@ export const userStopwatchStore = writable({
 	duration: 0
 })
 
-let listener,
-	interval
+let listenerUserId,
+	listener,
+	interval,
+	userStoreInited = false
 
 export function userStoreInit() {
 	setListener()
@@ -24,18 +26,22 @@ export function userStoreInit() {
 
 function setListener() {
 	authStore.subscribe(authData => {
-		if(listener) {
-			listener()
-		}
 
-		if(authData.hasAuth) {
+		// Change listener just, if user id changed
+		if(authData.hasAuth && authData.user.id != listenerUserId) {
+			listenerUserId = authData.user.id
+
+			if(listener) {
+				listener()
+			}
+
 			listener = firebase.db.collection('users').doc(authData.user.id).onSnapshot(snapshot => {
 		
 				if(snapshot.data()) {
-					const { firstTeam } = get(userStore)
+					const { hasAnyTeam } = get(userStore)
 
-					// TODO: Don't call two times
-					if(firstTeam != snapshot.data().firstTeam) {
+					// Control token just, if team changed after init
+					if(userStoreInited && hasAnyTeam != snapshot.data().hasAnyTeam) {
 						authStoreControlUserToken()
 					}
 
@@ -46,6 +52,8 @@ function setListener() {
 				} else {
 					updateUser()
 				}
+
+				userStoreInited = true
 			})
 		}
 	})

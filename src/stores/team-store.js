@@ -14,9 +14,9 @@ let listener = {},
 
 export function teamStoreInit() {
 
+	// Get team faster = set entry listener faster
 	const teamActive = localStorage.getItem('teamActive')
 	if(teamActive) {
-
 		teamStore.update(data => {
 			data.active = JSON.parse(teamActive)
 			return data
@@ -35,25 +35,27 @@ function setListener() {
 
 		if(authData.hasAuth) {
 
-			Object.keys(authData.user.admin).forEach(teamId => {
-				const ref = firebase.db.collection('teams').doc(teamId).onSnapshot(snapshot => {
+			if(authData.user.admin) {
+				Object.keys(authData.user.admin).forEach(teamId => {
+					const ref = firebase.db.collection('teams').doc(teamId).onSnapshot(snapshot => {
 
-					teamStore.update(data => {
+						teamStore.update(data => {
 
-						data.teams.filter(val => val.id != snapshot.id)
+							data.teams.filter(val => val.id != snapshot.id)
 
-						const teamData = Object.assign({ 
-							id: snapshot.id 
-						}, snapshot.data())
-						data.teams.push(teamData)
+							const teamData = Object.assign({ 
+								id: snapshot.id 
+							}, snapshot.data())
+							data.teams.push(teamData)
 
-						data.active = teamData
-						localStorage.setItem('teamActive', JSON.stringify(teamData))
-						return data
+							data.active = teamData
+							localStorage.setItem('teamActive', JSON.stringify(teamData))
+							return data
+						})
+
 					})
-
 				})
-			})
+			}
 
 		}
 	})

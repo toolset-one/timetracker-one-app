@@ -1,4 +1,5 @@
 <script>
+	import Page from 'page'
 	import { onMount } from 'svelte'
 	import { get } from 'svelte/store'
 	import { isEmailValid } from '../helpers/helpers.js'
@@ -36,6 +37,10 @@
 		
 		authSignUp(email, password, (success, err) => {
 			error = ERROR_MAP[err] || '' + err
+
+			if(success) {
+				Page('/timelog/')
+			}
 		})
 	}
 
