@@ -8,7 +8,9 @@ export const teamStore = writable({
 	invitations: {}
 })
 
-let listener = {},
+let listenerMember,
+	listenerAdmin,
+	listener = {},
 	invitationListener,
 	interval
 
@@ -28,35 +30,44 @@ export function teamStoreInit() {
 
 function setListener() {
 	authStore.subscribe(authData => {
-		Object.keys(listener).forEach(key => {
-			listener[key]()
-			delete listener[key]
-		})
 
-		if(authData.hasAuth) {
+		if((authData.user && JSON.stringify(authData.user.member) != listenerMember ) || (authData.user && JSON.stringify(authData.user.admin) != listenerAdmin)) {
+			listenerMember = JSON.stringify(authData.user.member)
+			listenerAdmin = JSON.stringify(authData.user.admin)
+		
 
-			if(authData.user.admin) {
-				Object.keys(authData.user.admin).forEach(teamId => {
-					const ref = firebase.db.collection('teams').doc(teamId).onSnapshot(snapshot => {
+			Object.keys(listener).forEach(key => {
+				listener[key]()
+				delete listener[key]
+			})
 
-						teamStore.update(data => {
+			if(authData.hasAuth) {
 
-							data.teams.filter(val => val.id != snapshot.id)
+				// TODO: Also with member
+				if(authData.user.admin) {
 
-							const teamData = Object.assign({ 
-								id: snapshot.id 
-							}, snapshot.data())
-							data.teams.push(teamData)
+					Object.keys(authData.user.admin).forEach(teamId => {
+						const ref = firebase.db.collection('teams').doc(teamId).onSnapshot(snapshot => {
 
-							data.active = teamData
-							localStorage.setItem('teamActive', JSON.stringify(teamData))
-							return data
+							teamStore.update(data => {
+
+								data.teams.filter(val => val.id != snapshot.id)
+
+								const teamData = Object.assign({ 
+									id: snapshot.id 
+								}, snapshot.data())
+								data.teams.push(teamData)
+
+								data.active = teamData
+								localStorage.setItem('teamActive', JSON.stringify(teamData))
+								return data
+							})
+
 						})
-
 					})
-				})
-			}
+				}
 
+			}
 		}
 	})
 }
@@ -94,38 +105,6 @@ function setInvitationListener() {
 			}
 		})
 	)
-}
-
-
-export function teamStoreNewTeam(cb) {
-
-	const auth = get(authStore)
-	if(auth.user) {
-
-		let teamData = {
-			title: '',
-			admins: [ auth.user.id ],
-			members: [],
-			memberData: {},
-			created: new Date(),
-			updated: new Date()
-		}
-
-		teamData.memberData[auth.user.id] = {
-			email: auth.user.email,
-			name: auth.user.name,
-			picture: null
-		}
-
-		const ref = firebase.db.collection('teams').doc()
-		ref.set(teamData).then(() => {
-			teamData.id = ref.id
-			cb(null, teamData)
-		}).catch(err => {
-			console.error('error: ', err);
-			cb(err, null)
-		})
-	}
 }
 
 
