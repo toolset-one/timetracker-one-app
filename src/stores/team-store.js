@@ -40,7 +40,7 @@ function setListener() {
 
 					teamStore.update(data => {
 
-						data.teams.filter(val => return val.id != snapshot.id)
+						data.teams.filter(val => val.id != snapshot.id)
 
 						const teamData = Object.assign({ 
 							id: snapshot.id 
