@@ -49,15 +49,10 @@ export function uiStoreSetBreakpoint(windowWidth) {
 
 userStopwatchStore.subscribe(userStopwatchData => {
 
-	if(userStopwatchData.duration === 0) {
-		hours = null
-		minutes = null
-		seconds = null
-	} else {
-		hours = dateGetHours(userStopwatchData.duration)
-		minutes = dateGetMinutes(userStopwatchData.duration)
-		seconds = dateGetSeconds(userStopwatchData.duration)
-	}
+
+	hours = dateGetHours(userStopwatchData.duration)
+	minutes = dateGetMinutes(userStopwatchData.duration)
+	seconds = dateGetSeconds(userStopwatchData.duration)
 
 	uiStopwatchStore.update(data => {
 		return {

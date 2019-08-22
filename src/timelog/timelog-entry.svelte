@@ -188,6 +188,10 @@
 		animation: ticking 2000ms infinite;
 	}
 
+	.mouse.has-stopwatch .duration:hover >div {
+		background:#477DB3;
+	}
+
 	@keyframes ticking {
 		0% {
 			opacity:1;
