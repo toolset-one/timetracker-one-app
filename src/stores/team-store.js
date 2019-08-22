@@ -8,7 +8,7 @@ export const teamStore = writable({
 	invitations: {}
 })
 
-let listener,
+let listener = {},
 	invitationListener,
 	interval
 
@@ -28,75 +28,33 @@ export function teamStoreInit() {
 
 function setListener() {
 	authStore.subscribe(authData => {
-		if(listener) {
-			listener()
-		}
+		Object.keys(listener).forEach(key => {
+			listener[key]()
+			delete listener[key]
+		})
 
 		if(authData.hasAuth) {
-			console.log(authData)
-			const ref = firebase.db.collection('teams').where('admins', 'array-contains', authData.user.id)
 
-			ref.get().then(snapshot => {
-				if (snapshot.empty) {
+			Object.keys(authData.user.admin).forEach(teamId => {
+				const ref = firebase.db.collection('teams').doc(teamId).onSnapshot(snapshot => {
 
+					teamStore.update(data => {
 
-					const { key, email } = get(routerStore)
-					console.log('YA', key, email)
+						data.teams.filter(val => return val.id != snapshot.id)
 
-					const ref = firebase.db.collection('invitations').doc(key).get().then(snapshot => {
-						console.log('YU', snapshot.data().team)
-
-						firebase.db.collection('teams').doc(snapshot.data().team).update({
-							members: firebase.firestore.FieldValue.arrayUnion(authData.user.id),
-							invitation: key
-						})
-
-
-					}) // resource.data.members.hasAny([request.auth.uid])
-					// request.resource.data.arrayField.hasAll(resource.data.arrayField)
-
-					/*teamStoreNewTeam((err, teamData) => {
-						teamStore.update(data => {
-							data.teams = [teamData]
-							data.active = teamData
-							localStorage.setItem('teamActive', JSON.stringify(teamData))
-							return data
-						})
-					})
-					setInvitationListener()*/
-					return
-				}	
-
-				teamStore.update(data => {
-					
-					snapshot.forEach(doc => {
 						const teamData = Object.assign({ 
-							id: doc.id 
-						}, doc.data())
+							id: snapshot.id 
+						}, snapshot.data())
 						data.teams.push(teamData)
+
 						data.active = teamData
 						localStorage.setItem('teamActive', JSON.stringify(teamData))
+						return data
 					})
-					return data
+
 				})
-				setInvitationListener()
 			})
 
-
-
-			/*listener = ref.onSnapshot(snapshot => {
-		
-				if(snapshot.data()) {
-					let userStoreUnsubscribe = userStore.subscribe(userData => {
-						if(JSON.stringify(snapshot.data()) != JSON.stringify(userData)) {
-							userStore.update(data => snapshot.data())
-						}
-					})
-					userStoreUnsubscribe()
-				} else {
-					updateUser()
-				}
-			})*/
 		}
 	})
 }

@@ -34,8 +34,7 @@ function setListener() {
 				if(snapshot.data()) {
 					const { firstTeam } = get(userStore)
 
-					console.log( firstTeam, snapshot.data().firstTeam)
-
+					// TODO: Don't call two times
 					if(firstTeam != snapshot.data().firstTeam) {
 						authStoreControlUserToken()
 					}
