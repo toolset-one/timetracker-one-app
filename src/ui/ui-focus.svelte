@@ -5,7 +5,8 @@
 		x = 0,
 		y = 0,
 		width = 0,
-		height = 0
+		height = 0,
+		wiggle = false
 
 	const blurFunction = e => {
 		removeBlurFunction(e)
@@ -19,13 +20,13 @@
 	onMount(() => {
 		document.addEventListener('focusin', (event) => {
 
-			elementConfig = JSON.parse(event.target.dataset.focus)
+			elementConfig = event.target.dataset.focus ? JSON.parse(event.target.dataset.focus) : {}
 
 			const boundingRect = event.target.getBoundingClientRect()
-			x = boundingRect.x - 3 + elementConfig['box-x'] || 0
-			y = boundingRect.y - 3 + elementConfig['box-y'] || 0
-			width = boundingRect.width + 6 + elementConfig['box-width'] || 0
-			height = boundingRect.height + 6 + elementConfig['box-height'] || 0
+			x = boundingRect.x - 3 + (elementConfig['box-x'] || 0)
+			y = boundingRect.y - 3 + (elementConfig['box-y'] || 0)
+			width = boundingRect.width + 6 + (elementConfig['box-width'] || 0)
+			height = boundingRect.height + 6 + (elementConfig['box-height'] || 0)
 
 			event.target.addEventListener('blur', blurFunction, false)
 			event.target.addEventListener('keydown', keydownFunction, false)
@@ -45,6 +46,18 @@
 		} else if (e.keyCode === 39) { // RIGHT
 			if(elementConfig.right) {
 				doAction(elementConfig.right, e)
+			}
+		} else if (e.keyCode === 38) { // TOP
+			if(elementConfig.top) {
+				doAction(elementConfig.top, e)
+			} else {
+				initWiggle()
+			}
+		} else if (e.keyCode === 40) { // BOTTOM
+			if(elementConfig.bottom) {
+				doAction(elementConfig.bottom, e)
+			} else {
+				initWiggle()
 			}
 		}
 	}
@@ -69,13 +82,23 @@
 
 			el.focus()
 
-		} catch(err) {}
+		} catch(err) {
+			initWiggle()
+		}
+	}
+
+	function initWiggle() {
+		wiggle = true
+		setTimeout(() => {
+			wiggle = false
+		}, 200)
 	}
 
 </script>
 
 
 <div
+	class="{wiggle ? 'wiggle' : ''}"
 	style="
 		top:{y}px;
 		left:{x}px;
@@ -99,7 +122,10 @@ div {
     animation: glow 1500ms infinite;
     transition: all 100ms ease;
     pointer-events: none;
+}
 
+.wiggle {
+	animation: wiggle 200ms normal;
 }
 
 @keyframes glow {
@@ -112,6 +138,24 @@ div {
 	100% {
 		opacity: .5;
 	}
+}
+
+@keyframes wiggle {
+  20%  { 
+    transform: translateX(4px);  
+  }
+  40%  {
+    transform: translateX(-4px); 
+  }
+  60%  {
+    transform: translateX(2px);  
+  }
+  80%  {
+    transform: translateX(-1px); 
+  }
+  100% { 
+    transform: translateX(0);
+  }
 }
 
 </style>
