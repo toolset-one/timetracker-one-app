@@ -1,6 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
 
+	const FOCUS_ELS = 'a:not([disabled]), button:not([disabled]), input[type=text]:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"])';
+
 	let elementConfig,
 		x = 0,
 		y = 0,
@@ -35,7 +37,7 @@
 
 
 	const keydownFunction = e => {
-		console.log(e.keyCode)
+		// console.log(e.keyCode)
 
 		if(e.keyCode === 9) { // TAB
 
@@ -74,9 +76,15 @@
 				} else if(val.act === 'prev') {
 					el = el.previousElementSibling
 				} else if(val.act === 'next') {
+					console.log(el)
 					el = el.nextElementSibling
 				} else if(val.act === 'query') {
 					el = el.querySelector(val.sel)
+				} else if(val.act === 'tab') {
+					el = getNextFocusable(el)
+				} else if(val.act === 'find') {
+					console.log(el)
+					el = findFocusable(el)
 				}
 			})
 
@@ -92,6 +100,27 @@
 		setTimeout(() => {
 			wiggle = false
 		}, 200)
+	}
+
+
+
+	function getNextFocusable (el) {
+
+		const focusableEls = document.querySelectorAll(FOCUS_ELS)
+
+		var activeIndex
+		focusableEls.forEach((val, key) => {
+			if(el === val) {
+				activeIndex = key
+			}
+		})
+
+		return focusableEls[(activeIndex + 1)] || el
+	}
+
+
+	function findFocusable(el) {
+		return el.querySelector(FOCUS_ELS)
 	}
 
 </script>
@@ -110,18 +139,18 @@
 <style>
 
 div {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 0;
-    border-radius: 8px;
-    border: #477DB3 3px solid;
-    opacity: .5;
-    z-index: 20000;
-    animation: glow 1500ms infinite;
-    transition: all 100ms ease;
-    pointer-events: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 0;
+	height: 0;
+	border-radius: 8px;
+	border: #477DB3 3px solid;
+	opacity: .5;
+	z-index: 20000;
+	animation: glow 1500ms infinite;
+	transition: all 100ms ease;
+	pointer-events: none;
 }
 
 .wiggle {
@@ -142,19 +171,19 @@ div {
 
 @keyframes wiggle {
   20%  { 
-    transform: translateX(4px);  
+	transform: translateX(4px);  
   }
   40%  {
-    transform: translateX(-4px); 
+	transform: translateX(-4px); 
   }
   60%  {
-    transform: translateX(2px);  
+	transform: translateX(2px);  
   }
   80%  {
-    transform: translateX(-1px); 
+	transform: translateX(-1px); 
   }
   100% { 
-    transform: translateX(0);
+	transform: translateX(0);
   }
 }
 

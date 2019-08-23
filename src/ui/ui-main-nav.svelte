@@ -26,6 +26,15 @@
 		}, {
 			'act': 'query',
 			'sel': 'a'
+		}],
+		'bottom': [{
+			'act': 'parent',
+			'sel': 'body'
+		}, {
+			'act': 'query',
+			'sel': '.spacer + *'
+		}, {
+			'act': 'find'
 		}]
 		
 	})
