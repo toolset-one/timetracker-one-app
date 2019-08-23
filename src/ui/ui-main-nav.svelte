@@ -4,6 +4,32 @@
 	import { uiStore } from '../stores/ui-store.js'
 	import { dateToDatestring } from '../helpers/helpers.js'
 
+	const FOCUS_CONFIG = JSON.stringify({
+		'box-x': 6,
+		'box-y': 6,
+		'box-width': -12,
+		'box-height': -12,
+		'left': [{
+			'act': 'parent',
+			'sel': 'li'
+		}, {
+			'act': 'prev' 
+		}, {
+			'act': 'query',
+			'sel': 'a'
+		}],
+		'right': [{
+			'act': 'parent',
+			'sel': 'li'
+		}, {
+			'act': 'next' 
+		}, {
+			'act': 'query',
+			'sel': 'a'
+		}]
+		
+	})
+
 	let ROUTES = ['timelog', 'reports', 'settings'],
 	ELEMENTS_MAP = {},
 
@@ -35,7 +61,8 @@
 					href="/{route}/{route === 'timelog' ? dateToDatestring(new Date()) + '/' : ''}{route === 'settings' ? 'tasks/' : ''}"
 					bind:this={ELEMENTS_MAP[route]}
 					class="{$routerStore.view === route ? 'active' : ''}"
-					on:mouseenter={e => hoverEl = ELEMENTS_MAP[route]}>
+					on:mouseenter={e => hoverEl = ELEMENTS_MAP[route]}
+					data-focus="{FOCUS_CONFIG}">
 					<span>
 						{route.charAt(0).toUpperCase() + route.slice(1)}
 					</span>
@@ -116,6 +143,7 @@
 		font-weight:500;
 		color:#66625C;
 		transition: color 100ms ease;
+		outline:none;
 	}
 
 	a:hover {

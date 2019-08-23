@@ -10,6 +10,8 @@
 	import { uiStore, uiStoreInit, uiStoreSetBreakpoint } from './stores/ui-store.js'
 	import { getWindowWidth } from './helpers/helpers.js'
 
+	import UiFocus from './ui/ui-focus.svelte'
+
 	import SignUp from './sign-in/sign-up-view.svelte'
 	import SignIn from './sign-in/sign-in-view.svelte'
 	import NewPasswordView from './sign-in/new-password-view.svelte'
@@ -81,9 +83,13 @@ const COLORS = [
 
 {/if}
 
+<UiFocus />
+
 <svelte:window on:resize={e => resize()} />
 
 <style>
+
+
 /*	.loading {
 		position: absolute;
 		top:50%;
