@@ -36,7 +36,6 @@
 		}, {
 			'act': 'find'
 		}]
-		
 	})
 
 	let ROUTES = ['timelog', 'reports', 'settings'],

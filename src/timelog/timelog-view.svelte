@@ -19,6 +19,71 @@
 	import TimelogContextNav from '../timelog/timelog-context-nav.svelte'
 	import TimelogEntryOverlay from '../timelog/timelog-entry-overlay.svelte'
 
+	const FOCUS_TOP = [{
+			'act': 'parent',
+			'sel': 'body'
+		}, {
+			'act': 'query',
+			'sel': 'nav a'
+		}]
+
+	const FOCUS_BOTTOM = [{
+			'act': 'parent',
+			'sel': 'body'
+		}, {
+			'act': 'query',
+			'sel': '.entries'
+		}, {
+			'act': 'find'
+		}]
+
+	const LEFT_ARROW_CONFIG = JSON.stringify({
+		'top': FOCUS_TOP,
+		'right': [{
+			'act': 'parent',
+			'sel': 'div'
+		}, {
+			'act': 'next' 
+		}, {
+			'act': 'query',
+			'sel': 'a'
+		}],
+		'bottom': FOCUS_BOTTOM
+	})
+
+	const RIGHT_ARROW_CONFIG = JSON.stringify({
+		'top': FOCUS_TOP,
+		'left': [{
+			'act': 'parent',
+			'sel': 'div'
+		}, {
+			'act': 'prev' 
+		}, {
+			'act': 'query',
+			'sel': 'a'
+		}],
+		'right': [{
+			'act': 'parent',
+			'sel': 'body'
+		}, {
+			'act': 'query',
+			'sel': '.add-button-wrapper a'
+		}],
+		'bottom': FOCUS_BOTTOM
+	})
+
+
+	const ADD_BUTTON_CONFIG = JSON.stringify({
+		'top': FOCUS_TOP,
+		'left': [{
+			'act': 'parent',
+			'sel': 'header'
+		}, {
+			'act': 'query',
+			'sel': '.button-wrapper + .button-wrapper a'
+		}],
+		'bottom': FOCUS_BOTTOM
+	})
 
 	let overlays = {
 		mobileEntry: TimelogEntryOverlay,
@@ -64,20 +129,25 @@
 			<UiButton 
 				type="icon" 
 				icon="arrow-left" 
-				link="/timelog/{dateToDatestring(datePrevDate(dateNow))}/" />
+				link="/timelog/{dateToDatestring(datePrevDate(dateNow))}/"
+				focusConfig={LEFT_ARROW_CONFIG} />
 		</div>
 		<div class="button-wrapper">
 			<UiButton 
 				type="icon"
 				icon="arrow-right"
-				link="/timelog/{dateToDatestring(dateNextDate(dateNow))}/" />
+				link="/timelog/{dateToDatestring(dateNextDate(dateNow))}/"
+				focusConfig={RIGHT_ARROW_CONFIG} />
 		</div>
 		<h2>
 			{dateGetHumanDate(dateNow)}
 		</h2>
 	</div>
 	<div class="add-button-wrapper">
-		<UiButton label="Add Entry" on:click={e => newEntry()} />
+		<UiButton
+			label="Add Entry"
+			on:click={e => newEntry()}
+			focusConfig={ADD_BUTTON_CONFIG} />
 	</div>
 </header>
 {#if $uiStore.breakpoint === 'xs'}

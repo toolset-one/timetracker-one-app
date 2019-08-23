@@ -44,10 +44,14 @@
 		} else if (e.keyCode === 37) { // RIGHT
 			if(elementConfig.left) {
 				doAction(elementConfig.left, e)
+			} else {
+				initWiggle()
 			}
 		} else if (e.keyCode === 39) { // RIGHT
 			if(elementConfig.right) {
 				doAction(elementConfig.right, e)
+			} else {
+				initWiggle()
 			}
 		} else if (e.keyCode === 38) { // TOP
 			if(elementConfig.top) {

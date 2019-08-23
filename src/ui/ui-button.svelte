@@ -13,7 +13,7 @@
 	export let color = '#26231E'
 	export let link = null
 	export let disabled = false
-
+	export let focusConfig = '{}'
 
 
 	let el,
@@ -53,7 +53,8 @@
 	on:mousemove={e => mousePosition = {
 		x: e.pageX,
 		y: e.pageY
-	}}>
+	}}
+	data-focus="{focusConfig}">
 	<em></em>
 	<span>
 		{#if type === 'default' || type === 'icon-right' }	
