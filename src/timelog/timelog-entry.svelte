@@ -60,8 +60,24 @@
 	})
 
 	const STOPWATCH_CONFIG = JSON.stringify({
-		'top': PARENT_CONFIG,
-		'bottom': PARENT_CONFIG,
+		'top': [{
+			'act': 'parent',
+			'sel': 'li'
+		}, {
+			'act': 'prev'
+		}, {
+			'act': 'query',
+			'sel': '.stopwatch a'
+		}],
+		'bottom': [{
+			'act': 'parent',
+			'sel': 'li'
+		}, {
+			'act': 'next'
+		}, {
+			'act': 'query',
+			'sel': '.stopwatch a'
+		}],
 		'left': PARENT_CONFIG,
 		'right': [{
 			'act': 'parent',
@@ -76,8 +92,24 @@
 	const DURATION_CONFIG = JSON.stringify({
 		'box-y': 6,
 		'box-height': -12,
-		'top': PARENT_CONFIG,
-		'bottom': PARENT_CONFIG,
+		'top': [{
+			'act': 'parent',
+			'sel': 'li'
+		}, {
+			'act': 'prev'
+		}, {
+			'act': 'query',
+			'sel': '.duration'
+		}],
+		'bottom': [{
+			'act': 'parent',
+			'sel': 'li'
+		}, {
+			'act': 'next'
+		}, {
+			'act': 'query',
+			'sel': '.duration'
+		}],
 		'left': [{
 			'act': 'prev'
 		}, {
@@ -95,8 +127,24 @@
 		'box-width': -12,
 		'box-y': 6,
 		'box-height': -12,
-		'top': PARENT_CONFIG,
-		'bottom': PARENT_CONFIG,
+		'top': [{
+			'act': 'parent',
+			'sel': 'li'
+		}, {
+			'act': 'prev'
+		}, {
+			'act': 'query',
+			'sel': '.task'
+		}],
+		'bottom': [{
+			'act': 'parent',
+			'sel': 'li'
+		}, {
+			'act': 'next'
+		}, {
+			'act': 'query',
+			'sel': '.task'
+		}],
 		'left': [{
 			'act': 'prev'
 		}],
@@ -112,8 +160,24 @@
 		'box-width': -48,
 		'box-y': 6,
 		'box-height': -12,
-		'top': PARENT_CONFIG,
-		'bottom': PARENT_CONFIG,
+		'top': [{
+			'act': 'parent',
+			'sel': 'li'
+		}, {
+			'act': 'prev'
+		}, {
+			'act': 'query',
+			'sel': '.comment'
+		}],
+		'bottom': [{
+			'act': 'parent',
+			'sel': 'li'
+		}, {
+			'act': 'next'
+		}, {
+			'act': 'query',
+			'sel': '.comment'
+		}],
 		'left': [{
 			'act': 'prev'
 		}],
@@ -126,8 +190,24 @@
 	})
 
 	const CONTEXT_NAV_CONFIG = JSON.stringify({
-		'top': PARENT_CONFIG,
-		'bottom': PARENT_CONFIG,
+		'top': [{
+			'act': 'parent',
+			'sel': 'li'
+		}, {
+			'act': 'prev'
+		}, {
+			'act': 'query',
+			'sel': '.nav a'
+		}],
+		'bottom': [{
+			'act': 'parent',
+			'sel': 'li'
+		}, {
+			'act': 'next'
+		}, {
+			'act': 'query',
+			'sel': '.nav a'
+		}],
 		'left': [{
 			'act': 'parent',
 			'sel': '.nav'
