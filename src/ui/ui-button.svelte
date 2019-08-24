@@ -14,7 +14,7 @@
 	export let link = null
 	export let disabled = false
 	export let focusConfig = 'EMPTY'
-	export let focusTop
+	export let focusTop = null
 
 
 	let el,
