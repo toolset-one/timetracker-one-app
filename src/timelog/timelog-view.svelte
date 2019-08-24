@@ -82,7 +82,8 @@
 		<UiButton
 			label="Add Entry"
 			on:click={e => newEntry()}
-			focusConfig="TIMELOG_HEADER_ADD" />
+			focusConfig="TIMELOG_HEADER_ADD"
+			type="{$uiStore.breakpoint === 'xs' ? 'dark' : 'default'}" />
 	</div>
 </header>
 {#if $uiStore.breakpoint === 'xs'}
@@ -90,7 +91,7 @@
 {/if}
 
 <ul class="entries bp-{$uiStore.breakpoint}">
-	{#each entries as entry, i (entry.id)}
+	{#each entries as entry, i}
 		<TimelogEntry
 			data={entry}
 			first={i == 0}

@@ -1,5 +1,5 @@
 <script>
-	import { onMount, createEventDispatcher } from 'svelte';
+	import { onMount, createEventDispatcher } from 'svelte'
 	import { routerStore } from '../stores/router-store.js'
 
 	import UiIcon from './ui-icon.svelte'
@@ -59,7 +59,7 @@
 	data-top={focusTop}>
 	<em></em>
 	<span>
-		{#if type === 'default' || type === 'icon-right' }	
+		{#if type === 'default' || type === 'icon-right' || type === 'dark' }	
 			{label}
 		{:else if type === 'icon' || type === 'entry' || type === 'entry has-stopwatch'}
 			<UiIcon type={icon} color="{color}" />
@@ -159,6 +159,15 @@
 		width:34px;
 		height:34px;
 		padding:11px;
+	}
+
+	.type-dark {
+		background:#26231E;
+	}
+
+	.type-dark span {
+		color:#FFF;
+		background:#26231E;
 	}
 
 	.has-stopwatch {

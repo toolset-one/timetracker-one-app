@@ -3,6 +3,7 @@
 	import { slide } from 'svelte/transition'
 	import { cubicOut } from 'svelte/easing'
 	import UiButton from '../ui/ui-button.svelte'
+	import TimelogEntrySwiper from '../timelog/timelog-entry-swiper.svelte'
 	import { dateGetHours, dateGetMinutes, dateGetSeconds } from '../helpers/helpers.js'
 	import { userStore, userSetStopwatch } from '../stores/user-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
@@ -73,7 +74,12 @@
 		tabindex="0"
 		data-config="TIMELOG_ENTRY"
 		data-top={first ? 'TIMELOG_ENTRY__TO_ADD' : null}>
+		
+
+<TimelogEntrySwiper>
+
 		{#if $uiStore.breakpoint != 'xs' && !$uiStore.isTouchDevice}
+
 			<div class="stopwatch">
 				<UiButton
 					type="{hasStopwatch ? 'entry has-stopwatch' : 'entry'}"
@@ -137,6 +143,10 @@
 					focusTop={first ? 'TIMELOG_ENTRY__TO_ADD' : null} />
 			</div>
 		{/if}
+
+</TimelogEntrySwiper>
+
+
 	</li>
 <style>
 

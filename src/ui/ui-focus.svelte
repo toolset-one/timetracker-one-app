@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { KEYS_CONFIG } from '../helpers/keyyboad-configurations.js'
+	import { uiStore } from '../stores/ui-store.js'
 
 	const FOCUS_ELS = 'a:not([disabled]), button:not([disabled]), input[type=text]:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"])';
 
@@ -187,7 +188,7 @@
 
 </script>
 
-{#if show}
+{#if show && !$uiStore.isTouchDevice}
 	<div
 		class="{wiggleClass}"
 		style="
