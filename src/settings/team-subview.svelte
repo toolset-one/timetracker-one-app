@@ -62,7 +62,7 @@
 
 		<ul class="entries">
 			{#each $teamStore.active.admins as admin, i}
-				<TeamEntry data={$teamStore.active.memberData[admin]}
+				<TeamEntry data={$teamStore.active.memberData[admin] ? $teamStore.active.memberData[admin] : { id: admin }}
 					first={i == 0}
 					last={i == $teamStore.active.admins.length - 1}
 					on:open={e => openOverlayComponent(e.detail)} />

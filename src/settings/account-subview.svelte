@@ -15,7 +15,7 @@
 
 	onMount(() => {
 		userStore.subscribe(data =>
-			setTimeout(() => username = data.username)
+			setTimeout(() => username = data.username || '')
 		)
 	})
 

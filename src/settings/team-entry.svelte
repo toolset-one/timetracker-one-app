@@ -54,7 +54,7 @@
 		on:click={e => dispatchMobileOrTouch('open', { component: 'mobileEntry', id: data.id})}>
 		{#if !invitation}
 			<div class="color" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'color', id: data.id})}>
-				<div style="{'background-color:' + data.color + ';'}">
+				<div style="{'background-color:' + (data ? data.color : '#333') + ';'}">
 					
 				</div>
 			</div>

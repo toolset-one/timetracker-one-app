@@ -4,7 +4,9 @@
 
 	const FOCUS_ELS = 'a:not([disabled]), button:not([disabled]), input[type=text]:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"])';
 
-	let targetEl,
+	let show = false,
+		targetEl,
+		lastTargets = [],
 		elementConfig,
 		x = 0,
 		y = 0,
@@ -14,34 +16,61 @@
 
 	const blurFunction = e => {
 		removeBlurFunction(e)
+
+		setTimeout(() => {
+			if(!document.body.contains(targetEl)) {
+
+				let lastTarget,
+					found = false
+				while(!found && lastTargets.length > 0) {
+					lastTarget = lastTargets.pop()
+					found = document.body.contains(lastTarget)
+				}
+				if(document.body.contains(lastTarget)) {
+					lastTarget.focus()
+				} else {
+					show = false
+				}
+			}
+		})
 	}
 
 	const removeBlurFunction = e => {
-		event.target.addEventListener('keydown', keydownFunction, false)
-		event.target.addEventListener('blur', blurFunction, false)
+		e.target.addEventListener('keydown', keydownFunction, false)
+		e.target.addEventListener('blur', blurFunction, false)
 	}
 
 	onMount(() => {
-		document.addEventListener('focusin', (event) => {
+		document.addEventListener('focusin', e => {
+			show = true
 
-			targetEl = event.target
-			elementConfig = event.target.dataset.config ? KEYS_CONFIG[event.target.dataset.config] : {}
+			lastTargets.push(targetEl)
+			if(lastTargets.length > 100) {
+				lastTargets.shift()
+			}
 
-			const boundingRect = event.target.getBoundingClientRect()
-			x = boundingRect.x - 3 + (elementConfig['box-x'] || 0)
-			y = boundingRect.y - 3 + (elementConfig['box-y'] || 0)
-			width = boundingRect.width + 6 + (elementConfig['box-width'] || 0)
-			height = boundingRect.height + 6 + (elementConfig['box-height'] || 0)
+			targetEl = e.target
+			elementConfig = targetEl.dataset.config ? KEYS_CONFIG[targetEl.dataset.config] : {}
 
-			event.target.addEventListener('blur', blurFunction, false)
-			event.target.addEventListener('keydown', keydownFunction, false)
+			setTargetBoundingRect()
+			setTimeout(setTargetBoundingRect)
+
+			targetEl.addEventListener('blur', blurFunction, false)
+			targetEl.addEventListener('keydown', keydownFunction, false)
 		})
 	})
 
 
-	const keydownFunction = e => {
+	function setTargetBoundingRect() {
+		const boundingRect = targetEl.getBoundingClientRect()
+		x = boundingRect.x - 3 + (elementConfig['box-x'] || 0)
+		y = boundingRect.y - 3 + (elementConfig['box-y'] || 0)
+		width = boundingRect.width + 6 + (elementConfig['box-width'] || 0)
+		height = boundingRect.height + 6 + (elementConfig['box-height'] || 0)
+	}
 
-		console.log(e.keyCode)
+
+	const keydownFunction = e => {
 
 		if(e.keyCode === 9) { // TAB
 
@@ -74,6 +103,14 @@
 		} else if (e.keyCode === 13) { // ENTER
 			if(elementConfig.enter) {
 				doAction(elementConfig.enter, e)
+			} else {
+				e.stopPropagation()
+				e.preventDefault()
+				e.target.dispatchEvent(new MouseEvent('click', {
+					bubbles: true,
+					cancelable: true,
+					view: window
+				}))
 			}
 		} else if (e.keyCode === 27) { // ESC
 			if(elementConfig.esc) {
@@ -150,16 +187,16 @@
 
 </script>
 
-
-<div
-	class="{wiggleClass}"
-	style="
-		top:{y}px;
-		left:{x}px;
-		width:{width}px;
-		height:{height}px;
-		"></div>
-	
+{#if show}
+	<div
+		class="{wiggleClass}"
+		style="
+			top:{y}px;
+			left:{x}px;
+			width:{width}px;
+			height:{height}px;
+			"></div>
+{/if}
 
 <style>
 

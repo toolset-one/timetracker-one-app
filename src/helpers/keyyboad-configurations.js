@@ -29,10 +29,12 @@ const TO_PARENT_LI = [
 
 const DELETE_TIMELOG_ENTRY = e => {
 	timesStoreDeleteEntry(e.target.closest('li').dataset.id)
-	document.querySelector('.add-button-wrapper a').focus()
 }
 
 export const KEYS_CONFIG = {
+
+	EMPTY: {},
+
 	MAIN_NAV: {
 		'box-x': 6,
 		'box-y': 6,
@@ -105,7 +107,6 @@ export const KEYS_CONFIG = {
 		'esc': TO_MAIN_NAV,
 		'backspace': e => {
 			timesStoreDeleteEntry(e.target.dataset.id)
-			document.querySelector('.add-button-wrapper a').focus()
 		}
 	},
 

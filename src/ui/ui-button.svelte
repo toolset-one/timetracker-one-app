@@ -13,7 +13,7 @@
 	export let color = '#26231E'
 	export let link = null
 	export let disabled = false
-	export let focusConfig = '{}'
+	export let focusConfig = 'EMPTY'
 	export let focusTop
 
 
