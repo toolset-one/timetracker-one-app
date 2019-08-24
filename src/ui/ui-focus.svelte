@@ -1,13 +1,15 @@
 <script>
 	import { onMount } from 'svelte';
+	import { KEYS_CONFIG } from '../helpers/keyyboad-configurations.js'
 
 	const FOCUS_ELS = 'a:not([disabled]), button:not([disabled]), input[type=text]:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"])';
 
-	let elementConfig,
+	let targetEl,
+		elementConfig,
 		x = 0,
 		y = 0,
-		width = 1920,
-		height = 1920,
+		width = 0,
+		height = 0,
 		wiggleClass = ''
 
 	const blurFunction = e => {
@@ -22,7 +24,8 @@
 	onMount(() => {
 		document.addEventListener('focusin', (event) => {
 
-			elementConfig = event.target.dataset.focus ? JSON.parse(event.target.dataset.focus) : {}
+			targetEl = event.target
+			elementConfig = event.target.dataset.config ? KEYS_CONFIG[event.target.dataset.config] : {}
 
 			const boundingRect = event.target.getBoundingClientRect()
 			x = boundingRect.x - 3 + (elementConfig['box-x'] || 0)
@@ -37,7 +40,6 @@
 
 
 	const keydownFunction = e => {
-		console.log(e.keyCode)
 
 		if(e.keyCode === 9) { // TAB
 
@@ -54,7 +56,9 @@
 				initWiggle(false)
 			}
 		} else if (e.keyCode === 38) { // TOP
-			if(elementConfig.top) {
+			if(targetEl.dataset.top) {
+				doAction(KEYS_CONFIG[targetEl.dataset.top], e, true)
+			} else if(elementConfig.top) {
 				doAction(elementConfig.top, e, true)
 			} else {
 				initWiggle(true)
@@ -84,18 +88,17 @@
 
 		try {
 			toDo.forEach(val => {
-				if(val.act === 'parent') {
-					console.log('HUBA')
-					el = el.closest(val.sel)
-				} else if(val.act === 'prev') {
+				if(val[0] === 'parent') {
+					el = el.closest(val[1])
+				} else if(val[0] === 'prev') {
 					el = el.previousElementSibling
-				} else if(val.act === 'next') {
+				} else if(val[0] === 'next') {
 					el = el.nextElementSibling
-				} else if(val.act === 'query') {
-					el = el.querySelector(val.sel)
-				} else if(val.act === 'tab') {
+				} else if(val[0] === 'query') {
+					el = el.querySelector(val[1])
+				} else if(val[0] === 'tab') {
 					el = getNextFocusable(el)
-				} else if(val.act === 'find') {
+				} else if(val[0] === 'find') {
 					el = findFocusable(el)
 				}
 			})
@@ -154,8 +157,8 @@ div {
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 100%;
-	height: 100%;
+	width: 0;
+	height: 0;
 	border-radius: 8px;
 	border: #477DB3 3px solid;
 	opacity: .5;

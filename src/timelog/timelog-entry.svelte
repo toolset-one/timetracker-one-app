@@ -12,211 +12,6 @@
 	export let first = false
 	export let last = false
 
-	const PARENT_CONFIG = [{
-			'act': 'parent',
-			'sel': 'li'
-		}] 
-
-	const FIRSTENTRY_FOCUS_CONFIG = JSON.stringify({
-		'top': [{
-			'act': 'parent',
-			'sel': 'body'
-		}, {
-			'act': 'query',
-			'sel': '.add-button-wrapper a'
-		}],
-		'bottom': [{
-			'act': 'next'
-		}],
-		'left': [{
-			'act': 'query',
-			'sel': '.nav a'
-		}],
-		'right': [{
-			'act': 'find'
-		}],
-		'enter': [{
-			'act': 'find'
-		}]
-	})
-
-	const ENTRY_FOCUS_CONFIG = JSON.stringify({
-		'top': [{
-			'act': 'prev'
-		}],
-		'bottom': [{
-			'act': 'next'
-		}],
-		'left': [{
-			'act': 'query',
-			'sel': '.nav a'
-		}],
-		'right': [{
-			'act': 'find'
-		}],
-		'enter': [{
-			'act': 'find'
-		}]
-	})
-
-	const STOPWATCH_CONFIG = JSON.stringify({
-		'top': [{
-			'act': 'parent',
-			'sel': 'li'
-		}, {
-			'act': 'prev'
-		}, {
-			'act': 'query',
-			'sel': '.stopwatch a'
-		}],
-		'bottom': [{
-			'act': 'parent',
-			'sel': 'li'
-		}, {
-			'act': 'next'
-		}, {
-			'act': 'query',
-			'sel': '.stopwatch a'
-		}],
-		'left': PARENT_CONFIG,
-		'right': [{
-			'act': 'parent',
-			'sel': '.stopwatch'
-		}, {
-			'act': 'next'
-		}],
-		'esc': PARENT_CONFIG
-	})
-
-
-	const DURATION_CONFIG = JSON.stringify({
-		'box-y': 6,
-		'box-height': -12,
-		'top': [{
-			'act': 'parent',
-			'sel': 'li'
-		}, {
-			'act': 'prev'
-		}, {
-			'act': 'query',
-			'sel': '.duration'
-		}],
-		'bottom': [{
-			'act': 'parent',
-			'sel': 'li'
-		}, {
-			'act': 'next'
-		}, {
-			'act': 'query',
-			'sel': '.duration'
-		}],
-		'left': [{
-			'act': 'prev'
-		}, {
-			'act': 'find',
-		}],
-		'right': [{
-			'act': 'next'
-		}],
-		'esc': PARENT_CONFIG
-	})
-
-
-	const TASK_CONFIG = JSON.stringify({
-		'box-x': 6,
-		'box-width': -12,
-		'box-y': 6,
-		'box-height': -12,
-		'top': [{
-			'act': 'parent',
-			'sel': 'li'
-		}, {
-			'act': 'prev'
-		}, {
-			'act': 'query',
-			'sel': '.task'
-		}],
-		'bottom': [{
-			'act': 'parent',
-			'sel': 'li'
-		}, {
-			'act': 'next'
-		}, {
-			'act': 'query',
-			'sel': '.task'
-		}],
-		'left': [{
-			'act': 'prev'
-		}],
-		'right': [{
-			'act': 'next'
-		}],
-		'esc': PARENT_CONFIG
-	})
-
-
-	const COMMENT_CONFIG = JSON.stringify({
-		'box-x': 0,
-		'box-width': -48,
-		'box-y': 6,
-		'box-height': -12,
-		'top': [{
-			'act': 'parent',
-			'sel': 'li'
-		}, {
-			'act': 'prev'
-		}, {
-			'act': 'query',
-			'sel': '.comment'
-		}],
-		'bottom': [{
-			'act': 'parent',
-			'sel': 'li'
-		}, {
-			'act': 'next'
-		}, {
-			'act': 'query',
-			'sel': '.comment'
-		}],
-		'left': [{
-			'act': 'prev'
-		}],
-		'right': [{
-			'act': 'next'
-		}, {
-			'act': 'find'
-		}],
-		'esc': PARENT_CONFIG
-	})
-
-	const CONTEXT_NAV_CONFIG = JSON.stringify({
-		'top': [{
-			'act': 'parent',
-			'sel': 'li'
-		}, {
-			'act': 'prev'
-		}, {
-			'act': 'query',
-			'sel': '.nav a'
-		}],
-		'bottom': [{
-			'act': 'parent',
-			'sel': 'li'
-		}, {
-			'act': 'next'
-		}, {
-			'act': 'query',
-			'sel': '.nav a'
-		}],
-		'left': [{
-			'act': 'parent',
-			'sel': '.nav'
-		}, {
-			'act': 'prev'
-		}],
-		'right': PARENT_CONFIG,
-		'esc': PARENT_CONFIG
-	})
 
 	let hovered = false,
 		focused = false,
@@ -274,7 +69,8 @@
 		on:focusin={e => focused = true}
 		on:focusout={e => focused = false}
 		tabindex="0"
-		data-focus="{first ? FIRSTENTRY_FOCUS_CONFIG : ENTRY_FOCUS_CONFIG}">
+		data-config="TIMELOG_ENTRY"
+		data-top={first ? 'TIMELOG_ENTRY__TO_ADD' : null}>
 		{#if $uiStore.breakpoint != 'xs' && !$uiStore.isTouchDevice}
 			<div class="stopwatch">
 				<UiButton
@@ -283,14 +79,14 @@
 					hovered={hovered || focused || hasStopwatch}
 					color="{hovered || focused || hasStopwatch ? '#26231E' : '#E6E4E1'}"
 					on:click={e => userSetStopwatch(data.id, (Date.now() - data.duration * 1000))}
-					focusConfig={STOPWATCH_CONFIG} />
+					focusConfig="TIMELOG_ENTRY_STOPWATCH" />
 			</div>
 		{/if}
 		<div
 			class="duration"
 			on:click={e => !hasStopwatch && dispatchDesktopAndKeyboard('open', { component: 'duration', id: data.id})}
 			tabindex="0"
-			data-focus="{DURATION_CONFIG}">
+			data-config="TIMELOG_ENTRY_DURATION">
 			<div>
 				{#if hasStopwatch}
 					{$uiStopwatchStore.hours}<span>:</span>{$uiStopwatchStore.minutes}<small>{$uiStopwatchStore.seconds}</small>
@@ -303,7 +99,7 @@
 			class="task"
 			on:click={e => dispatchDesktopAndKeyboard('open', { component: 'task', id: data.id})}
 			tabindex="0"
-			data-focus="{TASK_CONFIG}">
+			data-config="TIMELOG_ENTRY_TASK">
 			<div style="{$uiStore.breakpoint === 'xs' ? 'color' : 'background-color'}:{taskColor};">
 				{#if $uiStore.breakpoint === 'xs'}
 					<span style="background-color:{taskColor};"></span>
@@ -318,7 +114,7 @@
 			class="comment {data.comment.length === 0 ? 'no-comment' : ''}"
 			on:click={e => dispatchDesktopAndKeyboard('open', { component: 'comment', id: data.id})}
 			tabindex="0"
-			data-focus="{COMMENT_CONFIG}">
+			data-config="TIMELOG_ENTRY_COMMENT">
 			<div>
 				{data.comment.length > 0 ? data.comment : 'No comment'}
 			</div>
@@ -331,7 +127,7 @@
 					hovered={hovered || focused}
 					color="{hovered || focused ? '#26231E' : '#E6E4E1'}"
 					on:click={e => dispatch('open', { component: 'contextNav', id: data.id})}
-					focusConfig={CONTEXT_NAV_CONFIG} />
+					focusConfig="TIMELOG_ENTRY_CONEXTNAV" />
 			</div>
 		{/if}
 	</li>

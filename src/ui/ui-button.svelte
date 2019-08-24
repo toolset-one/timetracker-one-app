@@ -54,7 +54,7 @@
 		x: e.pageX,
 		y: e.pageY
 	}}
-	data-focus="{focusConfig}">
+	data-config="{focusConfig}">
 	<em></em>
 	<span>
 		{#if type === 'default' || type === 'icon-right' }	
