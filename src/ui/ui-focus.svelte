@@ -37,7 +37,7 @@
 
 
 	const keydownFunction = e => {
-		// console.log(e.keyCode)
+		console.log(e.keyCode)
 
 		if(e.keyCode === 9) { // TAB
 
@@ -65,22 +65,31 @@
 			} else {
 				initWiggle(true)
 			}
+		} else if (e.keyCode === 13) { // ENTER
+			if(elementConfig.enter) {
+				doAction(elementConfig.enter, e)
+			}
+		} else if (e.keyCode === 27) { // ESC
+			if(elementConfig.esc) {
+				doAction(elementConfig.esc, e)
+			}
 		}
 	}
 
 
 	const doAction = (toDo, e, vertically) => {
 		e.preventDefault()
+		e.stopPropagation()
 		let el = e.target
 
 		try {
 			toDo.forEach(val => {
 				if(val.act === 'parent') {
+					console.log('HUBA')
 					el = el.closest(val.sel)
 				} else if(val.act === 'prev') {
 					el = el.previousElementSibling
 				} else if(val.act === 'next') {
-					console.log(el)
 					el = el.nextElementSibling
 				} else if(val.act === 'query') {
 					el = el.querySelector(val.sel)

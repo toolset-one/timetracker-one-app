@@ -12,6 +12,11 @@
 	export let first = false
 	export let last = false
 
+	const PARENT_CONFIG = [{
+			'act': 'parent',
+			'sel': 'li'
+		}] 
+
 	const FIRSTENTRY_FOCUS_CONFIG = JSON.stringify({
 		'top': [{
 			'act': 'parent',
@@ -23,6 +28,16 @@
 		'bottom': [{
 			'act': 'next'
 		}],
+		'left': [{
+			'act': 'query',
+			'sel': '.nav a'
+		}],
+		'right': [{
+			'act': 'find'
+		}],
+		'enter': [{
+			'act': 'find'
+		}]
 	})
 
 	const ENTRY_FOCUS_CONFIG = JSON.stringify({
@@ -32,11 +47,99 @@
 		'bottom': [{
 			'act': 'next'
 		}],
+		'left': [{
+			'act': 'query',
+			'sel': '.nav a'
+		}],
+		'right': [{
+			'act': 'find'
+		}],
+		'enter': [{
+			'act': 'find'
+		}]
+	})
+
+	const STOPWATCH_CONFIG = JSON.stringify({
+		'top': PARENT_CONFIG,
+		'bottom': PARENT_CONFIG,
+		'left': PARENT_CONFIG,
+		'right': [{
+			'act': 'parent',
+			'sel': '.stopwatch'
+		}, {
+			'act': 'next'
+		}],
+		'esc': PARENT_CONFIG
 	})
 
 
+	const DURATION_CONFIG = JSON.stringify({
+		'box-y': 6,
+		'box-height': -12,
+		'top': PARENT_CONFIG,
+		'bottom': PARENT_CONFIG,
+		'left': [{
+			'act': 'prev'
+		}, {
+			'act': 'find',
+		}],
+		'right': [{
+			'act': 'next'
+		}],
+		'esc': PARENT_CONFIG
+	})
+
+
+	const TASK_CONFIG = JSON.stringify({
+		'box-x': 6,
+		'box-width': -12,
+		'box-y': 6,
+		'box-height': -12,
+		'top': PARENT_CONFIG,
+		'bottom': PARENT_CONFIG,
+		'left': [{
+			'act': 'prev'
+		}],
+		'right': [{
+			'act': 'next'
+		}],
+		'esc': PARENT_CONFIG
+	})
+
+
+	const COMMENT_CONFIG = JSON.stringify({
+		'box-x': 0,
+		'box-width': -48,
+		'box-y': 6,
+		'box-height': -12,
+		'top': PARENT_CONFIG,
+		'bottom': PARENT_CONFIG,
+		'left': [{
+			'act': 'prev'
+		}],
+		'right': [{
+			'act': 'next'
+		}, {
+			'act': 'find'
+		}],
+		'esc': PARENT_CONFIG
+	})
+
+	const CONTEXT_NAV_CONFIG = JSON.stringify({
+		'top': PARENT_CONFIG,
+		'bottom': PARENT_CONFIG,
+		'left': [{
+			'act': 'parent',
+			'sel': '.nav'
+		}, {
+			'act': 'prev'
+		}],
+		'right': PARENT_CONFIG,
+		'esc': PARENT_CONFIG
+	})
 
 	let hovered = false,
+		focused = false,
 		isNew = false,
 		interval,
 		stopwatchDuration = 0
@@ -88,6 +191,8 @@
 		on:mouseenter={e => hovered = true}
 		on:mouseleave={e => hovered = false}
 		on:click={e => dispatchMobileOrTouch('open', { component: 'mobileEntry', id: data.id})}
+		on:focusin={e => focused = true}
+		on:focusout={e => focused = false}
 		tabindex="0"
 		data-focus="{first ? FIRSTENTRY_FOCUS_CONFIG : ENTRY_FOCUS_CONFIG}">
 		{#if $uiStore.breakpoint != 'xs' && !$uiStore.isTouchDevice}
@@ -95,12 +200,17 @@
 				<UiButton
 					type="{hasStopwatch ? 'entry has-stopwatch' : 'entry'}"
 					icon="{hasStopwatch ? 'pause' : 'play'}"
-					hovered={hovered || hasStopwatch}
-					color="{hovered || hasStopwatch ? '#26231E' : '#E6E4E1'}"
-					on:click={e => userSetStopwatch(data.id, (Date.now() - data.duration * 1000))} />
+					hovered={hovered || focused || hasStopwatch}
+					color="{hovered || focused || hasStopwatch ? '#26231E' : '#E6E4E1'}"
+					on:click={e => userSetStopwatch(data.id, (Date.now() - data.duration * 1000))}
+					focusConfig={STOPWATCH_CONFIG} />
 			</div>
 		{/if}
-		<div class="duration" on:click={e => !hasStopwatch && dispatchDesktopAndKeyboard('open', { component: 'duration', id: data.id})}>
+		<div
+			class="duration"
+			on:click={e => !hasStopwatch && dispatchDesktopAndKeyboard('open', { component: 'duration', id: data.id})}
+			tabindex="0"
+			data-focus="{DURATION_CONFIG}">
 			<div>
 				{#if hasStopwatch}
 					{$uiStopwatchStore.hours}<span>:</span>{$uiStopwatchStore.minutes}<small>{$uiStopwatchStore.seconds}</small>
@@ -109,7 +219,11 @@
 				{/if}
 			</div>
 		</div>
-		<div class="task" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'task', id: data.id})}>
+		<div
+			class="task"
+			on:click={e => dispatchDesktopAndKeyboard('open', { component: 'task', id: data.id})}
+			tabindex="0"
+			data-focus="{TASK_CONFIG}">
 			<div style="{$uiStore.breakpoint === 'xs' ? 'color' : 'background-color'}:{taskColor};">
 				{#if $uiStore.breakpoint === 'xs'}
 					<span style="background-color:{taskColor};"></span>
@@ -122,7 +236,9 @@
 		</div>
 		<div
 			class="comment {data.comment.length === 0 ? 'no-comment' : ''}"
-			on:click={e => dispatchDesktopAndKeyboard('open', { component: 'comment', id: data.id})}>
+			on:click={e => dispatchDesktopAndKeyboard('open', { component: 'comment', id: data.id})}
+			tabindex="0"
+			data-focus="{COMMENT_CONFIG}">
 			<div>
 				{data.comment.length > 0 ? data.comment : 'No comment'}
 			</div>
@@ -132,9 +248,10 @@
 				<UiButton
 					type="entry"
 					icon="burger"
-					hovered={hovered}
-					color="{hovered ? '#26231E' : '#E6E4E1'}"
-					on:click={e => dispatch('open', { component: 'contextNav', id: data.id})} />
+					hovered={hovered || focused}
+					color="{hovered || focused ? '#26231E' : '#E6E4E1'}"
+					on:click={e => dispatch('open', { component: 'contextNav', id: data.id})}
+					focusConfig={CONTEXT_NAV_CONFIG} />
 			</div>
 		{/if}
 	</li>
@@ -244,6 +361,7 @@
 		height:48px;
 		padding:0;
 		cursor:pointer;
+		outline:none;
 	}
 
 	.bp-xs .duration {
@@ -281,6 +399,7 @@
 	.task {
 		padding:6px;
 		cursor:pointer;
+		outline:none;
 	}
 
 	.mouse .task:hover >div {
@@ -318,6 +437,7 @@
 		height:48px;
 		cursor:pointer;
 		overflow:hidden;
+		outline:none;
 	}
 
 	.bp-xs .comment {
