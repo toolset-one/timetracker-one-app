@@ -41,6 +41,8 @@
 
 	const keydownFunction = e => {
 
+		console.log(e.keyCode)
+
 		if(e.keyCode === 9) { // TAB
 
 		} else if (e.keyCode === 37) { // RIGHT
@@ -76,6 +78,14 @@
 		} else if (e.keyCode === 27) { // ESC
 			if(elementConfig.esc) {
 				doAction(elementConfig.esc, e)
+			}
+		} else if(e.keyCode === 8) { // BACKSPACE
+			if(elementConfig.backspace) {
+				if(typeof elementConfig.backspace === 'function') {
+					elementConfig.backspace(e)
+				} else {
+					doAction(elementConfig.backspace, e)
+				}
 			}
 		}
 	}

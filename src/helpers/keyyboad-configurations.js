@@ -1,3 +1,5 @@
+import { timesStoreDeleteEntry } from '../stores/times-store.js'
+
 const TO_MAIN_NAV = [
 	['parent', 'body'],
 	['query', 'nav a']
@@ -25,6 +27,11 @@ const TO_PARENT_LI = [
 	['parent', 'li']
 ]
 
+const DELETE_TIMELOG_ENTRY = e => {
+	timesStoreDeleteEntry(e.target.closest('li').dataset.id)
+	document.querySelector('.add-button-wrapper a').focus()
+}
+
 export const KEYS_CONFIG = {
 	MAIN_NAV: {
 		'box-x': 6,
@@ -48,7 +55,8 @@ export const KEYS_CONFIG = {
 			['next'],
 			['find']
 		],
-		'bottom': TO_ENTRIES
+		'bottom': TO_ENTRIES,
+		'esc': TO_MAIN_NAV
 	},
 
 	TIMELOG_HEADER_ARROW_RIGHT: {
@@ -62,7 +70,8 @@ export const KEYS_CONFIG = {
 			['parent', 'body'],
 			['query', '.add-button-wrapper a']
 		],
-		'bottom': TO_ENTRIES
+		'bottom': TO_ENTRIES,
+		'esc': TO_MAIN_NAV
 	},
 
 
@@ -72,7 +81,8 @@ export const KEYS_CONFIG = {
 			['parent', 'header'],
 			['query', '.button-wrapper + .button-wrapper a']
 		],
-		'bottom': TO_ENTRIES
+		'bottom': TO_ENTRIES,
+		'esc': TO_MAIN_NAV
 	},
 
 
@@ -92,6 +102,11 @@ export const KEYS_CONFIG = {
 		'enter': [
 			['find']
 		],
+		'esc': TO_MAIN_NAV,
+		'backspace': e => {
+			timesStoreDeleteEntry(e.target.dataset.id)
+			document.querySelector('.add-button-wrapper a').focus()
+		}
 	},
 
 	TIMELOG_ENTRY__TO_ADD: [
@@ -115,7 +130,8 @@ export const KEYS_CONFIG = {
 			['parent', '.stopwatch'],
 			['next']
 		],
-		'esc': TO_PARENT_LI
+		'esc': TO_PARENT_LI,
+		'backspace': DELETE_TIMELOG_ENTRY
 	},
 
 	TIMELOG_ENTRY_DURATION: {
@@ -140,7 +156,8 @@ export const KEYS_CONFIG = {
 		'right': [
 			['next']
 		],
-		'esc': TO_PARENT_LI
+		'esc': TO_PARENT_LI,
+		'backspace': DELETE_TIMELOG_ENTRY
 	},
 
 	TIMELOG_ENTRY_TASK: {
@@ -164,7 +181,8 @@ export const KEYS_CONFIG = {
 		'right': [
 			['next']
 		],
-		'esc': TO_PARENT_LI
+		'esc': TO_PARENT_LI,
+		'backspace': DELETE_TIMELOG_ENTRY
 	},
 
 	TIMELOG_ENTRY_COMMENT: {
@@ -189,7 +207,8 @@ export const KEYS_CONFIG = {
 			['next'],
 			['find']
 		],
-		'esc': TO_PARENT_LI
+		'esc': TO_PARENT_LI,
+		'backspace': DELETE_TIMELOG_ENTRY
 	},
 
 	TIMELOG_ENTRY_CONEXTNAV: {
@@ -208,6 +227,7 @@ export const KEYS_CONFIG = {
 			['prev']
 		],
 		'right': TO_PARENT_LI,
-		'esc': TO_PARENT_LI
+		'esc': TO_PARENT_LI,
+		'backspace': DELETE_TIMELOG_ENTRY
 	}
 }

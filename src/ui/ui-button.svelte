@@ -14,6 +14,7 @@
 	export let link = null
 	export let disabled = false
 	export let focusConfig = '{}'
+	export let focusTop
 
 
 	let el,
@@ -54,7 +55,8 @@
 		x: e.pageX,
 		y: e.pageY
 	}}
-	data-config="{focusConfig}">
+	data-config="{focusConfig}"
+	data-top={focusTop}>
 	<em></em>
 	<span>
 		{#if type === 'default' || type === 'icon-right' }	

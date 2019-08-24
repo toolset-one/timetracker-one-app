@@ -6,6 +6,7 @@
 	import { dateGetHours, dateGetMinutes, dateGetSeconds } from '../helpers/helpers.js'
 	import { userStore, userSetStopwatch } from '../stores/user-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
+	import { timesStoreDeleteEntry } from '../stores/times-store.js'
 	import { uiStore, uiStopwatchStore } from '../stores/ui-store.js'
 
 	export let data = {}
@@ -54,6 +55,7 @@
 
 	<li
 		id="entry-{data.id}"
+		data-id="{data.id}"
 		in:slide={{ duration: animationDuration, easing: cubicOut }}
 		class="
 			bp-{$uiStore.breakpoint}
@@ -79,14 +81,16 @@
 					hovered={hovered || focused || hasStopwatch}
 					color="{hovered || focused || hasStopwatch ? '#26231E' : '#E6E4E1'}"
 					on:click={e => userSetStopwatch(data.id, (Date.now() - data.duration * 1000))}
-					focusConfig="TIMELOG_ENTRY_STOPWATCH" />
+					focusConfig="TIMELOG_ENTRY_STOPWATCH"
+					focusTop={first ? 'TIMELOG_ENTRY__TO_ADD' : null} />
 			</div>
 		{/if}
 		<div
 			class="duration"
 			on:click={e => !hasStopwatch && dispatchDesktopAndKeyboard('open', { component: 'duration', id: data.id})}
 			tabindex="0"
-			data-config="TIMELOG_ENTRY_DURATION">
+			data-config="TIMELOG_ENTRY_DURATION"
+			data-top={first ? 'TIMELOG_ENTRY__TO_ADD' : null}>
 			<div>
 				{#if hasStopwatch}
 					{$uiStopwatchStore.hours}<span>:</span>{$uiStopwatchStore.minutes}<small>{$uiStopwatchStore.seconds}</small>
@@ -99,7 +103,8 @@
 			class="task"
 			on:click={e => dispatchDesktopAndKeyboard('open', { component: 'task', id: data.id})}
 			tabindex="0"
-			data-config="TIMELOG_ENTRY_TASK">
+			data-config="TIMELOG_ENTRY_TASK"
+			data-top={first ? 'TIMELOG_ENTRY__TO_ADD' : null}>
 			<div style="{$uiStore.breakpoint === 'xs' ? 'color' : 'background-color'}:{taskColor};">
 				{#if $uiStore.breakpoint === 'xs'}
 					<span style="background-color:{taskColor};"></span>
@@ -114,7 +119,8 @@
 			class="comment {data.comment.length === 0 ? 'no-comment' : ''}"
 			on:click={e => dispatchDesktopAndKeyboard('open', { component: 'comment', id: data.id})}
 			tabindex="0"
-			data-config="TIMELOG_ENTRY_COMMENT">
+			data-config="TIMELOG_ENTRY_COMMENT"
+			data-top={first ? 'TIMELOG_ENTRY__TO_ADD' : null}>
 			<div>
 				{data.comment.length > 0 ? data.comment : 'No comment'}
 			</div>
@@ -127,7 +133,8 @@
 					hovered={hovered || focused}
 					color="{hovered || focused ? '#26231E' : '#E6E4E1'}"
 					on:click={e => dispatch('open', { component: 'contextNav', id: data.id})}
-					focusConfig="TIMELOG_ENTRY_CONEXTNAV" />
+					focusConfig="TIMELOG_ENTRY_CONEXTNAV"
+					focusTop={first ? 'TIMELOG_ENTRY__TO_ADD' : null} />
 			</div>
 		{/if}
 	</li>
