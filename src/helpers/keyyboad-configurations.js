@@ -2,7 +2,7 @@ import { timesStoreDeleteEntry } from '../stores/times-store.js'
 
 const TO_MAIN_NAV = [
 	['parent', 'body'],
-	['query', 'nav a']
+	['query', 'nav .active']
 ]
 
 const NAV_LEFT = [
@@ -47,6 +47,23 @@ export const KEYS_CONFIG = {
 			['query', '.spacer + *'],
 			['find']
 		]
+	},
+
+
+	SUB_NAV: {
+		'box-x': 6,
+		'box-y': 6,
+		'box-width': -12,
+		'box-height': -12,
+		'top': TO_MAIN_NAV,
+		'left': NAV_LEFT,
+		'right': NAV_RIGHT,
+		'bottom': [
+			['parent', 'body'],
+			['query', 'header'],
+			['find']
+		],
+		'esc': TO_MAIN_NAV
 	},
 
 

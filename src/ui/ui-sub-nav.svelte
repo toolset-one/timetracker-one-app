@@ -31,7 +31,8 @@
 					href="/settings/{route}/"
 					bind:this={ELEMENTS_MAP[route]}
 					class="{$routerStore.subview === route ? 'active' : ''}"
-					on:mouseenter={e => hoverEl = ELEMENTS_MAP[route]}>
+					on:mouseenter={e => hoverEl = ELEMENTS_MAP[route]}
+					data-config="SUB_NAV">
 					<span>
 						{route.charAt(0).toUpperCase() + route.slice(1)}
 					</span>
