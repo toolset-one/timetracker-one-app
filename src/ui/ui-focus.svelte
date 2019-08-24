@@ -6,9 +6,9 @@
 	let elementConfig,
 		x = 0,
 		y = 0,
-		width = 0,
-		height = 0,
-		wiggle = false
+		width = 1920,
+		height = 1920,
+		wiggleClass = ''
 
 	const blurFunction = e => {
 		removeBlurFunction(e)
@@ -43,33 +43,33 @@
 
 		} else if (e.keyCode === 37) { // RIGHT
 			if(elementConfig.left) {
-				doAction(elementConfig.left, e)
+				doAction(elementConfig.left, e, false)
 			} else {
-				initWiggle()
+				initWiggle(false)
 			}
 		} else if (e.keyCode === 39) { // RIGHT
 			if(elementConfig.right) {
-				doAction(elementConfig.right, e)
+				doAction(elementConfig.right, e, false)
 			} else {
-				initWiggle()
+				initWiggle(false)
 			}
 		} else if (e.keyCode === 38) { // TOP
 			if(elementConfig.top) {
-				doAction(elementConfig.top, e)
+				doAction(elementConfig.top, e, true)
 			} else {
-				initWiggle()
+				initWiggle(true)
 			}
 		} else if (e.keyCode === 40) { // BOTTOM
 			if(elementConfig.bottom) {
-				doAction(elementConfig.bottom, e)
+				doAction(elementConfig.bottom, e, true)
 			} else {
-				initWiggle()
+				initWiggle(true)
 			}
 		}
 	}
 
 
-	const doAction = (toDo, e) => {
+	const doAction = (toDo, e, vertically) => {
 		e.preventDefault()
 		let el = e.target
 
@@ -87,7 +87,6 @@
 				} else if(val.act === 'tab') {
 					el = getNextFocusable(el)
 				} else if(val.act === 'find') {
-					console.log(el)
 					el = findFocusable(el)
 				}
 			})
@@ -95,14 +94,14 @@
 			el.focus()
 
 		} catch(err) {
-			initWiggle()
+			initWiggle(vertically)
 		}
 	}
 
-	function initWiggle() {
-		wiggle = true
+	function initWiggle(vertically) {
+		wiggleClass = 'wiggle-' + (vertically ? 'vertically' : 'horizontally')
 		setTimeout(() => {
-			wiggle = false
+			wiggleClass = ''
 		}, 200)
 	}
 
@@ -131,7 +130,7 @@
 
 
 <div
-	class="{wiggle ? 'wiggle' : ''}"
+	class="{wiggleClass}"
 	style="
 		top:{y}px;
 		left:{x}px;
@@ -146,8 +145,8 @@ div {
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 0;
-	height: 0;
+	width: 100%;
+	height: 100%;
 	border-radius: 8px;
 	border: #477DB3 3px solid;
 	opacity: .5;
@@ -157,8 +156,12 @@ div {
 	pointer-events: none;
 }
 
-.wiggle {
-	animation: wiggle 200ms normal;
+.wiggle-horizontally {
+	animation: wiggleHorizontally 200ms normal;
+}
+
+.wiggle-vertically {
+	animation: wiggleVertically 200ms normal;
 }
 
 @keyframes glow {
@@ -173,7 +176,7 @@ div {
 	}
 }
 
-@keyframes wiggle {
+@keyframes wiggleHorizontally {
   20%  { 
 	transform: translateX(4px);  
   }
@@ -188,6 +191,24 @@ div {
   }
   100% { 
 	transform: translateX(0);
+  }
+}
+
+@keyframes wiggleVertically {
+  20%  { 
+	transform: translateY(4px);  
+  }
+  40%  {
+	transform: translateY(-4px); 
+  }
+  60%  {
+	transform: translateY(2px);  
+  }
+  80%  {
+	transform: translateY(-1px); 
+  }
+  100% { 
+	transform: translateY(0);
   }
 }
 

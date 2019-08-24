@@ -12,6 +12,30 @@
 	export let first = false
 	export let last = false
 
+	const FIRSTENTRY_FOCUS_CONFIG = JSON.stringify({
+		'top': [{
+			'act': 'parent',
+			'sel': 'body'
+		}, {
+			'act': 'query',
+			'sel': '.add-button-wrapper a'
+		}],
+		'bottom': [{
+			'act': 'next'
+		}],
+	})
+
+	const ENTRY_FOCUS_CONFIG = JSON.stringify({
+		'top': [{
+			'act': 'prev'
+		}],
+		'bottom': [{
+			'act': 'next'
+		}],
+	})
+
+
+
 	let hovered = false,
 		isNew = false,
 		interval,
@@ -63,7 +87,9 @@
 			{ hasStopwatch ? 'has-stopwatch' : ''}"
 		on:mouseenter={e => hovered = true}
 		on:mouseleave={e => hovered = false}
-		on:click={e => dispatchMobileOrTouch('open', { component: 'mobileEntry', id: data.id})}>
+		on:click={e => dispatchMobileOrTouch('open', { component: 'mobileEntry', id: data.id})}
+		tabindex="0"
+		data-focus="{first ? FIRSTENTRY_FOCUS_CONFIG : ENTRY_FOCUS_CONFIG}">
 		{#if $uiStore.breakpoint != 'xs' && !$uiStore.isTouchDevice}
 			<div class="stopwatch">
 				<UiButton
@@ -124,6 +150,7 @@
 		min-height:48px;
 		border-radius:3px;
 		box-shadow:0 1px 1px rgba(0, 0, 0, .05), 0 2px 3px rgba(0, 0, 0, .1);
+		outline:none;
 	}
 
 	li.bp-xs {
