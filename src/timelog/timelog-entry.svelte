@@ -76,7 +76,7 @@
 		data-top={first ? 'TIMELOG_ENTRY__TO_ADD' : null}>
 		
 
-<TimelogEntrySwiper>
+<TimelogEntrySwiper data={data} on:open={e => dispatch('open', e.detail)}>
 
 		{#if $uiStore.breakpoint != 'xs' && !$uiStore.isTouchDevice}
 
