@@ -129,14 +129,16 @@
 	.wrapper {
 		position: fixed;
 		bottom:0;
-		left:12px;
-		right:12px;
+		left:50%;
+		max-width:480px;
+		width:96.25%;
 		z-index:1010;
 		background:#FFF;
 		border-top-left-radius: 6px;
 		border-top-right-radius: 6px;
 		overflow:hidden;
 		transition: transform 200ms ease, opacity 200ms ease;
+		transform:translateX(-50%);
 	}
 
 	.attr {
