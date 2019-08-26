@@ -2,20 +2,22 @@
 	import { onMount, afterUpdate, createEventDispatcher } from 'svelte';
 	import { slide } from 'svelte/transition'
 	import { cubicOut } from 'svelte/easing'
-	import UiButton from '../ui/ui-button.svelte'
-	import TimelogEntrySwiper from '../timelog/timelog-entry-swiper.svelte'
 	import { dateGetHours, dateGetMinutes, dateGetSeconds } from '../helpers/helpers.js'
 	import { userStore, userSetStopwatch } from '../stores/user-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 	import { timesStoreDeleteEntry } from '../stores/times-store.js'
 	import { uiStore, uiStopwatchStore } from '../stores/ui-store.js'
 
+	import UiButton from '../ui/ui-button.svelte'
+	import TimelogEntrySwiper from '../timelog/timelog-entry-swiper.svelte'
+
 	export let data = {}
 	export let first = false
 	export let last = false
 
 
-	let hovered = false,
+	let el,
+		hovered = false,
 		focused = false,
 		isNew = false,
 		interval,
@@ -29,9 +31,13 @@
 	$: taskColor = $tasksStore.json[data.task] ? $tasksStore.json[data.task].color : '#333'
 
 
-	onMount(() =>
+	onMount(() => {
 		isNew = data.created.seconds * 1000 >= Date.now() - 2000
-	)
+
+		if(!isNew) {
+			el.removeAttribute('style')
+		}
+	})
 
 	function dispatchDesktopAndKeyboard(event, eventData) {
 		const unsubscribe = uiStore.subscribe(data => {
@@ -55,9 +61,10 @@
 </script>
 
 	<li
+		bind:this={el}
 		id="entry-{data.id}"
 		data-id="{data.id}"
-		in:slide={{ duration: animationDuration, easing: cubicOut }}
+		in:slide={{ duration: 100, easing: cubicOut }}
 		class="
 			bp-{$uiStore.breakpoint}
 			{$uiStore.isTouchDevice ? 'touch' : 'mouse'}
@@ -157,7 +164,6 @@
 		margin:0 0 1px 0;
 		padding:0;
 		background:#FFF;
-		min-height:48px;
 		border-radius:3px;
 		box-shadow:0 1px 1px rgba(0, 0, 0, .05), 0 2px 3px rgba(0, 0, 0, .1);
 		outline:none;

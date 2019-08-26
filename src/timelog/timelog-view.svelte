@@ -140,7 +140,7 @@
 {/if}
 
 <ul class="entries bp-{$uiStore.breakpoint}">
-	{#each entries as entry, i}
+	{#each entries as entry, i (entry.id)}
 		<TimelogEntry
 			data={entry}
 			first={i == 0}
