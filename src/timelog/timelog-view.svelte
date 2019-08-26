@@ -5,6 +5,7 @@
 	import { routerStore } from '../stores/router-store.js'
 	import { timesStore, timesStoreControlDate, timesStoreNewTime } from '../stores/times-store.js'
 	import { uiStore, uiScrollstopStore } from '../stores/ui-store.js'
+	import { userStore, userStopwatchStore } from '../stores/user-store.js'
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateToDatabaseDate } from '../helpers/helpers.js'
 
 	import UiButton from '../ui/ui-button.svelte'
@@ -43,7 +44,9 @@
 	$: entries = $timesStore.dayIndex[databaseDate] 
 		? Object.keys($timesStore.dayIndex[databaseDate]).map(entryId => $timesStore.times[entryId]).sort((a, b) => b.created.seconds - a.created.seconds)
 		: []
-	$: total = entries.reduce((sum, entry) => entry.duration + sum, 0)
+	$: total = entries.reduce((sum, entry) => {
+		return sum + ($userStore.stopwatchEntryId === entry.id ? $userStopwatchStore.duration : entry.duration)
+	}, 0)
 
 
 
