@@ -111,7 +111,7 @@
 				<li></li>
 				{#each $tasksStore.array as task}
 					<li on:click={e => select(e, task)}>
-						{task.title}
+						{task.title.length > 0 ? task.title : 'No title'}
 					</li>
 				{/each}
 				<li></li>
