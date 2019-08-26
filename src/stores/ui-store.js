@@ -26,6 +26,10 @@ export const uiStopwatchStore = writable({
 	seconds: 0
 })
 
+export const uiScrollstopStore = writable({
+	scrollstop: false
+})
+
 export function uiStoreInit() {
 	uiStore.update(data => {
 		data.isTouchDevice = ('ontouchstart' in window || navigator.msMaxTouchPoints) ? true : false

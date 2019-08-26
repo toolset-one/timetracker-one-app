@@ -1,12 +1,30 @@
 <script>
-	import { onMount, createEventDispatcher } from 'svelte';
-	import { uiStore } from '../stores/ui-store.js'
+	import { onMount, createEventDispatcher } from 'svelte'
+	import { get } from 'svelte/store'
+	import { uiStore, uiScrollstopStore } from '../stores/ui-store.js'
 	import { userSetStopwatch } from '../stores/user-store.js'
 	import { timesStoreDeleteEntry } from '../stores/times-store.js'
+	import UiIcon from '../ui/ui-icon.svelte'
 
 	export let data
 
-	const dispatch = createEventDispatcher()
+	const dispatch = createEventDispatcher(),
+		LABEL_MAP = {
+			'delete': 'Delete Entry',
+			'stopwatch': 'Start Stopwatch',
+			'duration': 'Edit Duration',
+			'task': 'Edit Task',
+			'comment': 'Edit Comment',
+			'neutral': ''
+		},
+		ICON_MAP = {
+			'delete': 'cross-big',
+			'stopwatch': 'clock-big',
+			'duration': 'clock-big',
+			'task': 'checkmark-big',
+			'comment': 'pen-big',
+			'neutral': ''
+		}
 
 	let el,
 		touch = false,
@@ -15,34 +33,8 @@
 		trigger = 'neutral'
 
 	onMount(() => {
-		if(el) {
-			el.scrollLeft = el.getBoundingClientRect().width
-		}
+
 	})
-
-
-	function scroll(e) {
-		console.log(el.scrollLeft)
-
-		/*if(false && !touch) {
-			const scrollPercentage = el.scrollLeft / el.getBoundingClientRect().width
-
-			if(scrollPercentage < 0.5 || scrollPercentage > 1.5) {
-				scrollCanceled = true
-				el.scrollLeft = el.getBoundingClientRect().width
-				setTimeout(() => {
-					scrollCanceled = false
-				})
-			}
-		}*/
-	
-		/*
-
-{e => userSetStopwatch(data.id, (Date.now() - data.duration * 1000))}
-
-		*/
-
-	}
 
 	function touchstart(e) {
 		touch = true
@@ -50,7 +42,7 @@
 	}
 
 	function touchmove(e) {
-		delta = e.changedTouches[0].clientX - firstX
+		delta = get(uiScrollstopStore) ? e.changedTouches[0].clientX - firstX : 0
 
  		if(delta <= -168) {
 			trigger = 'comment'
@@ -91,7 +83,6 @@
 	<div
 		class="wrapper {touch ? 'touched' : ''}"
 		bind:this={el}
-		on:scroll={e => scroll(e)}
 		on:touchstart={e => touchstart(e)}
 		on:touchmove={e => touchmove(e)}
 		on:touchend={e => touchend(e)}>
@@ -102,7 +93,16 @@
 
 		<div
 			class="indicator {trigger} {delta < 0 ? 'right' : 'left'}"
-			style="width:{Math.abs(delta)}px"></div>
+			style="width:{Math.abs(delta)}px">
+			{#if trigger != 'neutral'}
+				<div class="inner">
+					<div class="icon-wrapper">
+						<UiIcon type={ICON_MAP[trigger]} size="big" color="#FFF" />
+					</div>
+					{LABEL_MAP[trigger]}
+				</div>
+			{/if}
+		</div>
 	
 	</div>
 {:else}
@@ -116,6 +116,7 @@
 	.wrapper {
 		position: relative;
 		display:block;
+		min-width:100%;
 		max-width:100%;
 		overflow:hidden;
 		display:block;
@@ -142,6 +143,7 @@
 		width:0;
 		height:100%;
 		transition: background-color 100ms ease;
+		overflow:hidden;
 	}
 
 	.indicator.right {
@@ -171,6 +173,23 @@
 
 	.indicator.comment {
 		background:#7D47B3;
+	}
+
+	.indicator .inner {
+		position: absolute;
+		top:50%;
+		left:50%;
+		transform:translateX(-50%) translateY(-50%);
+		color:#FFF;
+		font-size:10px;
+		text-align: center;
+		line-height:18px;
+		white-space: nowrap;
+	}
+
+	.icon-wrapper {
+		width:24px;
+		margin:0 auto;
 	}
 
 </style>

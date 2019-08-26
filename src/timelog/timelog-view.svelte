@@ -1,9 +1,10 @@
 <script>
 	import Page from 'page'
 	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
 	import { routerStore } from '../stores/router-store.js'
 	import { timesStore, timesStoreControlDate, timesStoreNewTime } from '../stores/times-store.js'
-	import { uiStore } from '../stores/ui-store.js'
+	import { uiStore, uiScrollstopStore } from '../stores/ui-store.js'
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateToDatabaseDate } from '../helpers/helpers.js'
 
 	import UiButton from '../ui/ui-button.svelte'
@@ -45,6 +46,12 @@
 	$: total = entries.reduce((sum, entry) => entry.duration + sum, 0)
 
 
+
+	onMount(() => {
+
+	})
+
+
 	function newEntry() {
 		timesStoreNewTime(dateToDatabaseDate(dateNow), success => {
 
@@ -56,7 +63,49 @@
 		entryIdActive = e.id
 	}
 
+	let scrollPosStart = 0,
+		scrollStopDecision = false,
+		startX = 0,
+		startY = 0
+
+	function touchstart(e) {
+		startX = e.changedTouches[0].clientX
+		startY = e.changedTouches[0].clientY
+
+		scrollPosStart = document.querySelector('body').scrollTop
+	}
+
+	function touchmove(e) {
+		e.stopPropagation()
+
+		if( !scrollStopDecision) {
+			let xAbs = Math.abs(startX - e.changedTouches[0].clientX)
+			let yAbs = Math.abs(startY - e.changedTouches[0].clientY)
+			if(xAbs > yAbs) {
+				document.querySelector('body').style.overflow = 'hidden'
+				uiScrollstopStore.set(true)
+			} else {
+				uiScrollstopStore.set(false)
+			}
+			scrollStopDecision = true
+		}
+	}
+
+	function touchend(e) {
+		if(get(uiScrollstopStore)) {
+			document.querySelector('body').setAttribute('style', null)		
+		}
+		scrollStopDecision = false	
+		uiScrollstopStore.set(false)
+	}
+
 </script>
+
+<svelte:body
+	on:touchstart={touchstart}
+	on:touchmove={touchmove}
+	on:touchend={touchend}
+/>
 
 <header class="bp-{$uiStore.breakpoint}">
 	<div class="date-nav">
