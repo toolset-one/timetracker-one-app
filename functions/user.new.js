@@ -61,32 +61,3 @@ const newUser = async (userRef, user, team, invitation) => {
 		}
 	}
 }
-
-exports.setClaims = functions.https.onRequest((req, res) => {
-	admin.auth().setCustomUserClaims('SsmjhJiN6pbT4InSCuZwiFYMMrW2', {
-		admin: {
-			'T5AbK1DyC9krl7t1LWWO': true
-		}
-	}).then(() => {
-		console.log('SUCCESS SET CLAIMS')
-		return
-	}).catch(err => {
-		console.log(err)
-	})
-	res.end('OK')
-})
-
-
-exports.unsetClaims = functions.https.onRequest((req, res) => {
-	admin.auth().setCustomUserClaims('SsmjhJiN6pbT4InSCuZwiFYMMrW2', {
-		admin: {
-			
-		}
-	}).then(() => {
-		console.log('SUCCESS UNSET CLAIMS')
-		return
-	}).catch(err => {
-		console.log(err)
-	})
-	res.end('OK')
-})

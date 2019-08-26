@@ -2,7 +2,7 @@ const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const serviceAccount = require('./timetracker-one-app-firebase-adminsdk.json')
 
-const { newUserTrigger, newUser, setClaims, unsetClaims } = require('./user.new.js')
+const { newUserTrigger } = require('./user.new.js')
 
 try {
 	admin.initializeApp({
@@ -14,5 +14,3 @@ try {
 }
 
 exports.newUserTrigger = newUserTrigger
-exports.setClaims = setClaims
-exports.unsetClaims = unsetClaims
