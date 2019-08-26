@@ -139,17 +139,18 @@
 	<div class="spacer"></div>
 {/if}
 
-<ul class="entries bp-{$uiStore.breakpoint}">
-	{#each entries as entry, i (entry.id)}
-		<TimelogEntry
-			data={entry}
-			first={i == 0}
-			last={i == entries.length - 1}
-			on:open={e => openOverlayComponent(e.detail)} />
-	{/each}
-</ul>
-
 {#if entries.length > 0}
+
+	<ul class="entries bp-{$uiStore.breakpoint}">
+		{#each entries as entry, i (entry.id)}
+			<TimelogEntry
+				data={entry}
+				first={i == 0}
+				last={i == entries.length - 1}
+				on:open={e => openOverlayComponent(e.detail)} />
+		{/each}
+	</ul>
+
 	<div class="total bp-{$uiStore.breakpoint}">
 		<p>
 			{dateGetHours(total)}:{dateGetMinutes(total)} total
@@ -161,7 +162,7 @@
 			No tracked hours for this day.
 		</h3>
 		<p>
-			To track some time, please use the button saying "Add Entry". If you need help how to use timetracker.one, please <a href="https://timetracker.one/help/">click here</a>.
+			To track some time, please use the button saying "Add Entry". If you need help how to use timetracker.one, please <a href="https://timetracker.one/help/" target="_blank" data-config="TIMELOG_EMPTY_STATE_LINK">click here</a>.
 		</p>
 	</div>
 {/if}

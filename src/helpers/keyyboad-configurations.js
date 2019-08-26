@@ -19,7 +19,7 @@ const NAV_RIGHT = [
 
 const TO_ENTRIES = [
 	['parent', 'body'],
-	['query', '.entries'],
+	['query', '.entries, .container'],
 	['find']
 ]
 
@@ -247,5 +247,12 @@ export const KEYS_CONFIG = {
 		'right': TO_PARENT_LI,
 		'esc': TO_PARENT_LI,
 		'backspace': DELETE_TIMELOG_ENTRY
+	},
+
+	TIMELOG_EMPTY_STATE_LINK: {
+		'top': [
+			['parent', 'body'],
+			['query', '.add-button-wrapper a']
+		]
 	}
 }

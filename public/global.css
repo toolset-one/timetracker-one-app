@@ -136,9 +136,10 @@ p {
 
 p a {
     text-decoration: underline;
+    outline:none;
 }
 
-p a:hover {
+p a:hover, p a:focus {
     text-decoration: none;
 }
 

@@ -66,6 +66,16 @@
 		document.querySelector('body').addEventListener('trigger-focus-resize', () => {
 			setTargetBoundingRect()
 		}, false)
+
+
+		document.querySelector('body').addEventListener('keydown', e => {
+			if( ([9, 37, 39, 38, 40, 13, 27, 8]).includes(e.keyCode) ) {
+				if(!targetEl || !document.body.contains(targetEl)) {
+					console.log('Find Focus Event')
+					findFocusable(e.target).focus()
+				}
+			}
+		}, false)
 	})
 
 
