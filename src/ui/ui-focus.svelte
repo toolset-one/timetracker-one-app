@@ -89,6 +89,9 @@
 
 
 	const keydownFunction = e => {
+		if(targetEl.dataset.disable) {
+			return
+		}
 
 		if(e.keyCode === 9) { // TAB
 
@@ -125,9 +128,7 @@
 				e.stopPropagation()
 				e.preventDefault()
 				e.target.dispatchEvent(new MouseEvent('click', {
-					bubbles: true,
-					cancelable: true,
-					view: window
+					bubbles: true
 				}))
 			}
 		} else if (e.keyCode === 27) { // ESC

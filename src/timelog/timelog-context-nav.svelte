@@ -8,7 +8,9 @@
 
 	const dispatch = createEventDispatcher()
 
-	let right,
+	let firstEl,
+		lastEl,
+		right,
 		top,
 		entryData,
 		opened = false
@@ -24,10 +26,38 @@
 		opened = true
 
 		timesStoreGetEntry(id, data => entryData = data)
+
+		firstEl.focus()
+
+		setTimeout(() => {
+			firstEl.dispatchEvent(new CustomEvent('trigger-focus-resize', { bubbles: true }))
+		}, 100)
 	})
 
 	function setStopwatch() {
 		userSetStopwatch(id, (Date.now() - entryData.duration * 1000))
+	}
+
+	function keydown(e) {
+		if(e.keyCode === 40) {
+			if(e.target.nextElementSibling) {
+				e.target.nextElementSibling.focus()
+			} else {
+				firstEl.focus()
+			}
+		} else if(e.keyCode === 38) {
+			if(e.target.previousElementSibling) {
+				e.target.previousElementSibling.focus()
+			} else {
+				lastEl.focus()
+			}
+		} else if(e.keyCode === 13) {
+			e.target.dispatchEvent(new MouseEvent('click', {
+				bubbles: false
+			}))
+		} else if(e.keyCode === 27) {
+			dispatch('close', '')
+		}
 	}
 
 </script>
@@ -40,21 +70,37 @@
 	class="nav-wrapper {opened ? 'opened' : ''}">
 
 	<ul on:click={e => dispatch('close', '')}>
-		<li on:click={e => setStopwatch()}>
+		<li bind:this={firstEl}
+			on:click={e => setStopwatch()}
+			tabindex="0"
+			data-disable="true"
+			on:keydown={e =>keydown(e)}>
 			{hasStopwatch ? 'Stop' : 'Start'} Stopwatch
 		</li>
 		<li 
 			class="border {hasStopwatch ? 'disabled' : ''}"
-			on:click={e => !hasStopwatch ? dispatch('open', { component: 'duration', id}) : ''}>
+			on:click={e => !hasStopwatch ? dispatch('open', { component: 'duration', id}) : ''}
+			tabindex="0"
+			data-disable="true"
+			on:keydown={e =>keydown(e)}>
 			Edit Duration
 		</li>
-		<li on:click={e => dispatch('open', { component: 'task', id})}>
+		<li on:click={e => dispatch('open', { component: 'task', id})}
+			tabindex="0"
+			data-disable="true"
+			on:keydown={e =>keydown(e)}>
 			Edit Task
 		</li>
-		<li on:click={e => dispatch('open', { component: 'comment', id})}>
+		<li on:click={e => dispatch('open', { component: 'comment', id})}
+			tabindex="0"
+			data-disable="true"
+			on:keydown={e =>keydown(e)}>
 			Edit Comment
 		</li>
-		<li class="border" on:click={e => timesStoreDeleteEntry(id)}>
+		<li bind:this={lastEl} class="border" on:click={e => timesStoreDeleteEntry(id)}
+			tabindex="0"
+			data-disable="true"
+			on:keydown={e =>keydown(e)}>
 			Delete
 		</li>
 	</ul>
