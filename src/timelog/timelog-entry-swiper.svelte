@@ -57,7 +57,6 @@
 		} else if (delta > 180) {
 			trigger = 'delete'
 		}
-
 	}
 
 	function touchend(e) {
@@ -75,6 +74,8 @@
 		} else if(trigger === 'comment') {
 			dispatch('open', { component: 'mobileComment', id: data.id })
 		}
+
+		trigger = 'neutral'
 	}
 	
 </script>

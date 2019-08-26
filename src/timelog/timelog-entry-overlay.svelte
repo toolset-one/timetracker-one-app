@@ -36,6 +36,11 @@
 
 	function openDuration(e) {
 		e.stopPropagation()
+
+		if(hasStopwatch) {
+			userSetStopwatch(id, (Date.now() - entryData.duration * 1000))
+		}
+
 		dispatch('open', {
 			component: 'mobileDuration',
 			id
