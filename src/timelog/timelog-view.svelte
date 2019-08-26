@@ -156,9 +156,14 @@
 		</p>
 	</div>
 {:else}
-	<p style="text-align: center;padding:42px 20px;">
-		No tracked hours for this day.
-	</p>
+	<div class="container">
+		<h3>
+			No tracked hours for this day.
+		</h3>
+		<p>
+			To track some time, please use the button saying "Add Entry". If you need help how to use timetracker.one, please <a href="https://timetracker.one/help/">click here</a>.
+		</p>
+	</div>
 {/if}
 
 
@@ -271,6 +276,27 @@
 		font-size:14px;
 		line-height:18px;
 		font-weight:600;
+	}
+
+	.container {
+		max-width:960px;
+		position: relative;
+		margin:0 auto 24px auto;
+		border-radius: 6px;
+		background:#FFF;
+		padding:0 30px 30px 30px;
+		box-shadow:0 1px 1px rgba(0, 0, 0, .05), 0 2px 3px rgba(0, 0, 0, .1);
+	}
+
+	.container h3 {
+		padding:24px 0 0 0;
+		text-align: center;
+	}
+
+	.container p {
+		text-align: center;
+		max-width: 600px;
+		margin:0 auto;
 	}
 
 </style>
