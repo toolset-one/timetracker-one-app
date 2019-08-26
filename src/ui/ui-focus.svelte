@@ -128,7 +128,9 @@
 				e.stopPropagation()
 				e.preventDefault()
 				e.target.dispatchEvent(new MouseEvent('click', {
-					bubbles: true
+					bubbles: true,
+					cancelable: true,
+					view: window
 				}))
 			}
 		} else if (e.keyCode === 27) { // ESC
