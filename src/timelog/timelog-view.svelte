@@ -41,7 +41,7 @@
 	$: isDatabaseDateInDatabase = timesStoreControlDate(databaseDate)
 
 	$: entries = $timesStore.dayIndex[databaseDate] 
-		? Object.keys($timesStore.dayIndex[databaseDate]).map(entryId => $timesStore.times[entryId])
+		? Object.keys($timesStore.dayIndex[databaseDate]).map(entryId => $timesStore.times[entryId]).sort((a, b) => b.created.seconds - a.created.seconds)
 		: []
 	$: total = entries.reduce((sum, entry) => entry.duration + sum, 0)
 
