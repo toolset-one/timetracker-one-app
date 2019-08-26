@@ -12,6 +12,7 @@
 
 	let value = '',
 		el,
+		optionsEl,
 		top = 0,
 		left = 0
 
@@ -31,18 +32,52 @@
 	})
 
 
-	function keydown(e) {
-		if(e.keyCode === 13) {
-
+	function keydownInput(e) {
+	
+		if(e.keyCode === 13) { // ENTER
 			if(('no task').includes(value.toLowerCase()) && tasks.length === 0) {
 				save(null)
 			} else if(!('no task').includes(value.toLowerCase()) && tasks.length === 1) {
 				save(tasks[0].id)
 			}
+		} else if(e.keyCode === 27) { // ESC
+			if(value.length > 0) {
+				value = ''
+			} else {
+				dispatch('close', '')
+			}
+		} else if(e.keyCode === 38) { // UP
+			if(optionsEl.querySelector('li')) {
+				optionsEl.querySelector('li:last-child').focus()
+			}
+		} else if(e.keyCode === 40) { // DOWN
+			if(optionsEl.querySelector('li')) {
+				optionsEl.querySelector('li').focus()
+			}
+		}
+	}
 
-			
-		} else if(e.keyCode === 27) {
-			dispatch('close', '')
+
+	function keydownList(e, taskId) {
+	
+		if(e.keyCode === 13) { // ENTER
+			save(taskId)
+		} else if(e.keyCode === 27) { // ESC
+			el.focus()
+		} else if(e.keyCode === 38) { // UP
+			if(e.target.previousElementSibling) {
+				e.target.previousElementSibling.focus()
+			} else {
+				el.focus()
+			}
+		} else if(e.keyCode === 40) { // DOWN
+			if(e.target.nextElementSibling) {
+				e.target.nextElementSibling.focus()
+			} else {
+				el.focus()
+			}
+		} else {
+			el.focus()
 		}
 	}
 
@@ -50,6 +85,7 @@
 	function save(taskId) {
 		timesStoreChangeTask(id, taskId)
 		dispatch('close', '')
+		document.querySelector('#entry-' + id + ' .comment').focus()
 	}
 
 </script>
@@ -65,20 +101,34 @@
 		bind:this={el}
 		bind:value={value}
 		placeholder="Search Tasks"
-		on:keydown={e => keydown(e)}>
+		on:keydown={e => keydownInput(e)}
+		data-disable="true">
 
-	<ul>
+	<ul bind:this={optionsEl}>
 		{#if ('no task').includes(value.toLowerCase())}
-			<li on:click={e => save(null)}>
+			<li
+				on:click={e => save(null)}
+				on:keydown={e => keydownList(e, null)}
+				tabindex="0"
+				data-disable="true">
 				No Task
 			</li>
 		{/if}
 		{#each tasks as task}
-			<li on:click={e => save(task.id)}>
+			<li
+				on:click={e => save(task.id)}
+				on:keydown={e => keydownList(e, task.id)}
+				tabindex="0"
+				data-disable="true">
 				{task.title.length > 0 ? task.title : 'No title'}
 			</li>
 		{/each}
 	</ul>
+	{#if tasks.length === 0 && !('no task').includes(value.toLowerCase())}
+		<small>
+			No tasks found for this search term
+		</small>
+	{/if}
 </div>
 <style>
 	.input-wrapper {
@@ -142,5 +192,11 @@
 
 	li:hover {
 		background:#F5F3F0;
+	}
+
+	small {
+		display: block;
+		padding:12px 24px;
+		text-align: center;
 	}
 </style>

@@ -41,6 +41,10 @@
 		if(regex.test(value)) {
 			value = value.replace(regex, '')
 		}
+
+		setTimeout(() => {
+			el.dispatchEvent(new CustomEvent('trigger-focus-resize', { bubbles: true }))
+		})
 	}
 
 	function keydown(e) {
@@ -50,6 +54,8 @@
 		} else if( e.keyCode === 13) { // ENTER
 			save()
 		}
+
+		el.dispatchEvent(new CustomEvent('trigger-focus-resize', { bubbles: true }))
 	}
 
 	function save() {
@@ -78,7 +84,8 @@
 		style="{
 			'width:'+ width +'px;'+
 			'height:'+ height +'px;'
-		}"></textarea>
+		}"
+		data-disable="true"></textarea>
 </div>
 
 <div bind:this={sizeTestEl} class="size-test" style="{'max-width:'+ maxWidth +'px;'}">{value}</div>

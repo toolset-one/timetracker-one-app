@@ -26,9 +26,13 @@
 
 	function keydown(e) {
 		if( e.keyCode === 27) { // ESC
+			e.preventDefault()
+			e.stopPropagation()
 			alreadyClosed = true
 			dispatch('close', '')
-		} else if( e.keyCode === 13) { // ENTER
+		} else if( e.keyCode === 13 || e.keyCode === 9) { // ENTER / TAB
+			e.preventDefault()
+			e.stopPropagation()
 			save()
 		}
 	}
@@ -39,6 +43,7 @@
 				timesStoreChangeDuration(id, dateTimeToDuration(value))
 			}
 			dispatch('close', '')
+			document.querySelector('#entry-' + id + ' .task').focus()
 		}
 	}
 
@@ -56,7 +61,8 @@
 		bind:value={value}
 		placeholder="{dateGetHours(duration)}:{dateGetMinutes(duration)}"
 		on:blur={e => save()}
-		on:keydown={e => keydown(e)}>
+		on:keydown={e => keydown(e)}
+		data-disable="true">
 </div>
 <style>
 	.input-wrapper {

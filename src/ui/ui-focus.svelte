@@ -57,8 +57,15 @@
 			setTimeout(setTargetBoundingRect)
 
 			targetEl.addEventListener('blur', blurFunction, false)
-			targetEl.addEventListener('keydown', keydownFunction, false)
+
+			if(!targetEl.dataset.disable) {
+				targetEl.addEventListener('keydown', keydownFunction, false)
+			}
 		})
+
+		document.querySelector('body').addEventListener('trigger-focus-resize', () => {
+			setTargetBoundingRect()
+		}, false)
 	})
 
 
