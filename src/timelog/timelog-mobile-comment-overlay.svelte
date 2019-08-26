@@ -1,5 +1,6 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
+	import { mobileOverlayTransition } from '../helpers/animations.js'
 	import { timesStoreChangeComment } from '../stores/times-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 
@@ -9,26 +10,18 @@
 	const regex = /\n/g,
 		dispatch = createEventDispatcher()
 
-	let opened = false,
-		el,
+	let el,
 		value
 
 	onMount(async () => {
 		value = comment.replace(/\n/g, '')
-		opened = true
-
 		el.focus()
 	})
 
 
 	function save() {
-
 		timesStoreChangeComment(id, value)
-
-		opened = false
-		setTimeout(() => {
-			dispatch('close', '')
-		}, 100)
+		dispatch('close', '')
 	}
 
 	export function externalClose() {
@@ -46,7 +39,7 @@
 
 </script>
 
-<div class="wrapper {opened ? 'opened' : ''}">
+<div class="wrapper" transition:mobileOverlayTransition>
 	<header>
 		Edit Comment
 	</header>
@@ -71,14 +64,7 @@
 		border-top-left-radius: 6px;
 		border-top-right-radius: 6px;
 		overflow:hidden;
-		opacity:0;
-		transform:translateY(100%);
 		transition: transform 100ms ease, opacity 100ms ease;
-	}
-
-	.opened {
-		transform:translateY(0);
-		opacity:1;
 	}
 
 	header {

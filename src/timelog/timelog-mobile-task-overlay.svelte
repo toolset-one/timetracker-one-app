@@ -1,6 +1,7 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
 	import { get } from 'svelte/store'
+	import { mobileOverlayTransition } from '../helpers/animations.js'
 	import { timesStoreChangeTask } from '../stores/times-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 
@@ -11,12 +12,10 @@
 
 	const dispatch = createEventDispatcher()
 
-	let opened = false,
-		tasksEl,
+	let tasksEl,
 		animation = false
 
 	onMount(async () => {
-		opened = true
 
 		setTimeout(() => {
 			tasksStore.subscribe(data => {
@@ -86,10 +85,7 @@
 		)
 		unsubscribe()
 
-		opened = false
-		setTimeout(() => {
-			dispatch('close', '')
-		}, 100)
+		dispatch('close', '')
 	}
 
 	export function externalClose() {
@@ -98,7 +94,7 @@
 
 </script>
 
-<div class="wrapper {opened ? 'opened' : ''}">
+<div class="wrapper" transition:mobileOverlayTransition>
 	<header>
 		Edit Task
 	</header>
@@ -111,7 +107,7 @@
 				<li></li>
 				{#each $tasksStore.array as task}
 					<li on:click={e => select(e, task)}>
-						{task.title.length > 0 ? task.title : 'No title'}
+						{task.title.length > 0 ? task.title : 'No Title'}
 					</li>
 				{/each}
 				<li></li>
@@ -133,14 +129,7 @@
 		border-top-left-radius: 6px;
 		border-top-right-radius: 6px;
 		overflow:hidden;
-		opacity:0;
-		transform:translateY(100%);
 		transition: transform 100ms ease, opacity 100ms ease;
-	}
-
-	.opened {
-		transform:translateY(0);
-		opacity:1;
 	}
 
 	header {

@@ -1,5 +1,6 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
+	import { mobileOverlayTransition } from '../helpers/animations.js'
 	import { userStore, userSetStopwatch } from '../stores/user-store.js'
 	import { timesStore, timesStoreGetEntry, timesStoreDeleteEntry } from '../stores/times-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
@@ -13,8 +14,7 @@
 
 	const dispatch = createEventDispatcher()
 
-	let opened = false,
-		hovered = false,
+	let hovered = false,
 		interval,
 		stopwatchDuration = 0
 
@@ -25,8 +25,6 @@
 	$: hasStopwatch = $userStore.stopwatchEntryId === id
 
 	onMount(async () => {
-		opened = true
-
 		timesStoreGetEntry(id, data => entryData = data)
 	})
 
@@ -65,10 +63,7 @@
 
 
 	function close() {
-		opened = false
-		setTimeout(() => {
-			dispatch('close', '')
-		}, 100)
+		dispatch('close', '')
 	}
 
 	export function externalClose() {
@@ -77,7 +72,7 @@
 
 </script>
 
-<div class="wrapper {opened ? 'opened' : ''}">
+<div class="wrapper" transition:mobileOverlayTransition>
 	<div
 		class="attr duration"
 		on:click={e => openDuration(e)}>
@@ -107,7 +102,7 @@
 		</div>
 		<span class="attr-value">
 			{(entryData && entryData.task && $tasksStore.json && $tasksStore.json[entryData.task]) 
-					? $tasksStore.json[entryData.task].title 
+					? $tasksStore.json[entryData.task].title.length > 0 ? $tasksStore.json[entryData.task].title : 'No Title' 
 					: 'No Task'}
 		</span>
 	</div>
@@ -141,14 +136,7 @@
 		border-top-left-radius: 6px;
 		border-top-right-radius: 6px;
 		overflow:hidden;
-		opacity:0;
-		transform:translateY(100%);
 		transition: transform 200ms ease, opacity 200ms ease;
-	}
-
-	.opened {
-		transform:translateY(0);
-		opacity:1;
 	}
 
 	.attr {

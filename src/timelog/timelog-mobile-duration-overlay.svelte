@@ -1,6 +1,7 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
 	import { getWindowWidth, trailingZero } from '../helpers/helpers.js'
+	import { mobileOverlayTransition } from '../helpers/animations.js'
 	import { userStore, userSetStopwatch } from '../stores/user-store.js'
 	import { timesStore, timesStoreChangeDuration } from '../stores/times-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
@@ -17,13 +18,10 @@
 
 	const dispatch = createEventDispatcher()
 
-	let opened = false,
-		hoursEl,
+	let hoursEl,
 		minutesEl
 
 	onMount(async () => {
-		opened = true
-
 		for(var i = 0; i <= 24; i++) {
 			hours.push(i)
 		}
@@ -46,10 +44,7 @@
 		const newDuration = Math.floor(hoursEl.scrollTop / 42) * 60 * 60 + Math.floor(minutesEl.scrollTop / 42) * 60
 		timesStoreChangeDuration(id, newDuration)
 
-		opened = false
-		setTimeout(() => {
-			dispatch('close', '')
-		}, 100)	
+		dispatch('close', '')
 	}
 
 	export function externalClose() {
@@ -58,13 +53,9 @@
 
 </script>
 
-<div class="wrapper {opened ? 'opened' : ''}">
+<div class="wrapper" transition:mobileOverlayTransition>
 	<header>
 		Edit Duration
-
-		<!--<div class="icon" on:click={e => save()}>
-			<UiIcon type='cross' />
-		</div>-->
 	</header>
 
 	<div class="swiper">
@@ -102,14 +93,7 @@
 		border-top-left-radius: 6px;
 		border-top-right-radius: 6px;
 		overflow:hidden;
-		opacity:0;
-		transform:translateY(100%);
 		transition: transform 100ms ease, opacity 100ms ease;
-	}
-
-	.opened {
-		transform:translateY(0);
-		opacity:1;
 	}
 
 	header {

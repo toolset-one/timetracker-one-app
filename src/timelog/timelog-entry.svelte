@@ -117,7 +117,7 @@
 				{/if}
 
 				{(data.task && $tasksStore.json && $tasksStore.json[data.task]) 
-					? $tasksStore.json[data.task].title 
+					? $tasksStore.json[data.task].title.length > 0 ? $tasksStore.json[data.task].title : 'No Title'
 					: 'No Task'}
 			</div>
 		</div>
