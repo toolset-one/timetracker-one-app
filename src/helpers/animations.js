@@ -5,7 +5,7 @@ export function mobileOverlayTransition(node, params) {
 
 	return {
 		delay: params.delay || 0,
-		duration: params.duration || 200,
+		duration: params.duration || 100,
 		easing: params.easing || quadInOut,
 		css: (t, u) => `transform: ${existingTransform} translateY(${(1 - t) * 100}%)`
 	}
