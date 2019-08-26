@@ -1,5 +1,6 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
+	import { get } from 'svelte/store'
 	import { timesStoreChangeTask } from '../stores/times-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 
@@ -11,7 +12,8 @@
 	const dispatch = createEventDispatcher()
 
 	let opened = false,
-		tasksEl
+		tasksEl,
+		animation = false
 
 	onMount(async () => {
 		opened = true
@@ -31,6 +33,50 @@
 			})
 		})
 	})
+
+
+	function select(e, task) {
+
+		const data = get(tasksStore)
+
+		var index = 0
+		data.array.forEach((val, i) => {
+			if(val.id === task.id) {
+				index = i
+			}
+		})
+
+		animation = true
+		scrollTo(tasksEl, index * 42, 200)
+	}
+
+
+	function scrollTo(element, to, duration) {
+		let start = element.scrollTop,
+			change = to - start,
+			currentTime = 0,
+			increment = 20;
+			
+		const animateScroll = () => {		
+			currentTime += increment
+			const val = Math.easeInOutQuad(currentTime, start, change, duration)
+			element.scrollTop = val
+			if(currentTime < duration) {
+				setTimeout(animateScroll, increment)
+			} else {
+				animation = false
+			}
+		}
+		animateScroll()
+	}
+
+
+	Math.easeInOutQuad = function (t, b, c, d) {
+		t /= d / 2
+		if (t < 1) return c / 2 * t * t + b
+		t--
+		return -c / 2 * (t * (t - 2) - 1) + b
+	}
 
 
 	function save() {
@@ -58,13 +104,13 @@
 	</header>
 
 	<div class="swiper">
-		<div class="options tasks" bind:this={tasksEl}>
+		<div class="options tasks {animation ? 'no-snap' : ''}" bind:this={tasksEl}>
 			<ul>
 				<li></li>
 				<li></li>
 				<li></li>
 				{#each $tasksStore.array as task}
-					<li>
+					<li on:click={e => select(e, task)}>
 						{task.title}
 					</li>
 				{/each}
@@ -183,6 +229,10 @@
 
 	.options::-webkit-scrollbar {
 		display: none;
+	}
+
+	.options.no-snap {
+		scroll-snap-type:none;
 	}
 
 	ul {
