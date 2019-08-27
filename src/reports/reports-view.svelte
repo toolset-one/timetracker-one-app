@@ -1,6 +1,7 @@
 <script>
-	import { onMount, afterUpdate } from 'svelte';
+	import { onMount, afterUpdate } from 'svelte'
 	import { routerStore } from '../stores/router-store.js'
+	import { uiStore } from '../stores/ui-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
 	import { reportsStore, reportsStoreUpdateDate, reportsStoreBarchartData, reportsStoreSetPeriod } from '../stores/reports-store.js'
@@ -125,22 +126,22 @@
 
 </script>
 
-<section class="filter-header">
-	<!--<div class="button-wrapper">
-		<UiButton label="Team ▾" />
-	</div>-->
+<section class="filter-header bp-{$uiStore.breakpoint}">
 	<div class="button-wrapper">
 		<UiMultiselect
 			label="Tasks"
 			options={tasksToFilter}
 			bind:value={filterTasks} />
 	</div>
-	<!--<div class="button-wrapper">
-		<UiButton label="Tags ▾" />
-	</div>-->
+
+
+		<div class="mobile-range-wrapper">
+			<UiRadio options={PERIOD_OPTIONS} bind:value={period} on:change={e => reportsStoreSetPeriod(PERIOD_MAP[period])} />
+		</div>
+
 </section>
 
-<section class="range-header">
+<section class="range-header bp-{$uiStore.breakpoint}">
 	<div class="date-nav">
 		<div class="button-wrapper">
 			<UiButton 
@@ -158,10 +159,6 @@
 			{getPeriodTitle($reportsStore.date)}
 		</h2>
 	</div>
-
-	<div class="range-wrapper">
-		<UiRadio options={PERIOD_OPTIONS} bind:value={period} on:change={e => reportsStoreSetPeriod(PERIOD_MAP[period])} />
-	</div>
 </section>
 
 <section>
@@ -177,16 +174,39 @@
 		display:flex;
 		flex-flow: row wrap;
 		max-width:960px;
-		margin:24px auto 24px auto;
+		margin:24px auto;
+	}
+
+	.filter-header {
+		margin:12px;
+	}
+
+	.filter-header.bp-l {
+		margin:24px auto;
 	}
 
 	.filter-header .button-wrapper {
-		margin-right:6px;
+		margin-right:12px;
+	}
+
+	.mobile-range-wrapper {
+		flex:1;
+		text-align: right;
+	}
+
+	.bp-l .mobile-range-wrapper {
+		text-align: left;
 	}
 
 	.range-header {
 		display:flex;
 		flex-direction: row wrap;
+
+		margin:0 12px 12px 12px;
+	}
+
+	.range-header.bp-l {
+		margin:24px auto;
 	}
 
 	.date-nav {
