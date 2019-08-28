@@ -10,6 +10,7 @@ install:
   - npm install
   - cd ..
 deploy:
+  verbose: true
   skip_cleanup: true
   provider: firebase
   token:
