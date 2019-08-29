@@ -34,6 +34,12 @@
 				</span>
 		</div>
 	{/each}
+
+	{#if tasks.length === 0}
+		<p>
+			There are no times logged for the choosen filters.
+		</p>
+	{/if}
 </div>
 
 <style>
@@ -43,6 +49,15 @@
 		width:100%;
 		display:flex;
 		flex-direction: row wrap;
+		height:42px;
+		background:rgba(0, 0, 0, .1);
+		border-radius: 6px;
+	}
+
+	p {
+		padding:6px;
+		width:100%;
+		text-align: center;
 	}
 
 	.segment {
