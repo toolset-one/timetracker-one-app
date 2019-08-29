@@ -45,7 +45,7 @@
 		? Object.keys($timesStore.dayIndex[databaseDate]).map(entryId => $timesStore.times[entryId]).sort((a, b) => b.created.seconds - a.created.seconds)
 		: []
 	$: total = entries.reduce((sum, entry) => {
-		return sum + ($userStore.stopwatchEntryId === entry.id ? $userStopwatchStore.duration : entry.duration)
+		return sum + ($userStore.stopwatchEntryId === entry.id ? $userStopwatchStore : entry.duration)
 	}, 0)
 
 
