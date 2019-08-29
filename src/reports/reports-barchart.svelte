@@ -80,11 +80,13 @@
 
 <div class="legend"></div>
 
-<div class="line" style="bottom:calc(48px + 352px)"></div>
-<div class="line" style="bottom:calc(48px + 264px)"></div>
-<div class="line" style="bottom:calc(48px + 176px)"></div>
-<div class="line" style="bottom:calc(48px + 88px)"></div>
-<div class="line line-bottom" style="bottom:calc(48px + 0)"></div>
+<div class="line-wrapper">
+	<div class="line" style="bottom:100%;"></div>
+	<div class="line" style="bottom:75%;"></div>
+	<div class="line" style="bottom:50%;"></div>
+	<div class="line" style="bottom:25%;"></div>
+	<div class="line line-bottom" style="bottom:0%;"></div>
+</div>
 
 <div
 	class="barchart"
@@ -114,7 +116,7 @@
 
 	.barchart {
 		position: relative;
-		height:400px;
+		height:250px;
 		width:100%;
 		overflow-x:auto;
 		overflow-y:show;
@@ -162,6 +164,15 @@
 		width:100%;
 		height:48px;
 		background:#FAF9F7;
+	}
+
+	.line-wrapper {
+		pointer-events: none;
+		position: absolute;
+		top:0;
+		bottom:48px;
+		left:0;
+		right:0;
 	}
 
 	.line {

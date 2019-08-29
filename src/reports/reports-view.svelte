@@ -13,37 +13,33 @@
 	import UiRadio from '../ui/ui-radio.svelte'
 	import ReportsBarchart from '../reports/reports-barchart.svelte'
 	import ReportsDistribution from '../reports/reports-distribution.svelte'
+	import UiRangePicker from '../ui/ui-range-picker.svelte'
 
-	const PERIOD_OPTIONS = [{
-		title: 'Week',
-		value: 'week'
-	}, {
-		title: 'Month',
-		value: 'month'
-	}/*, {
-		title: 'Year',
-		value: 'year'
-	}*/],
-
-	PERIOD_MAP = {
-		'week': 7,
-		'month': 31,
-		'year': 368
-	}
-
-	let period = 'week',
-		filterTasks,
+	let filterTasks,
 		filterTasksLength = 0,
-		scrollToDateFunction
+		scrollToDateFunction,
+		firstDate = getFirstDate(),
+		lastDate = dateNextDate(firstDate, 7)
 
 	$: tasksToFilter = [...$tasksStore.array, {
 		title: 'No Task',
 		id: null
 	}]
 
-	onMount(() => {
+	function getFirstDate() {
+		let firstDateTmp = new Date()
 
-	})
+		while(dateGetWeek(datePrevDate(firstDateTmp)) === dateGetWeek(firstDateTmp)) {
+			firstDateTmp = datePrevDate(firstDateTmp)
+		}
+
+		// Temp
+		setTimeout(() => {
+			scrollToDateFunction(firstDateTmp)
+		})
+		
+		return firstDateTmp
+	}
 
 	afterUpdate(() => {
 		if(filterTasksLength != filterTasks.length) {
@@ -55,115 +51,36 @@
 		}
 	})
 
-	function getPeriodTitle(date) {
-		if(period === 'week') {
-			if( dateGetWeek(datePrevDate(date)) != dateGetWeek(date)) {
-				return 'Week Number ' + dateGetWeek(date)
-			} else {
-				return dateGetHumanDate(date) +' – '+ dateGetHumanDate(dateNextDate(date, 6))
-			}
-		} else if(period === 'month') {
-			if( (datePrevDate(date)).getMonth() != date.getMonth()) {
-				return dateGetMonth(date) + ' ' + date.getFullYear()
-			} else {
-				return dateGetHumanDate(date) +' – '+ dateGetHumanDate(dateNextDate(date, 30))
-			}
-		}
 
-		return dateGetWeek(date)
-	}
-
-	function prevPeriod(date) {
-		if(period === 'week') {
-			if( dateGetWeek(datePrevDate(date)) != dateGetWeek(date)) {
-				var newDate = datePrevDate(date, 7)
-			} else {
-				while(dateGetWeek(datePrevDate(date)) === dateGetWeek(date)) {
-					date = datePrevDate(date)
-				}
-				var newDate = date
-			}
-		} else if(period === 'month') {
-			if( (datePrevDate(date)).getMonth() != date.getMonth()) {
-				date = datePrevDate(date)
-			} 
-
-			while(datePrevDate(date).getMonth() === date.getMonth()) {
-				date = datePrevDate(date)
-			}
-			var newDate = date
-		}
-
-		reportsStoreUpdateDate(newDate)
-		scrollToDateFunction(newDate)
-	}
-
-
-	function nextPeriod(date) {
-		if(period === 'week') {
-			if( dateGetWeek(datePrevDate(date)) != dateGetWeek(date)) {
-				var newDate = dateNextDate(date, 7)
-			} else {
-				while(dateGetWeek(datePrevDate(date)) === dateGetWeek(date)) {
-					date = dateNextDate(date)
-				}
-				var newDate = date
-			}
-		} else if(period === 'month') {
-			if(datePrevDate(date).getMonth() != date.getMonth()) {
-				date = dateNextDate(date)
-			}
-
-			while(datePrevDate(date).getMonth() === date.getMonth()) {
-				date = dateNextDate(date)
-			}
-			var newDate = date
-		}
-
-		reportsStoreUpdateDate(newDate)
-		scrollToDateFunction(newDate)
-	}
+	reportsStoreUpdateDate(firstDate)
 
 </script>
 
 <section class="filter-header bp-{$uiStore.breakpoint}">
+	<div class="mobile-range-wrapper">
+		<UiRangePicker 
+			bind:firstDate={firstDate}
+			bind:lastDate={lastDate} />
+	</div>
+
+	<div class="spacer"></div>
+
 	<div class="button-wrapper">
 		<UiMultiselect
 			label="Tasks"
 			options={tasksToFilter}
 			bind:value={filterTasks} />
 	</div>
-
-
-		<div class="mobile-range-wrapper">
-			<UiRadio options={PERIOD_OPTIONS} bind:value={period} on:change={e => reportsStoreSetPeriod(PERIOD_MAP[period])} />
-		</div>
-
 </section>
 
-<section class="range-header bp-{$uiStore.breakpoint}">
-	<div class="date-nav">
-		<div class="button-wrapper">
-			<UiButton 
-				type="icon" 
-				icon="arrow-left"
-				on:click={e => prevPeriod($reportsStore.date)} />
-		</div>
-		<div class="button-wrapper">
-			<UiButton 
-				type="icon"
-				icon="arrow-right"
-				on:click={e => nextPeriod($reportsStore.date)} />
-		</div>
-		<h2>
-			{getPeriodTitle($reportsStore.date)}
-		</h2>
-	</div>
-</section>
 
-<section>
-	<ReportsBarchart bind:scrollToDate={scrollToDateFunction} />
+<section class="distribution-wrapper bp-{$uiStore.breakpoint}">
 	<ReportsDistribution />
+</section>
+
+
+<section class="barchart-wrapper bp-{$uiStore.breakpoint}">
+	<ReportsBarchart bind:scrollToDate={scrollToDateFunction} />
 </section>
 
 
@@ -189,13 +106,16 @@
 		margin-right:12px;
 	}
 
-	.mobile-range-wrapper {
+	.spacer {
 		flex:1;
-		text-align: right;
+	}
+
+	.mobile-range-wrapper {
+	
 	}
 
 	.bp-l .mobile-range-wrapper {
-		text-align: left;
+
 	}
 
 	.range-header {
@@ -207,6 +127,22 @@
 
 	.range-header.bp-l {
 		margin:24px auto;
+	}
+
+	.distribution-wrapper {
+		margin:12px;
+	}
+
+	.distribution-wrapper.bp-l {
+		margin:24px auto;
+	}
+
+	.barchart-wrapper {
+		margin:48px 12px;
+	}
+
+	.barchart-wrapper.bp-l {
+		margin:60px auto;
 	}
 
 	.date-nav {

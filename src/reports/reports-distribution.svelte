@@ -38,10 +38,6 @@
 
 <style>
 
-	h2 {
-		margin-top:24px;
-	}
-
 	.distribution-wrapper {
 		position: relative;
 		width:100%;

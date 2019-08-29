@@ -102,6 +102,7 @@
 		display:flex;
 		flex-direction: column-reverse;
 		transition: all 100ms ease;
+		max-width:48px;
 	}
 
 	.segment {
