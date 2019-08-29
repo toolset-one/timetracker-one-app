@@ -71,6 +71,8 @@
 			}
 			var newDate = date
 		}*/
+
+		dispatch('input', { firstDate, lastDate })
 	}
 
 
@@ -102,6 +104,8 @@
 			}
 			var newDate = date
 		}*/
+
+		dispatch('input', { firstDate, lastDate })
 	}
 
 </script>

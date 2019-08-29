@@ -8,6 +8,7 @@
 	import ReportsBarchartDay from '../reports/reports-barchart-day.svelte'
 
 	let el,
+	animation = false,
 	elWidth = 960,
 	firstDate = new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
 	startDate = new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
@@ -68,7 +69,34 @@
 	}
 
 	export function scrollToDate(date) {
-		el.scrollLeft = Math.floor(500000 + dateDaysBetweenDates(firstDate, date) * periodWidth)
+
+		animation = true
+
+		const to = Math.floor(500000 + dateDaysBetweenDates(firstDate, date) * periodWidth)
+
+		let start = el.scrollLeft,
+			change = to - start,
+			currentTime = 0
+			
+		const animateScroll = () => {		
+			currentTime++
+			const val = Math.easeInOutQuad(currentTime, start, change, 30)
+			el.scrollLeft = val
+			if(currentTime < 30) {
+				window.requestAnimationFrame(animateScroll)
+			} else {
+				animation = false
+			}
+		}
+		animateScroll()
+	}
+
+
+	Math.easeInOutQuad = function (t, b, c, d) {
+		t /= d / 2
+		if (t < 1) return c / 2 * t * t + b
+		t--
+		return -c / 2 * (t * (t - 2) - 1) + b
 	}
 
 </script>
@@ -89,7 +117,7 @@
 </div>
 
 <div
-	class="barchart"
+	class="barchart {animation ? 'no-snap' : ''}"
 	bind:this={el}
 	on:scroll={e => scroll(e)}>
 	<div
@@ -128,6 +156,11 @@
 	.barchart::-webkit-scrollbar {
 		display: none;
 	}
+
+	.barchart.no-snap {
+		scroll-snap-type:none;
+	}
+
 
 	.inner {
 		position: relative;

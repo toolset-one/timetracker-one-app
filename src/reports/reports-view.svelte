@@ -52,6 +52,12 @@
 	})
 
 
+	function changed(e) {
+		reportsStoreUpdateDate(e.detail.firstDate)
+		scrollToDateFunction(e.detail.firstDate)
+	}
+
+
 	reportsStoreUpdateDate(firstDate)
 
 </script>
@@ -60,7 +66,8 @@
 	<div class="mobile-range-wrapper">
 		<UiRangePicker 
 			bind:firstDate={firstDate}
-			bind:lastDate={lastDate} />
+			bind:lastDate={lastDate}
+			on:input={e => changed(e)}/>
 	</div>
 
 	<div class="spacer"></div>
