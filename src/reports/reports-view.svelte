@@ -36,7 +36,7 @@
 		// Temp
 		setTimeout(() => {
 			scrollToDateFunction(firstDateTmp)
-		})
+		}, 100)
 		
 		return firstDateTmp
 	}

@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { routerStore } from '../stores/router-store.js'
+	import { uiStore } from '../stores/ui-store.js'
 	import { reportsStore, reportsStoreUpdateDate } from '../stores/reports-store.js'
 
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth, dateToDatabaseDate} from '../helpers/helpers.js'
@@ -57,15 +58,17 @@
 
 
 	function scroll(e) {
-		let dateTmp = new Date(firstDate)
-		dateTmp.setDate(dateTmp.getDate() + Math.round((el.scrollLeft - 500000) / periodWidth) )
-		startDate = dateTmp
+		if(!animation) {
+			let dateTmp = new Date(firstDate)
+			dateTmp.setDate(dateTmp.getDate() + Math.round((el.scrollLeft - 500000) / periodWidth) )
+			startDate = dateTmp
 
-		if(timeout) {
-			clearTimeout(timeout)
+			if(timeout) {
+				clearTimeout(timeout)
+			}
+
+			timeout = setTimeout(timeoutFunction, 50)
 		}
-
-		timeout = setTimeout(timeoutFunction, 50)
 	}
 
 	export function scrollToDate(date) {
@@ -80,9 +83,9 @@
 			
 		const animateScroll = () => {		
 			currentTime++
-			const val = Math.easeInOutQuad(currentTime, start, change, 30)
+			const val = Math.easeInOutQuad(currentTime, start, change, 40)
 			el.scrollLeft = val
-			if(currentTime < 30) {
+			if(currentTime < 40) {
 				window.requestAnimationFrame(animateScroll)
 			} else {
 				animation = false
@@ -117,7 +120,7 @@
 </div>
 
 <div
-	class="barchart {animation ? 'no-snap' : ''}"
+	class="barchart bp-{$uiStore.breakpoint} {animation ? 'no-snap' : ''}"
 	bind:this={el}
 	on:scroll={e => scroll(e)}>
 	<div
@@ -151,6 +154,10 @@
 		scroll-snap-type: x mandatory;
 		backface-visibility: hidden;
 		z-index:300;
+	}
+
+	.barchart.bp-l {
+		height:360px;
 	}
 
 	.barchart::-webkit-scrollbar {
