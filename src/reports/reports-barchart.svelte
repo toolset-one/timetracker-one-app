@@ -83,9 +83,9 @@
 			
 		const animateScroll = () => {		
 			currentTime++
-			const val = Math.easeInOutQuad(currentTime, start, change, 40)
+			const val = Math.easeInOutQuad(currentTime, start, change, 10)
 			el.scrollLeft = val
-			if(currentTime < 40) {
+			if(currentTime < 10) {
 				window.requestAnimationFrame(animateScroll)
 			} else {
 				animation = false
