@@ -1,9 +1,11 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
+	import { fade } from 'svelte/transition'
 	import { routerStore } from '../stores/router-store.js'
-	import { dateDaysBetweenDates, datePrevDate, dateNextDate, dateGetWeek, dateGetHumanDate } from '../helpers/helpers.js'
+	import { dateDaysBetweenDates, datePrevDate, dateNextDate, dateGetWeek, dateGetHumanDate, dateNextMonth, datePrevMonth } from '../helpers/helpers.js'
 
 	import UiIcon from './ui-icon.svelte'
+	import UiMonth from './ui-month.svelte'
 
 	const dispatch = createEventDispatcher()
 
@@ -13,6 +15,9 @@
 
 	let el,
 		hover = false,
+		opened = false,
+		monthForPicker = new Date(),
+		monthForSecondPicker = dateNextMonth(new Date()),
 		mousePosition = {
 			x: 0,
 			y: 0
@@ -26,7 +31,7 @@
 
 	function getPeriodTitle(firstDateNow, lastDateNow) {
 
-		if( dateDaysBetweenDates(firstDateNow, lastDateNow) === 7 ) {
+		if( dateDaysBetweenDates(firstDateNow, lastDateNow) === 6 ) {
 			if( dateGetWeek(datePrevDate(firstDateNow)) != dateGetWeek(firstDateNow)) {
 				return 'Week Number ' + dateGetWeek(firstDateNow)
 			} else {
@@ -49,16 +54,16 @@
 		var firstDateTmp = new Date(firstDateNow)
 		var lastDateTmp = new Date(lastDateNow)
 
-		if( dateDaysBetweenDates(firstDate, lastDate) === 7 ) {
+		if( dateDaysBetweenDates(firstDate, lastDate) === 6 ) {
 			if( dateGetWeek(datePrevDate(firstDateTmp)) != dateGetWeek(firstDateTmp)) {
 				firstDate = datePrevDate(firstDateTmp, 7)
-				lastDate = dateNextDate(firstDate, 7)
+				lastDate = dateNextDate(firstDate, 6)
 			} else {
 				while(dateGetWeek(datePrevDate(firstDateTmp)) === dateGetWeek(firstDateTmp)) {
 					firstDateTmp = datePrevDate(firstDateTmp)
 				}
 				firstDate = firstDateTmp
-				lastDate = dateNextDate(firstDate, 7)
+				lastDate = dateNextDate(firstDate, 6)
 
 			}
 		} /*else if(period === 'month') {
@@ -77,14 +82,15 @@
 
 
 	function nextPeriod(firstDateNow, lastDateNow) {
+		console.log(dateDaysBetweenDates(firstDate, lastDate))
 
 		var firstDateTmp = new Date(firstDateNow)
 		var lastDateTmp = new Date(lastDateNow)
 
-		if( dateDaysBetweenDates(firstDate, lastDate) === 7 ) {
+		if( dateDaysBetweenDates(firstDate, lastDate) === 6 ) {
 			if( dateGetWeek(datePrevDate(firstDateTmp)) != dateGetWeek(firstDateTmp)) {
 				firstDate = dateNextDate(firstDateTmp, 7)
-				lastDate = dateNextDate(lastDateTmp, 7)
+				lastDate = dateNextDate(firstDate, 6)
 			} else {
 				while(dateGetWeek(datePrevDate(firstDateTmp)) === dateGetWeek(firstDateTmp)) {
 					firstDateTmp = dateNextDate(firstDateTmp)
@@ -108,10 +114,23 @@
 		dispatch('input', { firstDate, lastDate })
 	}
 
+
+	function inputFirstMonth(e) {
+		if(e.detail === 'monthForPicker') {
+			monthForSecondPicker = dateNextMonth(monthForPicker)
+		}
+	}
+
+	function inputSecondMonth(e) {
+		if(e.detail === 'monthForPicker') {
+			monthForPicker = datePrevMonth(monthForSecondPicker)
+		}
+	}
+
 </script>
 
 <div
-	class="{hovered ? 'hovered': ''}"
+	class="wrapper {hovered ? 'hovered': ''}"
 	style="{
 		'--x:'+ (mousePosition.x - boundingRect.left) +'px;' +
 		'--y:'+ (mousePosition.y - boundingRect.top) +'px;'
@@ -130,14 +149,44 @@
 	<div class="arrow-right" on:click={e => nextPeriod(firstDate, lastDate)}>
 		<UiIcon type="arrow-right" color="#26231E" />	
 	</div>
-	<span class="title">
+	<span class="title" on:click={e => opened = true}>
 		{getPeriodTitle(firstDate, lastDate)}
 	</span>
 	
+	{#if opened}
+		<div class="overlay">
+			<div class="month-wrapper">
+				<UiMonth
+					mode="range"
+					rightArrow={false}
+					bind:monthForPicker={monthForPicker}
+					bind:firstDate={firstDate}
+					bind:lastDate={lastDate}
+					on:input={e => inputFirstMonth(e)} />
+			</div>
+			<div class="month-wrapper">
+				<UiMonth
+					mode="range"
+					leftArrow={false}
+					bind:monthForPicker={monthForSecondPicker}
+					bind:firstDate={firstDate}
+					bind:lastDate={lastDate}
+					on:input={e => inputSecondMonth(e)} />
+			</div>
+		</div>
+	{/if}
 </div>
 
+
+{#if opened}
+	<div
+		class="backdrop"
+		transition:fade="{{delay: 0, duration: 100}}"
+		on:click={e => opened = false}></div>
+{/if}
+
 <style>
-	div {
+	.wrapper {
 		display:flex;
 		flex-flow: row;
 		position: relative;
@@ -153,7 +202,7 @@
 		user-select: none;
 	}
 
-	div:before {
+	.wrapper:before {
 		content:'';
 		display:block;
 		width:100%;
@@ -166,6 +215,7 @@
 	}
 
 	.arrow-left, .arrow-right {
+		position: relative;
 		margin-right:1px;
 		width:40px;
 		padding:14px;
@@ -190,10 +240,6 @@
 		-webkit-font-smoothing:antialiased;
 		border-top-left-radius: 0;
 		border-bottom-left-radius: 0;
-	}
-
-	.disabled span {
-		color:#CCC9C4;
 	}
 
 	em {
@@ -224,6 +270,47 @@
 
 	a:hover em:after {
 		transform: translate(-50%, -50%) scale(1);
+	}
+
+
+	.overlay {
+		position: absolute;
+		display: flex;
+		flex-direction: row;
+		top:0;
+		left:0;
+		z-index:1010;
+		background:#FFF;
+		border-radius: 6px;
+		box-shadow:0 4px 0 -2px rgba(0, 0, 0, .05),  0 3px 6px rgba(0, 0, 0, .1);
+		overflow:hidden;
+		width:612px;
+	}
+
+	.month-wrapper {
+		position: relative;
+		width:306px;
+		padding:6px;
+	}
+
+	.month-wrapper + .month-wrapper:after {
+		content:"";
+		position: absolute;
+		top:6px;
+		bottom:6px;
+		left:0;
+		width:1px;
+		background:#CCC;
+	}
+
+	.backdrop {
+		position:fixed;
+		top:0;
+		left:0;
+		width:100%;
+		height:100%;
+		background:rgba(0, 0, 0, .15);
+		z-index:1000;
 	}
 
 </style>

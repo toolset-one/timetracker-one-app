@@ -15,11 +15,30 @@
 	import ReportsDistribution from '../reports/reports-distribution.svelte'
 	import UiRangePicker from '../ui/ui-range-picker.svelte'
 
+	const RANGE_OPTIONS = [{
+		title: 'Current Week',
+		value: 'current-week'
+	}, {
+		title: 'Last Week',
+		value: 'last-week'
+	}, {
+		title: 'Current Month',
+		value: 'current-month'
+	}, {
+		title: 'Last Month',
+		value: 'last-month'
+	}, {
+		title: 'Custom',
+		value: 'custom'
+	}]
+
+
 	let filterTasks,
 		filterTasksLength = 0,
 		scrollToDateFunction,
 		firstDate = getFirstDate(),
-		lastDate = dateNextDate(firstDate, 7)
+		lastDate = dateNextDate(firstDate, 6),
+		rangeNow = 'current-week'
 
 	$: tasksToFilter = [...$tasksStore.array, {
 		title: 'No Task',
@@ -63,16 +82,18 @@
 </script>
 
 <section class="filter-header bp-{$uiStore.breakpoint}">
-	<div class="mobile-range-wrapper">
+	<div class="custom-range-wrapper">
 		<UiRangePicker 
 			bind:firstDate={firstDate}
 			bind:lastDate={lastDate}
 			on:input={e => changed(e)}/>
 	</div>
+	<div class="ranges-wrapper">
+		<UiRadio options={RANGE_OPTIONS} value={rangeNow} />
+	</div>
+</section>
 
-	<div class="spacer"></div>
-
-	<div class="button-wrapper">
+<section>	<div class="button-wrapper">
 		<UiMultiselect
 			label="Tasks"
 			options={tasksToFilter}
@@ -114,14 +135,19 @@
 	}
 
 	.spacer {
-		flex:1;
+		
 	}
 
-	.mobile-range-wrapper {
+	.ranges-wrapper {
+		flex:1;
+		text-align: right;
+	}
+
+	.custom-range-wrapper {
 	
 	}
 
-	.bp-l .mobile-range-wrapper {
+	.bp-l .custom-range-wrapper {
 
 	}
 

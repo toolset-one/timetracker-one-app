@@ -1,6 +1,6 @@
 const DAY_ENDINGS = ['', 'st', 'nd', 'rd']
 
-const MONTHS = [
+export const MONTHS = [
 	'January',
 	'February',
 	'March', 'April',
@@ -90,6 +90,17 @@ export const dateNextDate = (date, howManyDays = 1) => {
 	return newDate
 }
 
+export const datePrevMonth = (date, howManyMonth = 1) => {
+	let newDate = new Date(date)
+	newDate.setMonth(newDate.getMonth() - howManyMonth)
+	return newDate
+}
+
+export const dateNextMonth = (date, howManyMonth = 1) => {
+	let newDate = new Date(date)
+	newDate.setMonth(newDate.getMonth() + howManyMonth)
+	return newDate
+}
 
 export const dateTimeToDuration = time => {
 	const arrDuration = time.split(':'),
