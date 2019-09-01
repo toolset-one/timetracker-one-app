@@ -46,8 +46,6 @@ export function reportsStoreUpdateRange(firstDate, lastDate) {
 
 		const daysBetween = dateDaysBetweenDates(firstDate, lastDate) + 1 
 
-		console.log(daysBetween)
-
 		for(var i = 0; i < daysBetween; i++) {
 			const databaseDateTmp = dateToDatabaseDate(dateTmp)
 			timesStoreControlDate(databaseDateTmp)

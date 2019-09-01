@@ -35,7 +35,6 @@
 
 	let filterTasks,
 		filterTasksLength = 0,
-		scrollToDateFunction,
 		firstDate = getFirstDate(),
 		lastDate = dateNextDate(firstDate, 6),
 		rangeNow = 'current-week'
@@ -51,11 +50,6 @@
 		while(dateGetWeek(datePrevDate(firstDateTmp)) === dateGetWeek(firstDateTmp)) {
 			firstDateTmp = datePrevDate(firstDateTmp)
 		}
-
-		// Temp
-		setTimeout(() => {
-			scrollToDateFunction(firstDateTmp)
-		}, 100)
 		
 		return firstDateTmp
 	}
@@ -72,9 +66,7 @@
 
 
 	function changed(e) {
-		console.log('TTT', e.detail)
 		reportsStoreUpdateRange(e.detail.firstDate, e.detail.lastDate)
-		scrollToDateFunction(e.detail.firstDate)
 	}
 
 
@@ -130,7 +122,6 @@
 		}
 
 		reportsStoreUpdateRange(firstDate, lastDate)
-		scrollToDateFunction(firstDate)
 	}
 
 
@@ -165,7 +156,7 @@
 
 
 <section class="barchart-wrapper bp-{$uiStore.breakpoint}">
-	<ReportsBarchart bind:scrollToDate={scrollToDateFunction} />
+	<ReportsBarchart />
 </section>
 
 

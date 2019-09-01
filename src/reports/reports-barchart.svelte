@@ -4,7 +4,7 @@
 	import { uiStore } from '../stores/ui-store.js'
 	import { reportsStore, reportsStoreUpdateRange } from '../stores/reports-store.js'
 
-	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth, dateToDatabaseDate} from '../helpers/helpers.js'
+	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth, dateToDatabaseDate, dateDatabaseToDate} from '../helpers/helpers.js'
 
 	import ReportsBarchartDay from '../reports/reports-barchart-day.svelte'
 
@@ -19,89 +19,19 @@
 	scrollLeft,
 	tmp = 0
 
-	$: daysBetween = dateDaysBetweenDates(firstDate, startDate)
+	$: daysBetween = dateDaysBetweenDates($reportsStore.firstDate, startDate)
 	$: rangeDates = Object.keys($reportsStore.dates).length
-	$: periodWidth = elWidth / rangeDates
-	$: daysArray = calculateDaysArray(startDate)
-
-	function calculateDaysArray(startDate) {
-		let dateTmp = new Date(startDate)
-		dateTmp.setDate(dateTmp.getDate() - rangeDates)
-
-		let daysSince = daysBetween,
-			arrayTmp = []
-
-		for(var i = -1 * rangeDates; i <= rangeDates; i++) {
-			arrayTmp.push({
-				date: dateTmp,
-				daysSince
-			})
-
-			dateTmp = dateNextDate(dateTmp)
-			daysSince++
+	$: rangeWidth = elWidth / rangeDates
+	$: daysArray = Object.keys($reportsStore.dates).map((key, i) => {
+		return {
+			date: dateDatabaseToDate(key),
+			daysSince: daysBetween + i
 		}
-
-		return arrayTmp
-	}
-
-	onMount(() => {
-
-		elWidth = el.getBoundingClientRect().width
-		el.scrollLeft = 500000
 	})
 
-
-	function timeoutFunction() {
-		let dateTmp = new Date(firstDate)
-		dateTmp.setDate(dateTmp.getDate() + Math.round((el.scrollLeft - 500000) / periodWidth) )
-		// reportsStoreUpdateRange(dateTmp, dateNextDate(dateTmp, rangeDates))
-	}
-
-
-	function scroll(e) {
-		if(!animation) {
-			let dateTmp = new Date(firstDate)
-			dateTmp.setDate(dateTmp.getDate() + Math.round((el.scrollLeft - 500000) / periodWidth) )
-			startDate = dateTmp
-
-			if(timeout) {
-				clearTimeout(timeout)
-			}
-
-			timeout = setTimeout(timeoutFunction, 50)
-		}
-	}
-
-	export function scrollToDate(date) {
-
-		animation = true
-
-		const to = Math.floor(500000 + dateDaysBetweenDates(firstDate, date) * periodWidth)
-
-		let start = el.scrollLeft,
-			change = to - start,
-			currentTime = 0
-			
-		const animateScroll = () => {		
-			currentTime++
-			const val = Math.easeInOutQuad(currentTime, start, change, 10)
-			el.scrollLeft = val
-			if(currentTime < 10) {
-				window.requestAnimationFrame(animateScroll)
-			} else {
-				animation = false
-			}
-		}
-		animateScroll()
-	}
-
-
-	Math.easeInOutQuad = function (t, b, c, d) {
-		t /= d / 2
-		if (t < 1) return c / 2 * t * t + b
-		t--
-		return -c / 2 * (t * (t - 2) - 1) + b
-	}
+	onMount(() => {
+		elWidth = el.getBoundingClientRect().width
+	})
 
 </script>
 
@@ -122,13 +52,12 @@
 
 <div
 	class="barchart bp-{$uiStore.breakpoint} {animation ? 'no-snap' : ''}"
-	bind:this={el}
-	on:scroll={e => scroll(e)}>
+	bind:this={el}>
 	<div
 		class="inner"
-		bind:this={innerEl}>
+		bind:this={innerEl} style="{'left:'+ (-1 * daysBetween * rangeWidth) +'px'}">
 		{#each daysArray as day, i (day.daysSince)}
-			<div class="day-container" style="{'left:'+ (500000 + (day.daysSince - rangeDates) * periodWidth) +'px'}">
+			<div class="day-container" style="{'left:'+ ((day.daysSince) * rangeWidth) +'px'}">
 
 				<ReportsBarchartDay date={day.date} />
 			</div>
@@ -150,9 +79,7 @@
 		position: relative;
 		height:250px;
 		width:100%;
-		overflow-x:auto;
-		overflow-y:show;
-		scroll-snap-type: x mandatory;
+		overflow:hidden;
 		backface-visibility: hidden;
 		z-index:300;
 	}
@@ -161,20 +88,9 @@
 		height:360px;
 	}
 
-	.barchart::-webkit-scrollbar {
-		display: none;
-	}
-
-	.barchart.no-snap {
-		scroll-snap-type:none;
-	}
-
-
 	.inner {
 		position: relative;
 		height: 100%;
-		width:1000000px !important;
-		backface-visibility: hidden;
 	}
 
 	.day-container {
@@ -182,7 +98,6 @@
 		top:0;
 		width:calc(var(--chart-width) / var(--visible-items));
 		height:100%;
-		scroll-snap-align: start;
 		text-align: center;
 		font-size:14px;
 		z-index:100;

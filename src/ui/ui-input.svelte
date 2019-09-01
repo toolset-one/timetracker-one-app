@@ -108,7 +108,6 @@
 	width:100%;
 	max-width:100%;
 	margin:0;
-	border:0;
 	border:#CCC9C4 1px solid;
 	padding:14px 17px 14px 17px;
 	line-height:24px;

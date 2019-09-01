@@ -2,9 +2,10 @@
 	import { onMount, createEventDispatcher } from 'svelte'
 	import { fade } from 'svelte/transition'
 	import { routerStore } from '../stores/router-store.js'
-	import { dateDaysBetweenDates, datePrevDate, dateNextDate, dateGetWeek, dateGetHumanDate, dateNextMonth, datePrevMonth } from '../helpers/helpers.js'
+	import { dateDaysBetweenDates, datePrevDate, dateNextDate, dateGetWeek, dateGetHumanDate, dateNextMonth, datePrevMonth, dateGetMonth } from '../helpers/helpers.js'
 
 	import UiIcon from './ui-icon.svelte'
+	import UiDateInput from './ui-date-input.svelte'
 	import UiMonth from './ui-month.svelte'
 
 	const dispatch = createEventDispatcher()
@@ -14,8 +15,9 @@
 	export let hovered = false
 
 	let el,
+		pickStartDate = true,
 		hover = false,
-		opened = false,
+		opened = true,
 		monthForPicker = new Date(),
 		monthForSecondPicker = dateNextMonth(new Date()),
 		mousePosition = {
@@ -29,90 +31,63 @@
 	}
 
 
+	function isWeek(firstDate, lastDate) {
+		return dateDaysBetweenDates(firstDate, lastDate) === 6 
+			&& dateGetWeek(datePrevDate(firstDate)) != dateGetWeek(firstDate)
+	}
+
+	function isMonth(firstDate, lastDate) {
+		return datePrevDate(firstDate).getMonth() != firstDate.getMonth()
+			&& dateNextDate(lastDate).getMonth() != lastDate.getMonth()
+			&& firstDate.getMonth() === lastDate.getMonth()
+	}
+
+
 	function getPeriodTitle(firstDateNow, lastDateNow) {
 
-		if( dateDaysBetweenDates(firstDateNow, lastDateNow) === 6 ) {
-			if( dateGetWeek(datePrevDate(firstDateNow)) != dateGetWeek(firstDateNow)) {
-				return 'Week Number ' + dateGetWeek(firstDateNow)
-			} else {
-				return dateGetHumanDate(firstDateNow) +' – '+ dateGetHumanDate(firstDateNow)
-			}
-		} /* else if(period === 'month') {
-			if( (datePrevDate(date)).getMonth() != date.getMonth()) {
-				return dateGetMonth(date) + ' ' + date.getFullYear()
-			} else {
-				return dateGetHumanDate(date) +' – '+ dateGetHumanDate(dateNextDate(date, 30))
-			}
+		if(isWeek(firstDateNow, lastDateNow)) {
+			return 'Week ' + dateGetWeek(firstDateNow) + ', ' + firstDateNow.getFullYear()
 		}
-*/
+
+		if(isMonth(firstDateNow, lastDateNow)) {
+			return dateGetMonth(firstDateNow) + ', ' + firstDateNow.getFullYear()
+		}
+
 		return dateGetHumanDate(firstDateNow) +' – '+ dateGetHumanDate(lastDateNow)
 	}
 
 
 	function prevPeriod(firstDateNow, lastDateNow) {
 
-		var firstDateTmp = new Date(firstDateNow)
-		var lastDateTmp = new Date(lastDateNow)
+		if(isWeek(firstDateNow, lastDateNow)) {
+			firstDate = datePrevDate(firstDateNow, 7)
+			lastDate = dateNextDate(firstDate, 6)
+		}
 
-		if( dateDaysBetweenDates(firstDate, lastDate) === 6 ) {
-			if( dateGetWeek(datePrevDate(firstDateTmp)) != dateGetWeek(firstDateTmp)) {
-				firstDate = datePrevDate(firstDateTmp, 7)
-				lastDate = dateNextDate(firstDate, 6)
-			} else {
-				while(dateGetWeek(datePrevDate(firstDateTmp)) === dateGetWeek(firstDateTmp)) {
-					firstDateTmp = datePrevDate(firstDateTmp)
-				}
-				firstDate = firstDateTmp
-				lastDate = dateNextDate(firstDate, 6)
-
-			}
-		} /*else if(period === 'month') {
-			if( (datePrevDate(date)).getMonth() != date.getMonth()) {
-				date = datePrevDate(date)
-			} 
-
-			while(datePrevDate(date).getMonth() === date.getMonth()) {
-				date = datePrevDate(date)
-			}
-			var newDate = date
-		}*/
+		if(isMonth(firstDateNow, lastDateNow)) {
+			firstDate = datePrevMonth(firstDateNow)
+			lastDate = datePrevDate(dateNextMonth(firstDate))
+		}
 
 		dispatch('input', { firstDate, lastDate })
 	}
 
 
 	function nextPeriod(firstDateNow, lastDateNow) {
-		console.log(dateDaysBetweenDates(firstDate, lastDate))
 
-		var firstDateTmp = new Date(firstDateNow)
-		var lastDateTmp = new Date(lastDateNow)
+		if(isWeek(firstDateNow, lastDateNow)) {
+			firstDate = dateNextDate(firstDateNow, 7)
+			lastDate = dateNextDate(firstDate, 6)
+		}
 
-		if( dateDaysBetweenDates(firstDate, lastDate) === 6 ) {
-			if( dateGetWeek(datePrevDate(firstDateTmp)) != dateGetWeek(firstDateTmp)) {
-				firstDate = dateNextDate(firstDateTmp, 7)
-				lastDate = dateNextDate(firstDate, 6)
-			} else {
-				while(dateGetWeek(datePrevDate(firstDateTmp)) === dateGetWeek(firstDateTmp)) {
-					firstDateTmp = dateNextDate(firstDateTmp)
-					lastDateTmp = dateNextDate(lastDateTmp)
-				}
-				firstDate = firstDateTmp
-				lastDate = lastDateTmp
-
-			}
-		} /*else if(period === 'month') {
-			if( (datePrevDate(date)).getMonth() != date.getMonth()) {
-				date = datePrevDate(date)
-			} 
-
-			while(datePrevDate(date).getMonth() === date.getMonth()) {
-				date = datePrevDate(date)
-			}
-			var newDate = date
-		}*/
+		if(isMonth(firstDateNow, lastDateNow)) {
+			firstDate = dateNextMonth(firstDateNow)
+			lastDate = datePrevDate(dateNextMonth(firstDate))
+		}
 
 		dispatch('input', { firstDate, lastDate })
 	}
+
 
 
 	function inputFirstMonth(e) {
@@ -125,6 +100,24 @@
 		if(e.detail === 'monthForPicker') {
 			monthForPicker = datePrevMonth(monthForSecondPicker)
 		}
+	}
+
+	function changeDate(date) {
+		if(pickStartDate) {
+			firstDate = date
+			if(lastDate < firstDate) {
+				lastDate = firstDate
+			}
+		} else {
+			lastDate = date
+			if(firstDate > lastDate) {
+				firstDate = lastDate
+			}
+		}
+
+		pickStartDate = !pickStartDate
+
+		dispatch('input', { firstDate, lastDate })
 	}
 
 </script>
@@ -155,6 +148,11 @@
 	
 	{#if opened}
 		<div class="overlay">
+			<div class="dates-header">
+				<UiDateInput bind:value={firstDate} active={pickStartDate} />
+					until
+				<UiDateInput bind:value={lastDate}  active={!pickStartDate}/>
+			</div>
 			<div class="month-wrapper">
 				<UiMonth
 					mode="range"
@@ -162,7 +160,8 @@
 					bind:monthForPicker={monthForPicker}
 					bind:firstDate={firstDate}
 					bind:lastDate={lastDate}
-					on:input={e => inputFirstMonth(e)} />
+					on:input={e => inputFirstMonth(e)}
+					on:change={e => changeDate(e.detail)}/>
 			</div>
 			<div class="month-wrapper">
 				<UiMonth
@@ -171,7 +170,8 @@
 					bind:monthForPicker={monthForSecondPicker}
 					bind:firstDate={firstDate}
 					bind:lastDate={lastDate}
-					on:input={e => inputSecondMonth(e)} />
+					on:input={e => inputSecondMonth(e)}
+					on:change={e => changeDate(e.detail)}/>
 			</div>
 		</div>
 	{/if}
@@ -212,6 +212,13 @@
 		top:2px;
 		left:0;
 		transition: all 100ms ease;
+	}
+
+	.dates-header {
+		text-align: center;
+		min-width:100%;
+		max-width: 100%;
+		padding:12px 6px;
 	}
 
 	.arrow-left, .arrow-right {
@@ -277,6 +284,7 @@
 		position: absolute;
 		display: flex;
 		flex-direction: row;
+		flex-wrap: wrap;
 		top:0;
 		left:0;
 		z-index:1010;
@@ -289,7 +297,8 @@
 
 	.month-wrapper {
 		position: relative;
-		width:306px;
+		min-width:50%;
+		max-width:50%;
 		padding:6px;
 	}
 

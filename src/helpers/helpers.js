@@ -46,6 +46,11 @@ export const dateToDatabaseDate = date => {
 	return parseInt(year + '' + month + '' + day)
 }
 
+export const dateDatabaseToDate = date => {
+	const dateString = date.toString()
+	return new Date(parseInt(dateString.substring(0, 4)), parseInt(dateString.substring(4, 6)) - 1, parseInt(dateString.substring(6, 8)) )
+}
+
 export const dateStringToDate = string => {
   const tmp = string.split('-')
   return new Date(parseInt(tmp[0]), parseInt(tmp[1]) - 1, parseInt(tmp[2]) )

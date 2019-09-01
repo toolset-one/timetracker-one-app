@@ -65,17 +65,22 @@
 
 
 	function getClass(date, firstDate, lastDate, mode) {
+		let className = ''
 		if(mode === 'range') {
 			if(date.getYear() === firstDate.getYear() && date.getMonth() === firstDate.getMonth() && date.getDate() === firstDate.getDate()) {
-				return 'range-first'
-			} else if(date.getYear() === lastDate.getYear() && date.getMonth() === lastDate.getMonth() && date.getDate() === lastDate.getDate()) {
-				return 'range-last'
-			} else if(date > firstDate && date < lastDate) {
-				return 'range-between'
-			} else {
-				return ''
+				className += 'range-first '
+			} 
+
+			if(date.getYear() === lastDate.getYear() && date.getMonth() === lastDate.getMonth() && date.getDate() === lastDate.getDate()) {
+				className += 'range-last '
+			} 
+
+			if(date > firstDate && date < lastDate) {
+				className += 'range-between'
 			}
 		}
+
+		return className
 	}
 
 	
@@ -100,7 +105,8 @@
 	</header>
 	<div class="dates">
 		{#each dates as date}
-			<div class="date {date.inMonth ? 'in-month' : ''} {getClass(date.date, firstDate, lastDate, mode)}">
+			<div class="date {date.inMonth ? 'in-month' : ''} {getClass(date.date, firstDate, lastDate, mode)}"
+			on:click={e => dispatch('change', date.date)}>
 				{date.date.getDate()}
 			</div>
 		{/each}
@@ -185,6 +191,10 @@
 		border-right:#FFF 3px solid;
 		line-height: 36px;
 		padding-left:3px;
+	}
+
+	.date.range-first.range-last {
+		border-radius: 6px;
 	}
 
 	.date.range-between {
