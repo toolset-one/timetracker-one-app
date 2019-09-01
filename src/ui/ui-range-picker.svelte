@@ -2,7 +2,7 @@
 	import { onMount, createEventDispatcher } from 'svelte'
 	import { fade } from 'svelte/transition'
 	import { routerStore } from '../stores/router-store.js'
-	import { dateDaysBetweenDates, datePrevDate, dateNextDate, dateGetWeek, dateGetHumanDate, dateNextMonth, datePrevMonth, dateGetMonth, dateIsWeek, dateIsMonth } from '../helpers/helpers.js'
+	import { dateDaysBetweenDates, datePrevDate, dateNextDate, dateGetWeek, dateGetHumanDate, dateNextMonth, datePrevMonth, dateGetMonth, dateIsWeek, dateIsMonth, dateGetWeekStart, dateGetMonthStart } from '../helpers/helpers.js'
 
 	import UiIcon from './ui-icon.svelte'
 	import UiDateInput from './ui-date-input.svelte'
@@ -50,11 +50,17 @@
 		if(dateIsWeek(firstDateNow, lastDateNow)) {
 			firstDate = datePrevDate(firstDateNow, 7)
 			lastDate = dateNextDate(firstDate, 6)
-		}
-
-		if(dateIsMonth(firstDateNow, lastDateNow)) {
+		} else if(dateIsMonth(firstDateNow, lastDateNow)) {
 			firstDate = datePrevMonth(firstDateNow)
 			lastDate = datePrevDate(dateNextMonth(firstDate))
+		} else {
+			if(dateDaysBetweenDates(firstDateNow, lastDateNow) <= 7) {
+				firstDate = dateGetWeekStart(firstDateNow)
+				lastDate = dateNextDate(firstDate, 6)
+			} else {
+				firstDate = dateGetMonthStart(firstDateNow)
+				lastDate = datePrevDate(dateNextMonth(firstDate))
+			}
 		}
 
 		dispatch('input', { firstDate, lastDate })
@@ -66,11 +72,17 @@
 		if(dateIsWeek(firstDateNow, lastDateNow)) {
 			firstDate = dateNextDate(firstDateNow, 7)
 			lastDate = dateNextDate(firstDate, 6)
-		}
-
-		if(dateIsMonth(firstDateNow, lastDateNow)) {
+		} else if(dateIsMonth(firstDateNow, lastDateNow)) {
 			firstDate = dateNextMonth(firstDateNow)
 			lastDate = datePrevDate(dateNextMonth(firstDate))
+		} else {
+			if(dateDaysBetweenDates(firstDateNow, lastDateNow) <= 7) {
+				firstDate = dateNextDate(dateGetWeekStart(firstDateNow), 7)
+				lastDate = dateNextDate(firstDate, 6)
+			} else {
+				firstDate = dateNextMonth(dateGetMonthStart(firstDateNow))
+				lastDate = datePrevDate(dateNextMonth(firstDate))
+			}
 		}
 
 		dispatch('input', { firstDate, lastDate })
