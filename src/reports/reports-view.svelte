@@ -4,9 +4,9 @@
 	import { uiStore } from '../stores/ui-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
-	import { reportsStore, reportsStoreUpdateDate, reportsStoreBarchartData, reportsStoreSetPeriod } from '../stores/reports-store.js'
+	import { reportsStore, reportsStoreUpdateRange, reportsStoreBarchartData, reportsStoreSetPeriod } from '../stores/reports-store.js'
 
-	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateGetWeek, dateGetMonth } from '../helpers/helpers.js'
+	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateGetWeek, dateGetMonth, datePrevMonth } from '../helpers/helpers.js'
 
 	import UiButton from '../ui/ui-button.svelte'
 	import UiMultiselect from '../ui/ui-multiselect.svelte'
@@ -72,12 +72,69 @@
 
 
 	function changed(e) {
-		reportsStoreUpdateDate(e.detail.firstDate)
+		console.log('TTT', e.detail)
+		reportsStoreUpdateRange(e.detail.firstDate, e.detail.lastDate)
 		scrollToDateFunction(e.detail.firstDate)
 	}
 
 
-	reportsStoreUpdateDate(firstDate)
+	function rangeChanged(e) {
+		if(rangeNow === 'current-week') {
+			let newFirstDate = new Date()
+
+			while(dateGetWeek(datePrevDate(newFirstDate)) === dateGetWeek(newFirstDate)) {
+				newFirstDate = datePrevDate(newFirstDate)
+			}
+
+			firstDate = newFirstDate
+			lastDate = dateNextDate(newFirstDate, 6)
+		} else if(rangeNow === 'last-week') {
+			let newFirstDate = datePrevDate(new Date(), 7)
+
+			while(dateGetWeek(datePrevDate(newFirstDate)) === dateGetWeek(newFirstDate)) {
+				newFirstDate = datePrevDate(newFirstDate)
+			}
+
+			firstDate = newFirstDate
+			lastDate = dateNextDate(newFirstDate, 6)
+		} else if(rangeNow === 'current-month') {
+
+			let newFirstDate = new Date()
+			let newLastDate = new Date()
+
+			while((datePrevDate(newFirstDate)).getMonth() === newFirstDate.getMonth()) {
+				newFirstDate = datePrevDate(newFirstDate)
+			}
+
+			while((dateNextDate(newLastDate)).getMonth() === newLastDate.getMonth()) {
+				newLastDate = dateNextDate(newLastDate)
+			}
+
+			firstDate = newFirstDate
+			lastDate = newLastDate
+		} else if(rangeNow === 'last-month') {
+
+			let newFirstDate = datePrevMonth(new Date())
+			let newLastDate = datePrevMonth(new Date())
+
+			while((datePrevDate(newFirstDate)).getMonth() === newFirstDate.getMonth()) {
+				newFirstDate = datePrevDate(newFirstDate)
+			}
+
+			while((dateNextDate(newLastDate)).getMonth() === newLastDate.getMonth()) {
+				newLastDate = dateNextDate(newLastDate)
+			}
+
+			firstDate = newFirstDate
+			lastDate = newLastDate
+		}
+
+		reportsStoreUpdateRange(firstDate, lastDate)
+		scrollToDateFunction(firstDate)
+	}
+
+
+	reportsStoreUpdateRange(firstDate, lastDate)
 
 </script>
 
@@ -89,7 +146,7 @@
 			on:input={e => changed(e)}/>
 	</div>
 	<div class="ranges-wrapper">
-		<UiRadio options={RANGE_OPTIONS} value={rangeNow} />
+		<UiRadio options={RANGE_OPTIONS} bind:value={rangeNow} on:change={e => rangeChanged()} />
 	</div>
 </section>
 

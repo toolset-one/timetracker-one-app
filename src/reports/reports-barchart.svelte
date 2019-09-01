@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { routerStore } from '../stores/router-store.js'
 	import { uiStore } from '../stores/ui-store.js'
-	import { reportsStore, reportsStoreUpdateDate } from '../stores/reports-store.js'
+	import { reportsStore, reportsStoreUpdateRange } from '../stores/reports-store.js'
 
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth, dateToDatabaseDate} from '../helpers/helpers.js'
 
@@ -20,17 +20,18 @@
 	tmp = 0
 
 	$: daysBetween = dateDaysBetweenDates(firstDate, startDate)
-	$: periodWidth = elWidth / $reportsStore.period
+	$: rangeDates = Object.keys($reportsStore.dates).length
+	$: periodWidth = elWidth / rangeDates
 	$: daysArray = calculateDaysArray(startDate)
 
 	function calculateDaysArray(startDate) {
 		let dateTmp = new Date(startDate)
-		dateTmp.setDate(dateTmp.getDate() - $reportsStore.period)
+		dateTmp.setDate(dateTmp.getDate() - rangeDates)
 
 		let daysSince = daysBetween,
 			arrayTmp = []
 
-		for(var i = -1 * $reportsStore.period; i <= $reportsStore.period; i++) {
+		for(var i = -1 * rangeDates; i <= rangeDates; i++) {
 			arrayTmp.push({
 				date: dateTmp,
 				daysSince
@@ -53,7 +54,7 @@
 	function timeoutFunction() {
 		let dateTmp = new Date(firstDate)
 		dateTmp.setDate(dateTmp.getDate() + Math.round((el.scrollLeft - 500000) / periodWidth) )
-		reportsStoreUpdateDate(dateTmp)
+		// reportsStoreUpdateRange(dateTmp, dateNextDate(dateTmp, rangeDates))
 	}
 
 
@@ -106,7 +107,7 @@
 
 <div class="barchart-wrapper" style="{
 	'--chart-width:' + elWidth +'px;'+
-	'--visible-items:'+ $reportsStore.period +';'
+	'--visible-items:'+ rangeDates +';'
 }">
 
 <div class="legend"></div>
@@ -127,7 +128,7 @@
 		class="inner"
 		bind:this={innerEl}>
 		{#each daysArray as day, i (day.daysSince)}
-			<div class="day-container" style="{'left:'+ (500000 + (day.daysSince - $reportsStore.period) * periodWidth) +'px'}">
+			<div class="day-container" style="{'left:'+ (500000 + (day.daysSince - rangeDates) * periodWidth) +'px'}">
 
 				<ReportsBarchartDay date={day.date} />
 			</div>

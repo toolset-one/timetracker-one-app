@@ -1,12 +1,12 @@
 import { writable } from 'svelte/store';
 import { routerStore } from '../stores/router-store.js'
 import { timesStore, timesStoreControlDate } from '../stores/times-store.js'
-import { dateNextDate, dateToDatabaseDate } from '../helpers/helpers.js'
+import { dateNextDate, dateToDatabaseDate, dateDaysBetweenDates } from '../helpers/helpers.js'
 
 export const reportsStore = writable({
-	date: new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
+	firstDate: new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
+	lastDate: new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
 	dates: {},
-	period: 7,
 	filterTasks: []
 })
 
@@ -19,7 +19,9 @@ export const reportsStoreBarchartData = writable({
 
 
 export function reportsStoreInit() {
-	reportsStoreUpdateDate(new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0))
+	// reportsStoreUpdateRange(new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0))
+	
+
 	timesStore.subscribe(() => {
 		const unsubscribe = reportsStore.subscribe(data => {
 			buildChartData(data)
@@ -36,20 +38,25 @@ export function reportsStoreSetPeriod(period) {
 	})
 }
 
-export function reportsStoreUpdateDate(date) {
+export function reportsStoreUpdateRange(firstDate, lastDate) {
 	reportsStore.update(data => {
 
 		data.dates = {}
-		let dateTmp = new Date(date)
+		let dateTmp = new Date(firstDate)
 
-		for(var i = 0; i < data.period; i++) {
+		const daysBetween = dateDaysBetweenDates(firstDate, lastDate) + 1 
+
+		console.log(daysBetween)
+
+		for(var i = 0; i < daysBetween; i++) {
 			const databaseDateTmp = dateToDatabaseDate(dateTmp)
 			timesStoreControlDate(databaseDateTmp)
 			data.dates[databaseDateTmp] = true
 			dateTmp = dateNextDate(dateTmp)
 		}
 
-		data.date = date
+		data.firstDate = firstDate
+		data.lastDate = lastDate
 		return data
 	})
 }

@@ -24,7 +24,7 @@
 			y: 0
 		}
 
-	$: boundingRect = el ? el.getBoundingClientRect() : {
+	$: boundingRect = value && el ? el.getBoundingClientRect() : {
 		top: 0,
 		left: 0
 	}
@@ -96,7 +96,6 @@
 		border-radius: 5px;
 		background:#FAF9F7;
 		padding:0;
-		/* box-shadow: 0 6px 0 -3px rgba(0, 0, 0, .05) inset; */
 	}
 
 	em {
@@ -134,7 +133,7 @@
 		z-index: 100;
 		border-radius: 5px;
 		line-height:40px;
-		padding:0 18px;
+		padding:0 12px;
 		font-size:14px;
 		font-weight:600;
 		color:#99938A;
