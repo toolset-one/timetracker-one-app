@@ -20,7 +20,7 @@
 
 </script>
 
-<div class="wrapper {active ? 'active' : ''}">
+<div class="wrapper {active ? 'active' : ''}" on:click={e => dispatch('click')}>
 	<input
 		type="text" class="month" bind:value={month} placeholder="mm" min="1" max="12" maxlength="2" disabled>
 	<span>–</span>
@@ -60,6 +60,7 @@ input {
 	color:#26231E;
 	font-variant-numeric: tabular-nums;
 	font-family: monospace;
+	cursor: pointer;
 }
 
 input[type=number]::-webkit-inner-spin-button, 

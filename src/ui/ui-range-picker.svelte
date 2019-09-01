@@ -149,9 +149,15 @@
 	{#if opened}
 		<div class="overlay">
 			<div class="dates-header">
-				<UiDateInput bind:value={firstDate} active={pickStartDate} />
+				<UiDateInput
+					bind:value={firstDate} 
+					active={pickStartDate} 
+					on:click={e => pickStartDate = true}/>
 					until
-				<UiDateInput bind:value={lastDate}  active={!pickStartDate}/>
+				<UiDateInput
+					bind:value={lastDate} 
+					active={!pickStartDate} 
+					on:click={e => pickStartDate = false}/>
 			</div>
 			<div class="month-wrapper">
 				<UiMonth
@@ -161,7 +167,7 @@
 					bind:firstDate={firstDate}
 					bind:lastDate={lastDate}
 					on:input={e => inputFirstMonth(e)}
-					on:change={e => changeDate(e.detail)}/>
+					on:change={e => changeDate(e.detail)} />
 			</div>
 			<div class="month-wrapper">
 				<UiMonth
@@ -171,7 +177,7 @@
 					bind:firstDate={firstDate}
 					bind:lastDate={lastDate}
 					on:input={e => inputSecondMonth(e)}
-					on:change={e => changeDate(e.detail)}/>
+					on:change={e => changeDate(e.detail)} />
 			</div>
 		</div>
 	{/if}
