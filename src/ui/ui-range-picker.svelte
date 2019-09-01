@@ -2,7 +2,7 @@
 	import { onMount, createEventDispatcher } from 'svelte'
 	import { fade } from 'svelte/transition'
 	import { routerStore } from '../stores/router-store.js'
-	import { dateDaysBetweenDates, datePrevDate, dateNextDate, dateGetWeek, dateGetHumanDate, dateNextMonth, datePrevMonth, dateGetMonth } from '../helpers/helpers.js'
+	import { dateDaysBetweenDates, datePrevDate, dateNextDate, dateGetWeek, dateGetHumanDate, dateNextMonth, datePrevMonth, dateGetMonth, dateIsWeek, dateIsMonth } from '../helpers/helpers.js'
 
 	import UiIcon from './ui-icon.svelte'
 	import UiDateInput from './ui-date-input.svelte'
@@ -17,7 +17,7 @@
 	let el,
 		pickStartDate = true,
 		hover = false,
-		opened = true,
+		opened = false,
 		monthForPicker = new Date(),
 		monthForSecondPicker = dateNextMonth(new Date()),
 		mousePosition = {
@@ -31,25 +31,13 @@
 	}
 
 
-	function isWeek(firstDate, lastDate) {
-		return dateDaysBetweenDates(firstDate, lastDate) === 6 
-			&& dateGetWeek(datePrevDate(firstDate)) != dateGetWeek(firstDate)
-	}
-
-	function isMonth(firstDate, lastDate) {
-		return datePrevDate(firstDate).getMonth() != firstDate.getMonth()
-			&& dateNextDate(lastDate).getMonth() != lastDate.getMonth()
-			&& firstDate.getMonth() === lastDate.getMonth()
-	}
-
-
 	function getPeriodTitle(firstDateNow, lastDateNow) {
 
-		if(isWeek(firstDateNow, lastDateNow)) {
+		if(dateIsWeek(firstDateNow, lastDateNow)) {
 			return 'Week ' + dateGetWeek(firstDateNow) + ', ' + firstDateNow.getFullYear()
 		}
 
-		if(isMonth(firstDateNow, lastDateNow)) {
+		if(dateIsMonth(firstDateNow, lastDateNow)) {
 			return dateGetMonth(firstDateNow) + ', ' + firstDateNow.getFullYear()
 		}
 
@@ -59,12 +47,12 @@
 
 	function prevPeriod(firstDateNow, lastDateNow) {
 
-		if(isWeek(firstDateNow, lastDateNow)) {
+		if(dateIsWeek(firstDateNow, lastDateNow)) {
 			firstDate = datePrevDate(firstDateNow, 7)
 			lastDate = dateNextDate(firstDate, 6)
 		}
 
-		if(isMonth(firstDateNow, lastDateNow)) {
+		if(dateIsMonth(firstDateNow, lastDateNow)) {
 			firstDate = datePrevMonth(firstDateNow)
 			lastDate = datePrevDate(dateNextMonth(firstDate))
 		}
@@ -75,12 +63,12 @@
 
 	function nextPeriod(firstDateNow, lastDateNow) {
 
-		if(isWeek(firstDateNow, lastDateNow)) {
+		if(dateIsWeek(firstDateNow, lastDateNow)) {
 			firstDate = dateNextDate(firstDateNow, 7)
 			lastDate = dateNextDate(firstDate, 6)
 		}
 
-		if(isMonth(firstDateNow, lastDateNow)) {
+		if(dateIsMonth(firstDateNow, lastDateNow)) {
 			firstDate = dateNextMonth(firstDateNow)
 			lastDate = datePrevDate(dateNextMonth(firstDate))
 		}

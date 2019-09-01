@@ -6,7 +6,7 @@
 	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
 	import { reportsStore, reportsStoreUpdateRange, reportsStoreBarchartData, reportsStoreSetPeriod } from '../stores/reports-store.js'
 
-	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateGetWeek, dateGetMonth, datePrevMonth } from '../helpers/helpers.js'
+	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateGetWeek, dateGetMonth, datePrevMonth, dateNextMonth, dateIsWeek, dateIsMonth, dateGetWeekStart, dateGetMonthStart } from '../helpers/helpers.js'
 
 	import UiButton from '../ui/ui-button.svelte'
 	import UiMultiselect from '../ui/ui-multiselect.svelte'
@@ -29,13 +29,14 @@
 		value: 'last-month'
 	}, {
 		title: 'Custom',
-		value: 'custom'
+		value: 'custom',
+		disabled: true
 	}]
 
 
 	let filterTasks,
 		filterTasksLength = 0,
-		firstDate = getFirstDate(),
+		firstDate = dateGetWeekStart(),
 		lastDate = dateNextDate(firstDate, 6),
 		rangeNow = 'current-week'
 
@@ -44,15 +45,11 @@
 		id: null
 	}]
 
-	function getFirstDate() {
-		let firstDateTmp = new Date()
 
-		while(dateGetWeek(datePrevDate(firstDateTmp)) === dateGetWeek(firstDateTmp)) {
-			firstDateTmp = datePrevDate(firstDateTmp)
-		}
-		
-		return firstDateTmp
-	}
+	onMount(() => {
+		reportsStore.subscribe(reportsStoreChanged)
+	})
+
 
 	afterUpdate(() => {
 		if(filterTasksLength != filterTasks.length) {
@@ -72,56 +69,72 @@
 
 	function rangeChanged(e) {
 		if(rangeNow === 'current-week') {
-			let newFirstDate = new Date()
 
-			while(dateGetWeek(datePrevDate(newFirstDate)) === dateGetWeek(newFirstDate)) {
-				newFirstDate = datePrevDate(newFirstDate)
-			}
+			firstDate = dateGetWeekStart()
+			lastDate = dateNextDate(firstDate, 6)
 
-			firstDate = newFirstDate
-			lastDate = dateNextDate(newFirstDate, 6)
 		} else if(rangeNow === 'last-week') {
-			let newFirstDate = datePrevDate(new Date(), 7)
 
-			while(dateGetWeek(datePrevDate(newFirstDate)) === dateGetWeek(newFirstDate)) {
-				newFirstDate = datePrevDate(newFirstDate)
-			}
+			firstDate = dateGetWeekStart(datePrevDate(new Date(), 7))
+			lastDate = dateNextDate(firstDate, 6)
 
-			firstDate = newFirstDate
-			lastDate = dateNextDate(newFirstDate, 6)
 		} else if(rangeNow === 'current-month') {
 
-			let newFirstDate = new Date()
-			let newLastDate = new Date()
+			firstDate = dateGetMonthStart()
+			lastDate = datePrevDate(dateNextMonth(firstDate))
 
-			while((datePrevDate(newFirstDate)).getMonth() === newFirstDate.getMonth()) {
-				newFirstDate = datePrevDate(newFirstDate)
-			}
-
-			while((dateNextDate(newLastDate)).getMonth() === newLastDate.getMonth()) {
-				newLastDate = dateNextDate(newLastDate)
-			}
-
-			firstDate = newFirstDate
-			lastDate = newLastDate
 		} else if(rangeNow === 'last-month') {
 
-			let newFirstDate = datePrevMonth(new Date())
-			let newLastDate = datePrevMonth(new Date())
-
-			while((datePrevDate(newFirstDate)).getMonth() === newFirstDate.getMonth()) {
-				newFirstDate = datePrevDate(newFirstDate)
-			}
-
-			while((dateNextDate(newLastDate)).getMonth() === newLastDate.getMonth()) {
-				newLastDate = dateNextDate(newLastDate)
-			}
-
-			firstDate = newFirstDate
-			lastDate = newLastDate
+			firstDate = dateGetMonthStart(datePrevMonth(new Date()))
+			lastDate = datePrevDate(dateNextMonth(firstDate))
 		}
 
 		reportsStoreUpdateRange(firstDate, lastDate)
+	}
+
+
+	function reportsStoreChanged({ firstDate, lastDate }) {
+
+		let firstDateTest = dateGetWeekStart()
+		let lastDateTest = dateNextDate(firstDateTest, 6)
+
+		if(isSameDate(firstDate, firstDateTest) && isSameDate(lastDate, lastDateTest)) {
+			rangeNow = 'current-week'
+			return
+		}
+
+		firstDateTest = dateGetWeekStart(datePrevDate(new Date(), 7))
+		lastDateTest = dateNextDate(firstDate, 6)
+
+		if(isSameDate(firstDate, firstDateTest) && isSameDate(lastDate, lastDateTest)) {
+			rangeNow = 'last-week'
+			return
+		}
+
+		firstDateTest = dateGetMonthStart()
+		lastDateTest = datePrevDate(dateNextMonth(firstDate))
+
+		if(isSameDate(firstDate, firstDateTest) && isSameDate(lastDate, lastDateTest)) {
+			rangeNow = 'current-month'
+			return
+		}
+
+		firstDateTest = dateGetMonthStart(datePrevMonth(new Date()))
+		lastDateTest = datePrevDate(dateNextMonth(firstDate))
+
+		if(isSameDate(firstDate, firstDateTest) && isSameDate(lastDate, lastDateTest)) {
+			rangeNow = 'last-month'
+			return
+		}
+
+		rangeNow = 'custom'
+	}
+
+
+	function isSameDate(date1, date2) {
+		return date1.getDate() === date2.getDate()
+			&& date1.getMonth() === date2.getMonth()
+			&& date1.getYear() === date2.getYear()
 	}
 
 

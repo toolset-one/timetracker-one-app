@@ -40,8 +40,10 @@
 	$: activeLeft = activeBoundingRect.left - boundingRect.left - 2
 
 	function click(e, option) {
-		value = option.value
-		dispatch('change', '')
+		if(!option.disabled) {
+			value = option.value
+			dispatch('change', '')
+		}
 	}
 
 </script>
@@ -68,7 +70,7 @@
 		{#each options as option}
 			<div
 				bind:this={optionEls[option.value]}
-				class="option {option.value === value ? 'active' : ''}"
+				class="option {option.value === value ? 'active' : ''} {option.disabled ? 'disabled' : ''}"
 				on:click={e => click(e, option)}>
 				{option.title}
 			</div>
@@ -84,7 +86,6 @@
 		border:0;
 		border-radius: 6px;
 		background:#CCC9C4;
-		cursor: pointer;
 		transition: all 100ms ease;
 		outline:none;
 	}
@@ -139,10 +140,16 @@
 		color:#99938A;
 		float:left;
 		transition: all 100ms ease;
+		cursor: pointer;
 	}
 
 	.option:hover, .option.active {
 		color:#26231E;
+	}
+
+	.option.disabled, .option.disabled:hover {
+		color:#99938A;
+		cursor:default;
 	}
 
 	.indicator {

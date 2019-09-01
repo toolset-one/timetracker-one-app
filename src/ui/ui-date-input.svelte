@@ -52,7 +52,7 @@ input {
 	width:2ch;
 	padding:9px 0 9px 0;
 	line-height:24px;
-	font-size:16px;
+	font-size:14px;
 	background:transparent;
 	border-radius:0;
 	box-shadow:none;

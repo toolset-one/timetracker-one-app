@@ -138,6 +138,34 @@ export const dateDaysBetweenDates = (date1, date2) => {
 }
 
 
+export function dateIsWeek(firstDate, lastDate) {
+	return dateDaysBetweenDates(firstDate, lastDate) === 6 
+		&& dateGetWeek(datePrevDate(firstDate)) != dateGetWeek(firstDate)
+}
+
+export function dateIsMonth(firstDate, lastDate) {
+	return datePrevDate(firstDate).getMonth() != firstDate.getMonth()
+		&& dateNextDate(lastDate).getMonth() != lastDate.getMonth()
+		&& firstDate.getMonth() === lastDate.getMonth()
+}
+
+
+export function dateGetWeekStart(date = new Date()) {
+	let dateTmp = new Date(date)
+	while(dateGetWeek(datePrevDate(dateTmp)) === dateGetWeek(dateTmp)) {
+		dateTmp = datePrevDate(dateTmp)
+	}
+	return dateTmp
+}
+
+export function dateGetMonthStart(date = new Date()) {
+	let dateTmp = new Date(date)
+	while((datePrevDate(dateTmp)).getMonth() === dateTmp.getMonth()) {
+		dateTmp = datePrevDate(dateTmp)
+	}
+	return dateTmp
+}
+
 
 export const trailingZero = number => {
 	return number < 10 ? '0' + number : number
