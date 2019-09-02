@@ -83,6 +83,43 @@
 		return className
 	}
 
+
+	function prevArrowKeydown(e) {
+		console.log(e.keyCode)
+
+		if(e.keyCode === 13) {
+			prevMonth()
+		} else if(e.keyCode === 9) {
+			e.preventDefault()
+		} else if(e.keyCode === 39) {
+			e.target.closest('.overlay').querySelector('.icon-right').focus()
+		} else if(e.keyCode === 40) {
+			e.target.closest('.month-wrapper').querySelector('.dates .date').focus()
+		}
+	}
+
+
+	function nextArrowKeydown(e) {
+		console.log(e.keyCode)
+
+		if(e.keyCode === 13) {
+			nextMonth()
+		} else if(e.keyCode === 9) {
+			e.preventDefault()
+		} else if(e.keyCode === 37) {
+			e.target.closest('.overlay').querySelector('.icon-left').focus()
+		} else if(e.keyCode === 40) {
+			e.target.closest('.month-wrapper').querySelector('.dates .date').focus()
+		}
+	}
+
+
+	function dateKeydown(e, date, i) {
+		console.log(e, date, i)
+		if(e.keyCode === 13) {
+			dispatch('change', date.date)
+		}
+	}
 	
 
 </script>
@@ -90,7 +127,12 @@
 <div class="wrapper">
 	<header>
 		{#if leftArrow}
-			<div class="icon-wrapper" on:click={e => prevMonth()}>
+			<div
+				class="icon-wrapper icon-left"
+				on:click={e => prevMonth()}
+				on:keydown={e => prevArrowKeydown(e)}
+				tabindex="0"
+				data-disable="true">
 				<UiIcon type="arrow-left" />
 			</div>
 		{/if}
@@ -98,15 +140,24 @@
 			{MONTHS[monthForPicker.getMonth()]}, {monthForPicker.getFullYear()}
 		</div>
 		{#if rightArrow}
-			<div class="icon-wrapper" on:click={e => nextMonth()}>
+			<div
+				class="icon-wrapper icon-right"
+				on:keydown={e => nextArrowKeydown(e)}
+				on:click={e => nextMonth()}
+				tabindex="0"
+				data-disable="true">
 				<UiIcon type="arrow-right" />
 			</div>
 		{/if}
 	</header>
 	<div class="dates">
-		{#each dates as date}
-			<div class="date {date.inMonth ? 'in-month' : ''} {getClass(date.date, firstDate, lastDate, mode)}"
-			on:click={e => dispatch('change', date.date)}>
+		{#each dates as date, i}
+			<div
+				class="date {date.inMonth ? 'in-month' : ''} {getClass(date.date, firstDate, lastDate, mode)}"
+				on:keydown={e => dateKeydown(e, date, i)}
+				on:click={e => dispatch('change', date.date)}
+				tabindex="0"
+				data-disable="true">
 				{date.date.getDate()}
 			</div>
 		{/each}

@@ -31,6 +31,18 @@
 	}
 
 
+	onMount(() => {
+		//el.querySelector('.icon-wrapper').focus()
+	})
+
+	function open() {
+		opened = true
+		setTimeout(() => {
+			el.querySelector('.icon-wrapper').focus()
+		})
+	}
+
+
 	function getPeriodTitle(firstDateNow, lastDateNow) {
 
 		if(dateIsWeek(firstDateNow, lastDateNow)) {
@@ -152,7 +164,7 @@
 	</div>
 	<span
 		class="title"
-		on:click={e => opened = true}
+		on:click={e => open()}
 		tabindex="0"
 		data-config="REPORTS_RANGE_TITLE">
 		{getPeriodTitle(firstDate, lastDate)}

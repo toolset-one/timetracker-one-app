@@ -24,7 +24,7 @@
 {#if $reportsStoreBarchartData.days[databaseDate]}
 	<div
 		class="bar-wrapper">
-		{#if dayTotal > 0}
+		
 			<div
 				class="bar"
 				style="{'height:' + barHeight + '%;'}">
@@ -50,7 +50,7 @@
 
 
 			</div>
-		{/if}
+		
 	</div>
 {/if}
 
