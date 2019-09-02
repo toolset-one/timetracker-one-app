@@ -1,6 +1,5 @@
 <script>
 	import { onMount } from 'svelte'
-	import { fade } from 'svelte/transition'
 	import { cubicOut } from 'svelte/easing'
 	import { reportsStore, reportsStoreBarchartData } from '../stores/reports-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
@@ -41,8 +40,7 @@
 				</span>
 
 				{#if hoveredId === task.taskId || $reportsStore.active === task.taskId}
-					<div 
-						transition:fade={{ duration: 100 }}
+					<div
 						class="tooltip"
 						style="background:{$tasksStore.json[task.taskId] ? $tasksStore.json[task.taskId].color : '#333'};">		
 						<span class="tooltip-title">

@@ -17,7 +17,8 @@
 	daysArray = [],
 	timeout,
 	scrollLeft,
-	tmp = 0
+	tmp = 0,
+	activeDate = null
 
 	$: daysBetween = dateDaysBetweenDates($reportsStore.firstDate, startDate)
 	$: rangeDates = Object.keys($reportsStore.dates).length
@@ -57,9 +58,14 @@
 		class="inner"
 		bind:this={innerEl} style="{'left:'+ (-1 * daysBetween * rangeWidth) +'px'}">
 		{#each daysArray as day, i (day.daysSince)}
-			<div class="day-container" style="{'left:'+ ((day.daysSince) * rangeWidth) +'px'}">
+			<div
+				class="day-container {activeDate === day.daysSince || !activeDate ? '' : 'inactive'}"
+				on:mouseenter={e => activeDate = day.daysSince}
+				on:mouseleave={e => activeDate = null}
+				style="{'left:'+ ((day.daysSince) * rangeWidth) +'px'}"
+				>
 
-				<ReportsBarchartDay date={day.date} />
+				<ReportsBarchartDay date={day.date} active={activeDate === day.daysSince} />
 			</div>
 		{/each}
 	</div>
@@ -79,7 +85,6 @@
 		position: relative;
 		height:250px;
 		width:100%;
-		overflow:hidden;
 		backface-visibility: hidden;
 		z-index:300;
 	}
@@ -100,7 +105,7 @@
 		height:100%;
 		text-align: center;
 		font-size:14px;
-		z-index:100;
+		z-index:200;
 		border-bottom-right-radius: 6px;
 		border-bottom-left-radius: 6px;
 	}
@@ -111,6 +116,11 @@
 
 	.day-container:hover .date small {
 		opacity: 1;
+	}
+
+	.day-container.inactive {
+		z-index:100;
+		opacity: .5;
 	}
 
 	.legend {

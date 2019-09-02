@@ -8,6 +8,7 @@
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth, dateToDatabaseDate} from '../helpers/helpers.js'
 
 	export let date = new Date()
+	export let active = false
 
 	$: databaseDate = dateToDatabaseDate(date)
 	$: dayTotal = $reportsStoreBarchartData.days[databaseDate] ? $reportsStoreBarchartData.days[databaseDate].total : 0
@@ -21,21 +22,34 @@
 </script>
 
 {#if $reportsStoreBarchartData.days[databaseDate]}
-	<div class="bar-wrapper">
+	<div
+		class="bar-wrapper">
 		{#if dayTotal > 0}
 			<div
 				class="bar"
 				style="{'height:' + barHeight + '%;'}">
 
-					{#each Object.keys($reportsStoreBarchartData.days[databaseDate].tasks) as taskId}
-						<div 
-							class="segment {$reportsStore.active === taskId || !$reportsStore.active ? '' : 'inactive'}"
-							style="{
-							'height:' + $reportsStoreBarchartData.days[databaseDate].tasks[taskId] / (dayTotal / 100) +'%;' +
-							'background:' + ($tasksStore.json[taskId] ? $tasksStore.json[taskId].color : '#333') + ';'
-						} "></div>
-					{/each}
-				</div>
+				{#each Object.keys($reportsStoreBarchartData.days[databaseDate].tasks) as taskId}
+					<div 
+						class="segment {$reportsStore.active === taskId || !$reportsStore.active ? '' : 'inactive'}"
+						style="{
+						'height:' + $reportsStoreBarchartData.days[databaseDate].tasks[taskId] / (dayTotal / 100) +'%;' +
+						'background:' + ($tasksStore.json[taskId] ? $tasksStore.json[taskId].color : '#333') + ';'
+					} "></div>
+				{/each}
+
+				{#if active}
+					<div
+						class="tooltip">		
+						<span class="tooltip-date">
+							{dateGetHumanDate(date)}
+						</span>
+						{dateGetHours(dayTotal)}:{dateGetMinutes(dayTotal)}
+					</div>
+				{/if}
+
+
+			</div>
 		{/if}
 	</div>
 {/if}
@@ -109,5 +123,39 @@
 
 	.segment.inactive {
 		opacity:.25;
+	}
+
+	.tooltip {
+		position: absolute;
+		bottom:100%;
+		left:50%;
+		max-width:240px;
+		padding:12px 18px;
+		border-radius: 6px;
+		transform:translateX(-50%);
+		color:#FFF;
+		line-height:18px;
+		font-size: 14px;
+		text-align:center;
+		margin:-6px 0 6px 0;
+		box-shadow:0 4px 0 -2px rgba(0, 0, 0, .05), 0 3px 6px rgba(0, 0, 0, .1);
+		background:#26231E;
+	}
+
+	.tooltip:after {
+		content:'';
+		display:block;
+		width:6px;
+		height:6px;
+		background:inherit;
+		transform: translateX(-50%) translateY(-50%) rotateZ(45deg);
+		position: absolute;
+		top:100%;
+		left:50%;
+	}
+
+	.tooltip-date {
+		display:block;
+		white-space: nowrap;
 	}
 </style>
