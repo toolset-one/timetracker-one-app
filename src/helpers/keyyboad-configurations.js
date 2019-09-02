@@ -254,5 +254,84 @@ export const KEYS_CONFIG = {
 			['parent', 'body'],
 			['query', '.add-button-wrapper a']
 		]
+	},
+
+
+
+	REPORTS_RANGE_ARROW_LEFT: {
+		'top': TO_MAIN_NAV,
+		'right': [
+			['next']
+		],
+		'bottom': [
+			['parent', 'section'],
+			['next'],
+			['find']
+		],
+		'esc': TO_MAIN_NAV
+	},
+
+	REPORTS_RANGE_ARROW_RIGHT: {
+		'top': TO_MAIN_NAV,
+		'right': [
+			['next']
+		],
+		'bottom': [
+			['parent', 'section'],
+			['next'],
+			['find']
+		],
+		'left': [
+			['prev']
+		],
+		'esc': TO_MAIN_NAV
+	},
+
+	REPORTS_RANGE_TITLE: {
+		'top': TO_MAIN_NAV,
+		'right': [
+			['parent', '.custom-range-wrapper'],
+			['next'],
+			['find']
+		],
+		'bottom': [
+			['parent', 'section'],
+			['next'],
+			['find']
+		],
+		'left': [
+			['prev']
+		],
+		'esc': TO_MAIN_NAV
+	},
+
+	REPORTS_RANGE_RADIO: {
+		'top': TO_MAIN_NAV,
+		'right': [
+			['next']
+		],
+		'bottom': [
+			['parent', 'section'],
+			['next'],
+			['find']
+		],
+		'left': [
+			['prev']
+		],
+		'esc': TO_MAIN_NAV
+	},
+
+	REPORTS_RANGE_RADIO_FIRST: [
+		['parent', 'section'],
+		['query', '.custom-range-wrapper .title']
+	],
+
+	REPORTS_MULTIPLE: {
+		'top': [
+			['parent', 'section'],
+			['prev'],
+			['find']
+		],
+		'esc': TO_MAIN_NAV
 	}
 }

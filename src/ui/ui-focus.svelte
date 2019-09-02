@@ -95,14 +95,18 @@
 
 		if(e.keyCode === 9) { // TAB
 
-		} else if (e.keyCode === 37) { // RIGHT
-			if(elementConfig.left) {
+		} else if (e.keyCode === 37) { // LEFT
+			if(targetEl.dataset.left) {
+				doAction(KEYS_CONFIG[targetEl.dataset.left], e, true)
+			} else if(elementConfig.left) {
 				doAction(elementConfig.left, e, false)
 			} else {
 				initWiggle(false)
 			}
 		} else if (e.keyCode === 39) { // RIGHT
-			if(elementConfig.right) {
+			if(targetEl.dataset.right) {
+				doAction(KEYS_CONFIG[targetEl.dataset.right], e, true)
+			} else if(elementConfig.right) {
 				doAction(elementConfig.right, e, false)
 			} else {
 				initWiggle(false)

@@ -136,13 +136,25 @@
 		y: e.pageY
 	}}>
 	<em></em>
-	<div class="arrow-left" on:click={e => prevPeriod(firstDate, lastDate)}>
+	<div
+		class="arrow-left"
+		on:click={e => prevPeriod(firstDate, lastDate)}
+		tabindex="0"
+		data-config="REPORTS_RANGE_ARROW_LEFT">
 		<UiIcon type="arrow-left" color="#26231E" />	
 	</div>
-	<div class="arrow-right" on:click={e => nextPeriod(firstDate, lastDate)}>
+	<div
+		class="arrow-right"
+		on:click={e => nextPeriod(firstDate, lastDate)}
+		tabindex="0"
+		data-config="REPORTS_RANGE_ARROW_RIGHT">
 		<UiIcon type="arrow-right" color="#26231E" />	
 	</div>
-	<span class="title" on:click={e => opened = true}>
+	<span
+		class="title"
+		on:click={e => opened = true}
+		tabindex="0"
+		data-config="REPORTS_RANGE_TITLE">
 		{getPeriodTitle(firstDate, lastDate)}
 	</span>
 	
@@ -234,6 +246,7 @@
 		padding:14px;
 		background:#FFF;
 		border-radius: 0;
+		outline:none;
 	}
 
 	.arrow-left {
@@ -253,6 +266,7 @@
 		-webkit-font-smoothing:antialiased;
 		border-top-left-radius: 0;
 		border-bottom-left-radius: 0;
+		outline:none;
 	}
 
 	em {

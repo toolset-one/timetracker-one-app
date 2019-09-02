@@ -67,11 +67,14 @@
 			'width:'+ activeWidth +'px;' +
 			'left:'+ activeLeft +'px;'
 		}"></div>
-		{#each options as option}
+		{#each options as option, i}
 			<div
 				bind:this={optionEls[option.value]}
 				class="option {option.value === value ? 'active' : ''} {option.disabled ? 'disabled' : ''}"
-				on:click={e => click(e, option)}>
+				on:click={e => click(e, option)}
+				tabindex="{!option.disabled ? '0' : null}"
+				data-left="{i === 0 ? 'REPORTS_RANGE_RADIO_FIRST' : null}"
+				data-config="REPORTS_RANGE_RADIO">
 				{option.title}
 			</div>
 		{/each}
@@ -141,6 +144,7 @@
 		float:left;
 		transition: all 100ms ease;
 		cursor: pointer;
+		outline: none;
 	}
 
 	.option:hover, .option.active {

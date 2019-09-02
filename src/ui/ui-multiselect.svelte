@@ -31,7 +31,8 @@
 		label="{label}"
 		type="icon-right"
 		icon="arrow-left"
-		on:click={e => opened = true} />
+		on:click={e => opened = true}
+		focusConfig="REPORTS_MULTIPLE" />
 
 	{#if opened}
 		<div class="overlay">
