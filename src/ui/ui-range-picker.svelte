@@ -18,8 +18,8 @@
 		pickStartDate = true,
 		hover = false,
 		opened = false,
-		monthForPicker = new Date(),
-		monthForSecondPicker = dateNextMonth(new Date()),
+		monthForPicker = new Date(firstDate),
+		monthForSecondPicker = dateNextMonth(new Date(firstDate)),
 		mousePosition = {
 			x: 0,
 			y: 0
