@@ -1,8 +1,8 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount } from 'svelte'
 	import { cubicOut } from 'svelte/easing'
 	import { routerStore } from '../stores/router-store.js'
-	import { reportsStoreBarchartData } from '../stores/reports-store.js'
+	import { reportsStore, reportsStoreBarchartData } from '../stores/reports-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth, dateToDatabaseDate} from '../helpers/helpers.js'
@@ -29,7 +29,7 @@
 
 					{#each Object.keys($reportsStoreBarchartData.days[databaseDate].tasks) as taskId}
 						<div 
-							class="segment"
+							class="segment {$reportsStore.active === taskId || !$reportsStore.active ? '' : 'inactive'}"
 							style="{
 							'height:' + $reportsStoreBarchartData.days[databaseDate].tasks[taskId] / (dayTotal / 100) +'%;' +
 							'background:' + ($tasksStore.json[taskId] ? $tasksStore.json[taskId].color : '#333') + ';'
@@ -99,12 +99,15 @@
 		transform:translateX(-50%);
 		display:flex;
 		flex-direction: column-reverse;
-		/* transition: all 100ms ease; */
 		max-width:48px;
 	}
 
 	.segment {
 		width:100%;
-		/* transition: all 100ms ease; */
+		transition: opacity 100ms ease;
+	}
+
+	.segment.inactive {
+		opacity:.25;
 	}
 </style>

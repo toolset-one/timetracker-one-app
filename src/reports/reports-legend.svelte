@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from 'svelte'
 	import { cubicOut } from 'svelte/easing'
-	import { reportsStoreBarchartData } from '../stores/reports-store.js'
+	import { reportsStore, reportsStoreBarchartData, reportsStoreSetActive } from '../stores/reports-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth, dateToDatabaseDate} from '../helpers/helpers.js'
@@ -18,7 +18,9 @@
 <div class="legend-wrapper">
 	{#each tasks as task, i (task.taskId)}
 		<div
-			class="segment"
+			class="segment {$reportsStore.active === task.taskId || !$reportsStore.active ? '' : 'inactive'}"
+			on:mouseenter={e => reportsStoreSetActive(task.taskId)}
+			on:mouseleave={e => reportsStoreSetActive(null)}
 			style="background:{$tasksStore.json[task.taskId] ? $tasksStore.json[task.taskId].color : '#333'};">
 				{!$tasksStore.json[task.taskId] 
 					? 'No Task'
@@ -55,6 +57,11 @@
 		border-radius: 6px;
 		margin:0 6px 6px 0;
 		-webkit-font-smoothing:antialiased;
+		transition: all 100ms ease;
+	}
+
+	.segment.inactive {
+		opacity:0.5;
 	}
 
 	span {

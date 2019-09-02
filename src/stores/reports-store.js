@@ -7,7 +7,8 @@ export const reportsStore = writable({
 	firstDate: new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
 	lastDate: new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
 	dates: {},
-	filterTasks: []
+	filterTasks: [],
+	active: null
 })
 
 export const reportsStoreBarchartData = writable({
@@ -59,6 +60,13 @@ export function reportsStoreUpdateRange(firstDate, lastDate) {
 	})
 }
 
+
+export function reportsStoreSetActive(id) {
+	reportsStore.update(data => {
+		data.active = id
+		return data
+	})
+}
 
 function buildChartData(reportsStore) {
 

@@ -1,10 +1,13 @@
 <script>
 	import { onMount } from 'svelte'
+	import { fade } from 'svelte/transition'
 	import { cubicOut } from 'svelte/easing'
-	import { reportsStoreBarchartData } from '../stores/reports-store.js'
+	import { reportsStore, reportsStoreBarchartData } from '../stores/reports-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth, dateToDatabaseDate} from '../helpers/helpers.js'
+
+	let hoveredId = null
 
 	$: tasks = Object.keys($reportsStoreBarchartData.tasks).map(taskId => {
 		return {
@@ -22,14 +25,36 @@
 <div class="distribution-wrapper">
 	{#each tasks as task, i (task.taskId)}
 		<div
-			class="segment"
-			style="
-			width:{task.duration / ($reportsStoreBarchartData.total / 100)}%;
-			background:{$tasksStore.json[task.taskId] ? $tasksStore.json[task.taskId].color : '#333'};">
-				{dateGetHours(task.duration)}:{dateGetMinutes(task.duration)}
-				<span>
-					{$tasksStore.json[task.taskId] ? $tasksStore.json[task.taskId].title : 'No Task'}
+			class="segment {$reportsStore.active === task.taskId || !$reportsStore.active ? '' : 'inactive'}"
+			on:mouseenter={e => hoveredId = task.taskId}
+			on:mouseleave={e => hoveredId = null}
+			style="width:{task.duration / ($reportsStoreBarchartData.total / 100)}%;">
+				<div class="bar" style="background:{$tasksStore.json[task.taskId] ? $tasksStore.json[task.taskId].color : '#333'};">
+					{dateGetHours(task.duration)}:{dateGetMinutes(task.duration)}
+				</div>
+				<span class="title">
+					{!$tasksStore.json[task.taskId] 
+						? 'No Task'
+						: $tasksStore.json[task.taskId].title.length > 0 
+							? $tasksStore.json[task.taskId].title 
+							: 'No Title'}
 				</span>
+
+				{#if hoveredId === task.taskId || $reportsStore.active === task.taskId}
+					<div 
+						transition:fade={{ duration: 100 }}
+						class="tooltip"
+						style="background:{$tasksStore.json[task.taskId] ? $tasksStore.json[task.taskId].color : '#333'};">		
+						<span class="tooltip-title">
+							{!$tasksStore.json[task.taskId] 
+								? 'No Task'
+								: $tasksStore.json[task.taskId].title.length > 0 
+									? $tasksStore.json[task.taskId].title 
+									: 'No Title'}
+						</span>
+						{dateGetHours(task.duration)}:{dateGetMinutes(task.duration)}
+					</div>
+				{/if}
 		</div>
 	{/each}
 
@@ -60,29 +85,36 @@
 
 	.segment {
 		position: relative;
-		height:42px;
-		line-height: 42px;
-		font-size:14px;
-		color:#FFF;
-		padding:0 0 0 3px;
-		/* transition: all 100ms ease; */
+		transition: opacity 100ms ease;
 	}
 
-	.segment:first-child {
+	.segment.inactive {
+		opacity: .25;
+	}
+
+	.segment:first-child .bar {
 		border-top-left-radius: 6px;
 		border-bottom-left-radius: 6px;
 	}
 
-	.segment:last-child {
+	.segment:last-child .bar {
 		border-top-right-radius: 6px;
 		border-bottom-right-radius: 6px;
 	}
 
-	.segment span {
+	.segment .bar {
+		height:42px;
+		line-height: 42px;
+		font-size:14px;
+		color:#FFF;
+		padding:0 0 0 6px;
+		max-width: 100%;
+		overflow:hidden;
+		text-overflow:ellipsis;
+	}
+
+	.segment .title {
 		display:block;
-		position: absolute;
-		top:100%;
-		left:0;
 		line-height:24px;
 		font-size: 14px;
 		color:#66625C;
@@ -90,6 +122,39 @@
 		white-space: nowrap;
 		overflow-x: hidden;
 		text-overflow: ellipsis;
+	}
+
+	.tooltip {
+		position: absolute;
+		bottom:100%;
+		left:50%;
+		max-width:240px;
+		padding:6px 12px;
+		border-radius: 6px;
+		transform:translateX(-50%);
+		color:#FFF;
+		line-height:18px;
+		font-size: 14px;
+		text-align:center;
+		margin:-6px 0 6px 0;
+		box-shadow:0 4px 0 -2px rgba(0, 0, 0, .05), 0 3px 6px rgba(0, 0, 0, .1);
+	}
+
+	.tooltip:after {
+		content:'';
+		display:block;
+		width:6px;
+		height:6px;
+		background:inherit;
+		transform: translateX(-50%) translateY(-50%) rotateZ(45deg);
+		position: absolute;
+		top:100%;
+		left:50%;
+	}
+
+	.tooltip-title {
+		display:block;
+		font-weight:600;
 	}
 
 	
