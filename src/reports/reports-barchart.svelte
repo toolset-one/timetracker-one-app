@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { routerStore } from '../stores/router-store.js'
 	import { uiStore } from '../stores/ui-store.js'
-	import { reportsStore, reportsStoreUpdateRange } from '../stores/reports-store.js'
+	import { reportsStore, reportsStoreBarchartData, reportsStoreUpdateRange } from '../stores/reports-store.js'
 
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth, dateToDatabaseDate, dateDatabaseToDate} from '../helpers/helpers.js'
 
@@ -44,10 +44,26 @@
 <div class="legend"></div>
 
 <div class="line-wrapper">
-	<div class="line" style="bottom:100%;"></div>
-	<div class="line" style="bottom:75%;"></div>
-	<div class="line" style="bottom:50%;"></div>
-	<div class="line" style="bottom:25%;"></div>
+	<div class="line" style="bottom:100%;">
+		<span>
+			{dateGetHours($reportsStoreBarchartData.totalDayMax)}:{dateGetMinutes($reportsStoreBarchartData.totalDayMax)}
+		</span>
+	</div>
+	<div class="line" style="bottom:75%;">
+		<span>
+			{dateGetHours($reportsStoreBarchartData.totalDayMax / 4 * 3)}:{dateGetMinutes($reportsStoreBarchartData.totalDayMax / 4 * 3)}
+		</span>
+	</div>
+	<div class="line" style="bottom:50%;">
+		<span>
+			{dateGetHours($reportsStoreBarchartData.totalDayMax / 2)}:{dateGetMinutes($reportsStoreBarchartData.totalDayMax / 2)}
+		</span>
+	</div>
+	<div class="line" style="bottom:25%;">
+		<span>
+			{dateGetHours($reportsStoreBarchartData.totalDayMax / 4 * 1)}:{dateGetMinutes($reportsStoreBarchartData.totalDayMax / 4 * 1)}
+		</span>
+	</div>
 	<div class="line line-bottom" style="bottom:0%;"></div>
 </div>
 
@@ -84,9 +100,10 @@
 	.barchart {
 		position: relative;
 		height:250px;
-		width:100%;
+		width:calc(100% - 24px);
 		backface-visibility: hidden;
 		z-index:300;
+		margin:0 0 0 24px;
 	}
 
 	.barchart.bp-l {
@@ -145,7 +162,7 @@
 		content:'';
 		position: absolute;
 		bottom:48px;
-		left:0;
+		left:24px;
 		right:0;
 		height: 1px;
 		background:#E6E4E1;
@@ -154,6 +171,22 @@
 
 	.line-bottom {
 		background:#26231E;
+		left:0;
+	}
+
+	.line span {
+		font-size:9px;
+		line-height: 12px;
+		width:24px;
+		text-align: left;
+		padding:0 0 0 1px;
+		position: absolute;
+		top:50%;
+		right:100%;
+		transform:translateY(-50%);
+		border-top-right-radius: 3px;
+		border-bottom-right-radius: 3px;
+		color:#99938A;
 	}
 
  	@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
@@ -165,6 +198,10 @@
 
 		.line-bottom {
 			background:#26231E;
+		}
+
+		.line span {
+			transform:translateY(-50%) scale(1, 2);
 		}
 	}
 </style>
