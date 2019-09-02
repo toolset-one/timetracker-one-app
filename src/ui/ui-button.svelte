@@ -37,6 +37,11 @@
 		dispatch('click', '')
 	}
 
+
+	export function focus() {
+		el.focus()
+	}
+
 </script>
 
 <a

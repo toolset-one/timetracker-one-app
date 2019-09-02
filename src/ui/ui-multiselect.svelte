@@ -9,12 +9,16 @@
 	export let options = []
 	export let value = []
 
-	let opened = false,
+	let el,
+		buttonEl,
+		optionsEl,
+		opened = false,
 		searchValue = ''
 
 	$: filteredOptions = options
 		.filter(val => val.title.toLowerCase().includes(searchValue.toLowerCase()))
 		.sort((a, b) => a.title.localeCompare(b.title) )
+
 
 	function toggle(id) {
 		if(value.includes(id)) {
@@ -24,28 +28,97 @@
 		}
 	}
 
+
+	function keydownInput(e) {
+	
+		if(e.keyCode === 13) { // ENTER
+			if(filteredOptions.length === 1) {
+				toggle(filteredOptions[0].id)
+			}
+		} else if(e.keyCode === 27) { // ESC
+			if(searchValue.length > 0) {
+				searchValue = ''
+			} else {
+				buttonEl.focus()
+				opened = false
+			}
+		} else if(e.keyCode === 38) { // UP
+			e.preventDefault()
+			if(optionsEl.querySelector('li')) {
+				optionsEl.querySelector('li:last-child').focus()
+			}
+		} else if(e.keyCode === 40) { // DOWN
+			e.preventDefault()
+			if(optionsEl.querySelector('li')) {
+				optionsEl.querySelector('li').focus()
+			}
+		}
+	}
+
+
+	function keydownList(e, taskId) {
+	
+		if(e.keyCode === 13) { // ENTER
+			toggle(taskId)
+		} else if(e.keyCode === 27) { // ESC
+			el.focus()
+		} else if(e.keyCode === 38) { // UP
+			e.preventDefault()
+			if(e.target.previousElementSibling) {
+				e.target.previousElementSibling.focus()
+			} else {
+				el.focus()
+			}
+		} else if(e.keyCode === 40) { // DOWN
+			e.preventDefault()
+			if(e.target.nextElementSibling) {
+				e.target.nextElementSibling.focus()
+			} else {
+				el.focus()
+			}
+		} else {
+			el.focus()
+		}
+	}
+
+
+	function open() {
+		opened = true
+		setTimeout(() => {
+			el.focus()
+		})
+	}
+
 </script>
 
 <div class="wrapper">
 	<UiButton
+		bind:this={buttonEl}
 		label="{label}"
 		type="icon-right"
 		icon="arrow-left"
-		on:click={e => opened = true}
+		on:click={e => open()}
 		focusConfig="REPORTS_MULTIPLE" />
 
 	{#if opened}
 		<div class="overlay">
 			<input
+				bind:this={el}
 				type="text"
 				bind:value={searchValue}
-				placeholder="Search">
+				placeholder="Search"
+				on:keydown={e => keydownInput(e)}
+				data-disable="true">
 
-			<ul>
+			<ul bind:this={optionsEl}>
 				{#each filteredOptions as option}
-					<li on:click={e => toggle(option.id)}>
+					<li 
+						on:click={e => toggle(option.id)}
+						on:keydown={e => keydownList(e, option.id)}
+						tabindex="0"
+						data-disable="true">
 						<div class="{value.includes(option.id) ? 'active' : ''}"></div>
-						{option.title}
+						{option.title.length > 0 ? option.title : 'No Title'}
 					</li>
 				{/each}
 			</ul>

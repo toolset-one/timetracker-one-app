@@ -31,11 +31,11 @@
 	}
 
 
-	onMount(() => {
-		//el.querySelector('.icon-wrapper').focus()
-	})
-
 	function open() {
+
+		monthForPicker = new Date(firstDate)
+		monthForSecondPicker = dateNextMonth(new Date(firstDate))
+
 		opened = true
 		setTimeout(() => {
 			el.querySelector('.icon-wrapper').focus()
