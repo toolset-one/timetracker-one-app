@@ -85,7 +85,7 @@
 
 
 	function prevArrowKeydown(e) {
-		console.log(e.keyCode)
+		e.preventDefault()
 
 		if(e.keyCode === 13) {
 			prevMonth()
@@ -95,12 +95,15 @@
 			e.target.closest('.overlay').querySelector('.icon-right').focus()
 		} else if(e.keyCode === 40) {
 			e.target.closest('.month-wrapper').querySelector('.dates .date').focus()
+		} else if(e.keyCode === 27) {
+			e.stopPropagation()
+			dispatch('close')
 		}
 	}
 
 
 	function nextArrowKeydown(e) {
-		console.log(e.keyCode)
+		e.preventDefault()
 
 		if(e.keyCode === 13) {
 			nextMonth()
@@ -110,14 +113,73 @@
 			e.target.closest('.overlay').querySelector('.icon-left').focus()
 		} else if(e.keyCode === 40) {
 			e.target.closest('.month-wrapper').querySelector('.dates .date').focus()
+		} else if(e.keyCode === 27) {
+			e.stopPropagation()
+			dispatch('close')
 		}
 	}
 
 
 	function dateKeydown(e, date, i) {
-		console.log(e, date, i)
+		e.preventDefault()
+
 		if(e.keyCode === 13) {
 			dispatch('change', date.date)
+		} else if(e.keyCode === 38) { // UP
+			let tmpEl = e.target,
+				count = 0
+			while(tmpEl && count < 7) {
+				tmpEl = tmpEl.previousElementSibling
+				count++
+			}
+			if(tmpEl) {
+				tmpEl.focus()
+			} else {
+				e.target.closest('.month-wrapper').querySelector('.icon-wrapper').focus()
+			}
+		} else if(e.keyCode === 40) { // DOWN
+			let tmpEl = e.target,
+				count = 0
+			while(tmpEl && count < 7) {
+				tmpEl = tmpEl.nextElementSibling
+				count++
+			}
+			if(tmpEl) {
+				tmpEl.focus()
+			}
+		} else if(e.keyCode === 37) { // LEFT
+			if(i % 7 === 0) {
+				const prevMonthEl = e.target.closest('.month-wrapper').previousElementSibling
+
+				if(prevMonthEl) {
+					const dateEl = prevMonthEl.querySelector('.date:nth-child('+ (Math.ceil(i / 7) * 7 + 7) +')')
+					if(dateEl) {
+						dateEl.focus()
+					}
+				}
+			} else {
+				if(e.target.previousElementSibling) {
+					e.target.previousElementSibling.focus()
+				}
+			}
+		} else if(e.keyCode === 39) { // RIGHT
+			if((i + 1) % 7 === 0) {
+				const nextMonthEl = e.target.closest('.month-wrapper').nextElementSibling
+
+				if(nextMonthEl) {
+					const dateEl = nextMonthEl.querySelector('.date:nth-child('+ (Math.floor(i / 7) * 7 + 1) +')')
+					if(dateEl) {
+						dateEl.focus()
+					}
+				}
+			} else {
+				if(e.target.nextElementSibling) {
+					e.target.nextElementSibling.focus()
+				}
+			}
+		} else if(e.keyCode === 27) {
+			e.stopPropagation()
+			dispatch('close')
 		}
 	}
 	

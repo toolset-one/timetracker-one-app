@@ -191,7 +191,8 @@
 					bind:firstDate={firstDate}
 					bind:lastDate={lastDate}
 					on:input={e => inputFirstMonth(e)}
-					on:change={e => changeDate(e.detail)} />
+					on:change={e => changeDate(e.detail)}
+					on:close={e => opened = false} />
 			</div>
 			<div class="month-wrapper">
 				<UiMonth
@@ -201,7 +202,8 @@
 					bind:firstDate={firstDate}
 					bind:lastDate={lastDate}
 					on:input={e => inputSecondMonth(e)}
-					on:change={e => changeDate(e.detail)} />
+					on:change={e => changeDate(e.detail)}
+					on:close={e => opened = false} />
 			</div>
 		</div>
 	{/if}
