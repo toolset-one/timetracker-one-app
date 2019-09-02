@@ -13,6 +13,7 @@
 	import UiRadio from '../ui/ui-radio.svelte'
 	import ReportsBarchart from '../reports/reports-barchart.svelte'
 	import ReportsDistribution from '../reports/reports-distribution.svelte'
+	import ReportsLegend from '../reports/reports-legend.svelte'
 	import UiRangePicker from '../ui/ui-range-picker.svelte'
 
 	const RANGE_OPTIONS = [{
@@ -170,6 +171,10 @@
 
 <section class="barchart-wrapper bp-{$uiStore.breakpoint}">
 	<ReportsBarchart />
+</section>
+
+<section class="legend-wrapper bp-{$uiStore.breakpoint}">
+	<ReportsLegend />
 </section>
 
 
