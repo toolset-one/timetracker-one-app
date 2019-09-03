@@ -217,6 +217,10 @@
 		margin:0 12px 84px 12px;
 	}
 
+	.legend-wrapper.bp-l {
+		margin:24px auto;
+	}
+
 	.spacer {
 		
 	}
