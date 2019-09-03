@@ -57,9 +57,9 @@ export const dateStringToDate = string => {
 }
 
 
-export const dateGetHumanDate = date => {
+export const dateGetHumanDate = (date, abbreviate = false) => {
 	const dayString = DAY_ENDINGS[date.getDate()] ? date.getDate() + DAY_ENDINGS[date.getDate()] : date.getDate() + 'th',
-		monthString = MONTHS[date.getMonth()],
+		monthString = MONTHS[date.getMonth()].substr(0, (abbreviate ? 3 : 100)),
 		weekdayString = WEEKDAYS_SHORT[date.getDay()]
 
 	return dayString + ' ' + monthString + ', ' + weekdayString

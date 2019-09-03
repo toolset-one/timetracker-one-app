@@ -53,7 +53,7 @@
 			return dateGetMonth(firstDateNow) + ', ' + firstDateNow.getFullYear()
 		}
 
-		return dateGetHumanDate(firstDateNow) +' – '+ dateGetHumanDate(lastDateNow)
+		return dateGetHumanDate(firstDateNow, true) +' – '+ dateGetHumanDate(lastDateNow, true)
 	}
 
 
@@ -230,6 +230,7 @@
 		box-shadow: 0 6px 0 -3px rgba(0, 0, 0, .05);
 		transition: all 100ms ease;
 		outline:none;
+		max-width:100%;
 	
 		user-select: none;
 	}
@@ -275,12 +276,16 @@
 		line-height:40px;
 		background:#FFF;
 		padding:0 18px;
+		max-width:calc(100% - 42px - 40px);
 		font-size:14px;
 		font-weight:600;
 		-webkit-font-smoothing:antialiased;
 		border-top-left-radius: 0;
 		border-bottom-left-radius: 0;
 		outline:none;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	em {

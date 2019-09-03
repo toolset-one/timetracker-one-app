@@ -150,12 +150,16 @@
 			bind:lastDate={lastDate}
 			on:input={e => changed(e)}/>
 	</div>
-	<div class="ranges-wrapper">
-		<UiRadio options={RANGE_OPTIONS} bind:value={rangeNow} on:change={e => rangeChanged()} />
-	</div>
+	{#if $uiStore.breakpoint === 'l'}
+		<div class="ranges-wrapper">
+			<UiRadio options={RANGE_OPTIONS} bind:value={rangeNow} on:change={e => rangeChanged()} />
+		</div>
+	{/if}
 </section>
 
-<section>	<div class="button-wrapper">
+
+<section class="filter-buttons bp-{$uiStore.breakpoint}">	
+	<div class="button-wrapper">
 		<UiMultiselect
 			label="Tasks"
 			options={tasksToFilter}
@@ -172,6 +176,7 @@
 <section class="barchart-wrapper bp-{$uiStore.breakpoint}">
 	<ReportsBarchart />
 </section>
+
 
 <section class="legend-wrapper bp-{$uiStore.breakpoint}">
 	<ReportsLegend />
@@ -200,6 +205,18 @@
 		margin-right:12px;
 	}
 
+	.filter-buttons {
+		margin:0 12px 12px 12px;
+	}
+
+	.filter-buttons.bp-l {
+		margin:24px auto;
+	}
+
+	.legend-wrapper {
+		margin:0 12px 84px 12px;
+	}
+
 	.spacer {
 		
 	}
@@ -210,7 +227,7 @@
 	}
 
 	.custom-range-wrapper {
-	
+		max-width:100%;
 	}
 
 	.bp-l .custom-range-wrapper {
@@ -237,7 +254,7 @@
 	}
 
 	.barchart-wrapper {
-		margin:48px 12px;
+		margin:48px 12px 12px 12px;
 	}
 
 	.barchart-wrapper.bp-l {
