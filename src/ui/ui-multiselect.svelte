@@ -1,7 +1,10 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
+	import { get } from 'svelte/store'
 	import { fade } from 'svelte/transition'
+	import { uiStore } from '../stores/ui-store.js'
 	import UiButton from '../ui/ui-button.svelte'
+	import UiMobileMultiselectOverlay from '../ui/ui-mobile-multiselect-overlay.svelte'
 
 	const dispatch = createEventDispatcher()
 
@@ -85,7 +88,10 @@
 	function open() {
 		opened = true
 		setTimeout(() => {
-			el.focus()
+			const { isTouchDevice } = get(uiStore)
+			if(!isTouchDevice) {
+				el.focus()
+			}
 		})
 	}
 
@@ -100,7 +106,7 @@
 		on:click={e => open()}
 		focusConfig="REPORTS_MULTIPLE" />
 
-	{#if opened}
+	{#if opened && !$uiStore.isTouchDevice}
 		<div class="overlay">
 			<input
 				bind:this={el}
@@ -131,6 +137,12 @@
 		class="backdrop"
 		transition:fade="{{delay: 0, duration: 100}}"
 		on:click={e => opened = false}></div>
+{/if}
+
+{#if opened && $uiStore.isTouchDevice}
+	<UiMobileMultiselectOverlay
+		options={filteredOptions}
+		bind:value={value} />
 {/if}
 
 <style>
