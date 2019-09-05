@@ -1,12 +1,16 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
+	import { get } from 'svelte/store'
 	import { fade } from 'svelte/transition'
 	import { routerStore } from '../stores/router-store.js'
+	import { uiStore } from '../stores/ui-store.js'
+
 	import { dateDaysBetweenDates, datePrevDate, dateNextDate, dateGetWeek, dateGetHumanDate, dateNextMonth, datePrevMonth, dateGetMonth, dateIsWeek, dateIsMonth, dateGetWeekStart, dateGetMonthStart } from '../helpers/helpers.js'
 
 	import UiIcon from './ui-icon.svelte'
 	import UiDateInput from './ui-date-input.svelte'
 	import UiMonth from './ui-month.svelte'
+	import UiMobileRangeOverlay from './ui-mobile-range-overlay.svelte'
 
 	const dispatch = createEventDispatcher()
 
@@ -38,7 +42,10 @@
 
 		opened = true
 		setTimeout(() => {
-			el.querySelector('.icon-wrapper').focus()
+			const { isTouchDevice } = get(uiStore)
+			if(!isTouchDevice) {
+				el.querySelector('.icon-wrapper').focus()
+			}
 		})
 	}
 
@@ -170,7 +177,7 @@
 		{getPeriodTitle(firstDate, lastDate)}
 	</span>
 	
-	{#if opened}
+	{#if opened && !$uiStore.isTouchDevice}
 		<div class="overlay">
 			<div class="dates-header">
 				<UiDateInput
@@ -215,6 +222,11 @@
 		class="backdrop"
 		transition:fade="{{delay: 0, duration: 100}}"
 		on:click={e => opened = false}></div>
+{/if}
+
+
+{#if opened && $uiStore.isTouchDevice}
+	<UiMobileRangeOverlay />
 {/if}
 
 <style>
