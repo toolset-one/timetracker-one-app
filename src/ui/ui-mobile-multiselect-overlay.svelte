@@ -41,16 +41,12 @@
 		<div class="options" bind:this={el}>
 			<ul>
 				<li></li>
-				<li></li>
-				<li></li>
 				{#each options as option}
 					<li on:click={e => toggle(option.id)}>
 						<div class="{value.includes(option.id) ? 'active' : ''}"></div>
 						{option.title.length > 0 ? option.title : 'No Title'}
 					</li>
 				{/each}
-				<li></li>
-				<li></li>
 				<li></li>
 			</ul>
 		</div>
@@ -173,7 +169,7 @@
 		padding:0 24px 0 42px;
 		height:42px;
 		line-height:42px;
-		font-size:18px;
+		font-size:16.5px;
 		scroll-snap-align: start;
 	}
 
