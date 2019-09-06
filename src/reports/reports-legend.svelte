@@ -6,12 +6,23 @@
 
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth, dateToDatabaseDate} from '../helpers/helpers.js'
 
-	$: tasks = Object.keys($reportsStoreBarchartData.tasks).map(taskId => {
+	$: tasks = (Object.keys($reportsStoreBarchartData.tasks).map(taskId => {
 		return {
 			taskId,
-			duration: $reportsStoreBarchartData.tasks[taskId]
+			duration: $reportsStoreBarchartData.tasks[taskId],
+			title: $tasksStore.json[taskId] ? $tasksStore.json[taskId].title : 'No Task' 
 		}
-	}).sort((a, b) => b.duration - a.duration)
+	})).sort((a, b) => {
+    	if(a.title < b.title) {
+    		return -1
+    	}
+    	
+    	if(a.title > b.title) {
+    		return 1
+    	}
+
+    	return 0
+	})
 
 </script>
 
