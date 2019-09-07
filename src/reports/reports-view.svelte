@@ -32,7 +32,14 @@
 		title: 'Custom',
 		value: 'custom',
 		disabled: true
-	}]
+	}],
+	RANGE_MAP = {
+		'current-week': 'Current Week',
+		'last-week': 'Last Week',
+		'current-month': 'Current Month',
+		'last-month': 'Last Month',
+		'custom': 'Custom'
+	}
 
 
 	let filterTasks,
@@ -148,6 +155,7 @@
 		<UiRangePicker 
 			bind:firstDate={firstDate}
 			bind:lastDate={lastDate}
+			rangeOption={RANGE_MAP[rangeNow]}
 			on:input={e => changed(e)}/>
 	</div>
 	{#if $uiStore.breakpoint === 'l'}

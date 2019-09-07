@@ -11,22 +11,29 @@
 	import UiDateInput from './ui-date-input.svelte'
 	import UiMonth from './ui-month.svelte'
 	import UiMobileRangeOverlay from './ui-mobile-range-overlay.svelte'
+	import UiMobileRangeStandardRanges from './ui-mobile-range-standard-ranges.svelte'
 
 	const dispatch = createEventDispatcher()
 
 	export let firstDate
 	export let lastDate
 	export let hovered = false
+	export let rangeOption = ''
 
 	let el,
 		pickStartDate = true,
 		hover = false,
 		opened = false,
+		overlayComponent,
+		overlayEl,
 		monthForPicker = new Date(firstDate),
 		monthForSecondPicker = dateNextMonth(new Date(firstDate)),
 		mousePosition = {
 			x: 0,
 			y: 0
+		},
+		overlays = {
+			standardRanges: UiMobileRangeStandardRanges
 		}
 
 	$: boundingRect = el ? el.getBoundingClientRect() : {
@@ -34,12 +41,15 @@
 		left: 0
 	}
 
+	$: rangeTitle = getRangeTitle(firstDate, lastDate)
+
 
 	function open() {
 
 		monthForPicker = new Date(firstDate)
 		monthForSecondPicker = dateNextMonth(new Date(firstDate))
 
+		overlayComponent = UiMobileRangeOverlay
 		opened = true
 		setTimeout(() => {
 			const { isTouchDevice } = get(uiStore)
@@ -50,7 +60,7 @@
 	}
 
 
-	function getPeriodTitle(firstDateNow, lastDateNow) {
+	function getRangeTitle(firstDateNow, lastDateNow) {
 
 		if(dateIsWeek(firstDateNow, lastDateNow)) {
 			return 'Week ' + dateGetWeek(firstDateNow) + ', ' + firstDateNow.getFullYear()
@@ -139,6 +149,12 @@
 		dispatch('input', { firstDate, lastDate })
 	}
 
+
+	function openOverlayComponent(e) {
+		overlayComponent = overlays[e.component]
+		opened = true
+	}
+
 </script>
 
 <div
@@ -174,7 +190,7 @@
 		on:click={e => open()}
 		tabindex="0"
 		data-config="REPORTS_RANGE_TITLE">
-		{getPeriodTitle(firstDate, lastDate)}
+		{rangeTitle}
 	</span>
 	
 	{#if opened && !$uiStore.isTouchDevice}
@@ -225,8 +241,17 @@
 {/if}
 
 
-{#if opened && $uiStore.isTouchDevice}
-	<UiMobileRangeOverlay />
+{#if opened && $uiStore.isTouchDevice && overlayComponent}
+
+	<svelte:component
+		this={overlayComponent}
+		bind:this={overlayEl}
+		rangeOption={rangeOption}
+		on:open={e => openOverlayComponent(e.detail)}
+		on:close={e => {
+			opened = false
+			overlayComponent = null
+		}} />
 {/if}
 
 <style>

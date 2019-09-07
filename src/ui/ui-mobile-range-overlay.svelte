@@ -4,7 +4,7 @@
 	import UiButton from '../ui/ui-button.svelte'
 	import UiIcon from '../ui/ui-icon.svelte'
 
-	export let id = null
+	export let rangeOption = ''
 
 	const dispatch = createEventDispatcher()
 
@@ -17,8 +17,7 @@
 	function openStandardRanges(e) {
 		e.stopPropagation()
 		dispatch('open', {
-			component: 'mobileStandardRanges',
-			id
+			component: 'mobileStandardRanges'
 		})
 	}
 
@@ -43,7 +42,7 @@
 			<UiIcon type='clock-big' size="big" color="#26231E" />
 		</div>
 		<span class="attr-value">
-			This Month
+			{rangeOption}
 		</span>
 	</div>
 
