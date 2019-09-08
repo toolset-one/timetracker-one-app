@@ -9,41 +9,42 @@
 
 	const dispatch = createEventDispatcher()
 
-	let tasksEl,
+	export let options = []
+	export let rangeOption
+
+	let optionsEl,
 		animation = false
 
-	onMount(async () => {
 
-		setTimeout(() => {
-			tasksStore.subscribe(data => {
-
-				var index = 0
-
-				data.array.forEach((val, i) => {
-					if(val.id === task) {
-						index = i
-					}
-				})
-
-				tasksEl.scrollTop = index * 42
-			})
-		})
-	})
-
-
-	function select(e, task) {
-
-		const data = get(tasksStore)
+	onMount(() => {
 
 		var index = 0
-		data.array.forEach((val, i) => {
-			if(val.id === task.id) {
+		options.forEach((val, i) => {
+			if(val.title === rangeOption) {
 				index = i
 			}
 		})
 
+		scrollTo(optionsEl, index * 42, 200)
+	})
+
+
+	function select(e, option) {
+
+		var index = 0
+		options.forEach((val, i) => {
+			if(val.value === option.value) {
+				index = i
+			}
+		})
+
+		dispatch('change', {
+			attribute: 'rangeValue',
+			value: option.value
+		})
+
 		animation = true
-		scrollTo(tasksEl, index * 42, 200)
+		scrollTo(optionsEl, index * 42, 200)
 	}
 
 
@@ -76,11 +77,12 @@
 
 
 	function save() {
-		const index = Math.round(tasksEl.scrollTop / 42)
-		const unsubscribe = tasksStore.subscribe(data =>
-			timesStoreChangeTask(id, data.array[index].id)
-		)
-		unsubscribe()
+		const index = Math.round(optionsEl.scrollTop / 42)
+
+		dispatch('change', {
+			attribute: 'rangeValue',
+			value: options[index].value
+		})
 
 		dispatch('close', '')
 	}
@@ -97,14 +99,14 @@
 	</header>
 
 	<div class="swiper">
-		<div class="options tasks {animation ? 'no-snap' : ''}" bind:this={tasksEl}>
+		<div class="options tasks {animation ? 'no-snap' : ''}" bind:this={optionsEl}>
 			<ul>
 				<li></li>
 				<li></li>
 				<li></li>
-				{#each $tasksStore.array as task}
-					<li on:click={e => select(e, task)}>
-						{task.title.length > 0 ? task.title : 'No Title'}
+				{#each options as option}
+					<li on:click={e => select(e, option)}>
+						{option.title}
 					</li>
 				{/each}
 				<li></li>

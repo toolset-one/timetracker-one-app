@@ -19,6 +19,7 @@
 	export let lastDate
 	export let hovered = false
 	export let rangeOption = ''
+	export let rangeOptions = []
 
 	let el,
 		pickStartDate = true,
@@ -33,7 +34,7 @@
 			y: 0
 		},
 		overlays = {
-			standardRanges: UiMobileRangeStandardRanges
+			mobileStandardRanges: UiMobileRangeStandardRanges
 		}
 
 	$: boundingRect = el ? el.getBoundingClientRect() : {
@@ -155,6 +156,13 @@
 		opened = true
 	}
 
+	
+	function change(eventDetail) {
+		if(eventDetail.attribute === 'rangeValue') {
+			dispatch('changeRangeValue', eventDetail)
+		}
+	}
+
 </script>
 
 <div
@@ -237,7 +245,7 @@
 	<div
 		class="backdrop"
 		transition:fade="{{delay: 0, duration: 100}}"
-		on:click={e => opened = false}></div>
+		on:click={e => overlayEl.externalClose()}></div>
 {/if}
 
 
@@ -247,7 +255,9 @@
 		this={overlayComponent}
 		bind:this={overlayEl}
 		rangeOption={rangeOption}
+		options={rangeOptions}
 		on:open={e => openOverlayComponent(e.detail)}
+		on:change={e => change(e.detail)}
 		on:close={e => {
 			opened = false
 			overlayComponent = null

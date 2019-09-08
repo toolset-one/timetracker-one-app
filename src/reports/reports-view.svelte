@@ -146,6 +146,12 @@
 	}
 
 
+	function changeRangeValue(e) {
+		rangeNow = e.detail.value
+		rangeChanged()
+	}
+
+
 	reportsStoreUpdateRange(firstDate, lastDate)
 
 </script>
@@ -155,8 +161,10 @@
 		<UiRangePicker 
 			bind:firstDate={firstDate}
 			bind:lastDate={lastDate}
+			rangeOptions={RANGE_OPTIONS}
 			rangeOption={RANGE_MAP[rangeNow]}
-			on:input={e => changed(e)}/>
+			on:input={e => changed(e)}
+			on:changeRangeValue={e => changeRangeValue(e)} />
 	</div>
 	{#if $uiStore.breakpoint === 'l'}
 		<div class="ranges-wrapper">
