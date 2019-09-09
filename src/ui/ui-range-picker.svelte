@@ -5,21 +5,21 @@
 	import { routerStore } from '../stores/router-store.js'
 	import { uiStore } from '../stores/ui-store.js'
 
-	import { dateDaysBetweenDates, datePrevDate, dateNextDate, dateGetWeek, dateGetHumanDate, dateNextMonth, datePrevMonth, dateGetMonth, dateIsWeek, dateIsMonth, dateGetWeekStart, dateGetMonthStart } from '../helpers/helpers.js'
+	import { RANGE_OPTIONS, RANGE_MAP, dateDaysBetweenDates, datePrevDate, dateNextDate, dateGetWeek, dateGetHumanDate, dateNextMonth, datePrevMonth, dateGetMonth, dateIsWeek, dateIsMonth, dateGetWeekStart, dateGetMonthStart, dateRangeGetStandardForDates } from '../helpers/helpers.js'
 
 	import UiIcon from './ui-icon.svelte'
 	import UiDateInput from './ui-date-input.svelte'
 	import UiMonth from './ui-month.svelte'
 	import UiMobileRangeOverlay from './ui-mobile-range-overlay.svelte'
 	import UiMobileRangeStandardRanges from './ui-mobile-range-standard-ranges.svelte'
+	import UiMobileRangeFirstDate from './ui-mobile-range-first-date.svelte'
+	import UiMobileRangeLastDate from './ui-mobile-range-last-date.svelte'
 
 	const dispatch = createEventDispatcher()
 
 	export let firstDate
 	export let lastDate
 	export let hovered = false
-	export let rangeOption = ''
-	export let rangeOptions = []
 
 	let el,
 		pickStartDate = true,
@@ -34,7 +34,9 @@
 			y: 0
 		},
 		overlays = {
-			mobileStandardRanges: UiMobileRangeStandardRanges
+			mobileStandardRanges: UiMobileRangeStandardRanges,
+			mobileFirstDate: UiMobileRangeFirstDate,
+			mobileLastDate: UiMobileRangeLastDate
 		}
 
 	$: boundingRect = el ? el.getBoundingClientRect() : {
@@ -43,6 +45,7 @@
 	}
 
 	$: rangeTitle = getRangeTitle(firstDate, lastDate)
+	$: rangeNow = dateRangeGetStandardForDates(firstDate, lastDate)
 
 
 	function open() {
@@ -75,7 +78,7 @@
 	}
 
 
-	function prevPeriod(firstDateNow, lastDateNow) {
+	function prevRange(firstDateNow, lastDateNow) {
 
 		if(dateIsWeek(firstDateNow, lastDateNow)) {
 			firstDate = datePrevDate(firstDateNow, 7)
@@ -97,7 +100,7 @@
 	}
 
 
-	function nextPeriod(firstDateNow, lastDateNow) {
+	function nextRange(firstDateNow, lastDateNow) {
 
 		if(dateIsWeek(firstDateNow, lastDateNow)) {
 			firstDate = dateNextDate(firstDateNow, 7)
@@ -160,6 +163,12 @@
 	function change(eventDetail) {
 		if(eventDetail.attribute === 'rangeValue') {
 			dispatch('changeRangeValue', eventDetail)
+		} else if(eventDetail.attribute === 'firstDate') {
+			firstDate = eventDetail.value
+			dispatch('input', { firstDate, lastDate })
+		} else if(eventDetail.attribute === 'lastDate') {
+			lastDate = eventDetail.value
+			dispatch('input', { firstDate, lastDate })
 		}
 	}
 
@@ -181,14 +190,14 @@
 	<em></em>
 	<div
 		class="arrow-left"
-		on:click={e => prevPeriod(firstDate, lastDate)}
+		on:click={e => prevRange(firstDate, lastDate)}
 		tabindex="0"
 		data-config="REPORTS_RANGE_ARROW_LEFT">
 		<UiIcon type="arrow-left" color="#26231E" />	
 	</div>
 	<div
 		class="arrow-right"
-		on:click={e => nextPeriod(firstDate, lastDate)}
+		on:click={e => nextRange(firstDate, lastDate)}
 		tabindex="0"
 		data-config="REPORTS_RANGE_ARROW_RIGHT">
 		<UiIcon type="arrow-right" color="#26231E" />	
@@ -254,8 +263,10 @@
 	<svelte:component
 		this={overlayComponent}
 		bind:this={overlayEl}
-		rangeOption={rangeOption}
-		options={rangeOptions}
+		rangeOption={RANGE_MAP[rangeNow]}
+		options={RANGE_OPTIONS}
+		firstDate={firstDate}
+		lastDate={lastDate}
 		on:open={e => openOverlayComponent(e.detail)}
 		on:change={e => change(e.detail)}
 		on:close={e => {

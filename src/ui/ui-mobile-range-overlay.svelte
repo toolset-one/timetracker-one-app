@@ -1,10 +1,14 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
 
+	import { dateGetHumanDate } from '../helpers/helpers.js'
+
 	import UiButton from '../ui/ui-button.svelte'
 	import UiIcon from '../ui/ui-icon.svelte'
 
 	export let rangeOption = ''
+	export let firstDate = new Date()
+	export let lastDate = new Date()
 
 	const dispatch = createEventDispatcher()
 
@@ -20,6 +24,23 @@
 			component: 'mobileStandardRanges'
 		})
 	}
+
+
+	function openFirstDate(e) {
+		e.stopPropagation()
+		dispatch('open', {
+			component: 'mobileFirstDate'
+		})
+	}
+
+
+	function openLastDate(e) {
+		e.stopPropagation()
+		dispatch('open', {
+			component: 'mobileLastDate'
+		})
+	}
+
 
 	function close() {
 		opened = false
@@ -48,23 +69,23 @@
 
 	<div
 		class="attr first-date"
-		on:click={e => openStandardRanges(e)}>
+		on:click={e => openFirstDate(e)}>
 		<div class="attr-icon">
 			<UiIcon type='clock-big' size="big" color="#26231E" />
 		</div>
 		<span class="attr-value">
-			1st September, Sun
+			{dateGetHumanDate(firstDate)}
 		</span>
 	</div>
 
 	<div
 		class="attr last-date"
-		on:click={e => openStandardRanges(e)}>
+		on:click={e => openLastDate(e)}>
 		<div class="attr-icon">
 			<UiIcon type='clock-big' size="big" color="#26231E" />
 		</div>
 		<span class="attr-value">
-			30st September, Mon
+			{dateGetHumanDate(lastDate)}
 		</span>
 	</div>
 	

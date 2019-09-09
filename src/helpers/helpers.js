@@ -31,6 +31,31 @@ export const COLORS = [
   '#B359A4', '#B3477D', '#B34759', '#4D4D4D'
 ]
 
+export const RANGE_OPTIONS = [{
+	title: 'Current Week',
+	value: 'current-week'
+}, {
+	title: 'Last Week',
+	value: 'last-week'
+}, {
+	title: 'Current Month',
+	value: 'current-month'
+}, {
+	title: 'Last Month',
+	value: 'last-month'
+}, {
+	title: 'Custom',
+	value: 'custom',
+	disabled: true
+}]
+
+export const RANGE_MAP = {
+	'current-week': 'Current Week',
+	'last-week': 'Last Week',
+	'current-month': 'Current Month',
+	'last-month': 'Last Month',
+	'custom': 'Custom'
+}
 
 export const dateToDatestring = date => {
 	const day = trailingZero(date.getDate()),
@@ -165,6 +190,74 @@ export function dateGetMonthStart(date = new Date()) {
 	}
 	return dateTmp
 }
+
+
+export function dateRangeGetStandard(standardRange) {
+
+	let firstDate,
+		lastDate
+
+	if(standardRange === 'current-week') {
+		firstDate = dateGetWeekStart()
+		lastDate = dateNextDate(firstDate, 6)
+	} else if(standardRange === 'last-week') {
+		firstDate = dateGetWeekStart(datePrevDate(new Date(), 7))
+		lastDate = dateNextDate(firstDate, 6)
+	} else if(standardRange === 'current-month') {
+		firstDate = dateGetMonthStart()
+		lastDate = datePrevDate(dateNextMonth(firstDate))
+	} else if(standardRange === 'last-month') {
+		firstDate = dateGetMonthStart(datePrevMonth(new Date()))
+		lastDate = datePrevDate(dateNextMonth(firstDate))
+	}
+
+	return {
+		firstDate,
+		lastDate
+	}
+}
+
+
+export function dateRangeGetStandardForDates(firstDate, lastDate) {
+	let firstDateTest = dateGetWeekStart(),
+		lastDateTest = dateNextDate(firstDateTest, 6)
+
+	if(isSameDate(firstDate, firstDateTest) && isSameDate(lastDate, lastDateTest)) {
+		return 'current-week'
+	}
+
+	firstDateTest = dateGetWeekStart(datePrevDate(new Date(), 7))
+	lastDateTest = dateNextDate(firstDate, 6)
+
+	if(isSameDate(firstDate, firstDateTest) && isSameDate(lastDate, lastDateTest)) {
+		return 'last-week'
+	}
+
+	firstDateTest = dateGetMonthStart()
+	lastDateTest = datePrevDate(dateNextMonth(firstDate))
+
+	if(isSameDate(firstDate, firstDateTest) && isSameDate(lastDate, lastDateTest)) {
+		return 'current-month'
+	}
+
+	firstDateTest = dateGetMonthStart(datePrevMonth(new Date()))
+	lastDateTest = datePrevDate(dateNextMonth(firstDate))
+
+	if(isSameDate(firstDate, firstDateTest) && isSameDate(lastDate, lastDateTest)) {
+		return 'last-month'
+	}
+
+	return 'custom'
+}
+
+
+function isSameDate(date1, date2) {
+	return date1.getDate() === date2.getDate()
+		&& date1.getMonth() === date2.getMonth()
+		&& date1.getYear() === date2.getYear()
+}
+
+
 
 
 export const trailingZero = number => {

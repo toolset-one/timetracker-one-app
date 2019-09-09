@@ -6,7 +6,7 @@
 	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
 	import { reportsStore, reportsStoreUpdateRange, reportsStoreBarchartData, reportsStoreSetPeriod } from '../stores/reports-store.js'
 
-	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateGetWeek, dateGetMonth, datePrevMonth, dateNextMonth, dateIsWeek, dateIsMonth, dateGetWeekStart, dateGetMonthStart } from '../helpers/helpers.js'
+	import { RANGE_OPTIONS, RANGE_MAP, dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateGetWeek, dateGetMonth, datePrevMonth, dateNextMonth, dateIsWeek, dateIsMonth, dateGetWeekStart, dateGetMonthStart, dateRangeGetStandard, dateRangeGetStandardForDates } from '../helpers/helpers.js'
 
 	import UiButton from '../ui/ui-button.svelte'
 	import UiMultiselect from '../ui/ui-multiselect.svelte'
@@ -15,31 +15,6 @@
 	import ReportsDistribution from '../reports/reports-distribution.svelte'
 	import ReportsLegend from '../reports/reports-legend.svelte'
 	import UiRangePicker from '../ui/ui-range-picker.svelte'
-
-	const RANGE_OPTIONS = [{
-		title: 'Current Week',
-		value: 'current-week'
-	}, {
-		title: 'Last Week',
-		value: 'last-week'
-	}, {
-		title: 'Current Month',
-		value: 'current-month'
-	}, {
-		title: 'Last Month',
-		value: 'last-month'
-	}, {
-		title: 'Custom',
-		value: 'custom',
-		disabled: true
-	}],
-	RANGE_MAP = {
-		'current-week': 'Current Week',
-		'last-week': 'Last Week',
-		'current-month': 'Current Month',
-		'last-month': 'Last Month',
-		'custom': 'Custom'
-	}
 
 
 	let filterTasks,
@@ -76,73 +51,18 @@
 
 
 	function rangeChanged(e) {
-		if(rangeNow === 'current-week') {
 
-			firstDate = dateGetWeekStart()
-			lastDate = dateNextDate(firstDate, 6)
+		const newRangeDates = dateRangeGetStandard(rangeNow)
 
-		} else if(rangeNow === 'last-week') {
-
-			firstDate = dateGetWeekStart(datePrevDate(new Date(), 7))
-			lastDate = dateNextDate(firstDate, 6)
-
-		} else if(rangeNow === 'current-month') {
-
-			firstDate = dateGetMonthStart()
-			lastDate = datePrevDate(dateNextMonth(firstDate))
-
-		} else if(rangeNow === 'last-month') {
-
-			firstDate = dateGetMonthStart(datePrevMonth(new Date()))
-			lastDate = datePrevDate(dateNextMonth(firstDate))
-		}
+		firstDate = newRangeDates.firstDate
+		lastDate = newRangeDates.lastDate
 
 		reportsStoreUpdateRange(firstDate, lastDate)
 	}
 
 
 	function reportsStoreChanged({ firstDate, lastDate }) {
-
-		let firstDateTest = dateGetWeekStart()
-		let lastDateTest = dateNextDate(firstDateTest, 6)
-
-		if(isSameDate(firstDate, firstDateTest) && isSameDate(lastDate, lastDateTest)) {
-			rangeNow = 'current-week'
-			return
-		}
-
-		firstDateTest = dateGetWeekStart(datePrevDate(new Date(), 7))
-		lastDateTest = dateNextDate(firstDate, 6)
-
-		if(isSameDate(firstDate, firstDateTest) && isSameDate(lastDate, lastDateTest)) {
-			rangeNow = 'last-week'
-			return
-		}
-
-		firstDateTest = dateGetMonthStart()
-		lastDateTest = datePrevDate(dateNextMonth(firstDate))
-
-		if(isSameDate(firstDate, firstDateTest) && isSameDate(lastDate, lastDateTest)) {
-			rangeNow = 'current-month'
-			return
-		}
-
-		firstDateTest = dateGetMonthStart(datePrevMonth(new Date()))
-		lastDateTest = datePrevDate(dateNextMonth(firstDate))
-
-		if(isSameDate(firstDate, firstDateTest) && isSameDate(lastDate, lastDateTest)) {
-			rangeNow = 'last-month'
-			return
-		}
-
-		rangeNow = 'custom'
-	}
-
-
-	function isSameDate(date1, date2) {
-		return date1.getDate() === date2.getDate()
-			&& date1.getMonth() === date2.getMonth()
-			&& date1.getYear() === date2.getYear()
+		rangeNow = dateRangeGetStandardForDates(firstDate, lastDate)
 	}
 
 
@@ -161,8 +81,6 @@
 		<UiRangePicker 
 			bind:firstDate={firstDate}
 			bind:lastDate={lastDate}
-			rangeOptions={RANGE_OPTIONS}
-			rangeOption={RANGE_MAP[rangeNow]}
 			on:input={e => changed(e)}
 			on:changeRangeValue={e => changeRangeValue(e)} />
 	</div>

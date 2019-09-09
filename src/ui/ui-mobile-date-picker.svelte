@@ -1,84 +1,55 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
-	import { get } from 'svelte/store'
+	import { MONTHS, getWindowWidth, trailingZero } from '../helpers/helpers.js'
 	import { mobileOverlayTransition } from '../helpers/animations.js'
-	import { timesStoreChangeTask } from '../stores/times-store.js'
+	import { userStore, userSetStopwatch } from '../stores/user-store.js'
+	import { timesStore, timesStoreChangeDuration } from '../stores/times-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
+	import { dateGetHours, dateGetMinutes } from '../helpers/helpers.js'
 
+	import UiButton from '../ui/ui-button.svelte'
 	import UiIcon from '../ui/ui-icon.svelte'
+
+	export let date = new Date()
 
 	const dispatch = createEventDispatcher()
 
-	export let options = []
-	export let rangeOption
+	let months = [],
+		dates = [],
+		years = [],
+		monthsEl,
+		datesEl,
+		yearsEl
 
-	let optionsEl,
-		animation = false
+	onMount(async () => {
+		months = MONTHS
 
+		for(var i = 0; i <= 31; i++) {
+			dates.push(i)
+		}
 
-	onMount(() => {
-
-		var index = 0
-		options.forEach((val, i) => {
-			if(val.title === rangeOption) {
-				index = i
+		const baseYear = (new Date().getFullYear() - 50)
+		let selectedYear
+		for(var i = 0; i <= 100; i++) {
+			years.push(baseYear + i)
+			if(baseYear + i === date.getFullYear()) {
+				selectedYear = i
 			}
-		})
+		}
 
-		scrollTo(optionsEl, index * 42, 200)
+		dates = dates
+		years = years
+
+		setTimeout(() => {
+			monthsEl.scrollTop = date.getMonth() * 42
+			datesEl.scrollTop = date.getDate() * 42
+			yearsEl.scrollTop = selectedYear * 42
+		})
 	})
 
 
-	function select(e, option) {
-
-		var index = 0
-		options.forEach((val, i) => {
-			if(val.value === option.value) {
-				index = i
-			}
-		})
-
-		animation = true
-		scrollTo(optionsEl, index * 42, 200)
-	}
-
-
-	function scrollTo(element, to, duration) {
-		let start = element.scrollTop,
-			change = to - start,
-			currentTime = 0,
-			increment = 20;
-			
-		const animateScroll = () => {		
-			currentTime += increment
-			const val = Math.easeInOutQuad(currentTime, start, change, duration)
-			element.scrollTop = val
-			if(currentTime < duration) {
-				setTimeout(animateScroll, increment)
-			} else {
-				animation = false
-			}
-		}
-		animateScroll()
-	}
-
-
-	Math.easeInOutQuad = function (t, b, c, d) {
-		t /= d / 2
-		if (t < 1) return c / 2 * t * t + b
-		t--
-		return -c / 2 * (t * (t - 2) - 1) + b
-	}
-
-
-	function save() {
-		const index = Math.round(optionsEl.scrollTop / 42)
-
-		dispatch('change', {
-			attribute: 'rangeValue',
-			value: options[index].value
-		})
-
+	export function save() {
+		date = new Date(years[Math.floor(yearsEl.scrollTop / 42)], Math.floor(monthsEl.scrollTop / 42), Math.floor(datesEl.scrollTop / 42))
 		dispatch('close', '')
 	}
 
@@ -90,18 +61,48 @@
 
 <div class="wrapper" transition:mobileOverlayTransition>
 	<header>
-		Edit Task
+		Select Date
 	</header>
 
 	<div class="swiper">
-		<div class="options tasks {animation ? 'no-snap' : ''}" bind:this={optionsEl}>
+		<div class="options months" bind:this={monthsEl}>
 			<ul>
 				<li></li>
 				<li></li>
 				<li></li>
-				{#each options as option}
-					<li on:click={e => select(e, option)}>
-						{option.title}
+				{#each months as month}
+					<li>
+						{month}
+					</li>
+				{/each}
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+		</div>
+		<div class="options dates" bind:this={datesEl}>
+			<ul>
+				<li></li>
+				<li></li>
+				<li></li>
+				{#each dates as date}
+					<li>
+						{date}
+					</li>
+				{/each}
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+		</div>
+		<div class="options years" bind:this={yearsEl}>
+			<ul>
+				<li></li>
+				<li></li>
+				<li></li>
+				{#each years as year}
+					<li>
+						{year}
 					</li>
 				{/each}
 				<li></li>
@@ -179,7 +180,7 @@
 		left:0;
 		background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 12px,rgba(255, 255, 255, .5) 66.66666%);
 		pointer-events: none;
-		z-index:100;
+		z-index: 100;
 	}
 
 	.swiper:after {
@@ -204,7 +205,7 @@
 	}
 
 	.options {
-		width:100%;
+		width:50%;
 		max-height:294px;
 		overflow-x:hidden;
 		overflow-y:auto;
@@ -216,8 +217,8 @@
 		display: none;
 	}
 
-	.options.no-snap {
-		scroll-snap-type:none;
+	.dates li {
+		text-align: right;
 	}
 
 	ul {
@@ -229,10 +230,11 @@
 
 	li {
 		margin:0;
-		padding:0 24px;
+		padding:0 12px;
 		height:42px;
 		line-height:42px;
 		font-size:18px;
+		font-family:monospace; /* TODO: OVERPASS */
 		scroll-snap-align: start;
 	}
 </style>
