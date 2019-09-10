@@ -13,7 +13,8 @@
 		y = 0,
 		width = 0,
 		height = 0,
-		wiggleClass = ''
+		wiggleClass = '',
+		isLastInputAKey = false
 
 	const blurFunction = e => {
 		removeBlurFunction(e)
@@ -75,7 +76,11 @@
 					findFocusable(e.target).focus()
 				}
 			}
+			isLastInputAKey = true
 		}, false)
+
+		document.querySelector('body').addEventListener('mouseup', e => isLastInputAKey = false)
+		document.querySelector('body').addEventListener('mousedown', e => isLastInputAKey = false)
 	})
 
 
@@ -212,7 +217,7 @@
 
 </script>
 
-{#if show && !$uiStore.isTouchDevice}
+{#if show && isLastInputAKey && !$uiStore.isTouchDevice}
 	<div
 		class="{wiggleClass}"
 		style="
