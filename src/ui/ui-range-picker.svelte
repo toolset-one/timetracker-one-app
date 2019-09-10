@@ -254,7 +254,7 @@
 	<div
 		class="backdrop"
 		transition:fade="{{delay: 0, duration: 100}}"
-		on:click={e => overlayEl.externalClose()}></div>
+		on:click={e => overlayEl ? overlayEl.externalClose() : opened = false}></div>
 {/if}
 
 
