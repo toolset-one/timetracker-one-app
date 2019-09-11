@@ -13,6 +13,8 @@
 	$: databaseDate = dateToDatabaseDate(date)
 	$: dayTotal = $reportsStoreBarchartData.days[databaseDate] ? $reportsStoreBarchartData.days[databaseDate].total : 0
 	$: barHeight = dayTotal / ($reportsStoreBarchartData.totalDayMax / 100)
+	$: hasShortWeekAbbrivations = Object.keys($reportsStore.dates).length > 14
+	$: hasNoWeekdays = Object.keys($reportsStore.dates).length > 31
 
 
 	onMount(() => {
@@ -54,14 +56,13 @@
 	</div>
 {/if}
 
-<div class="date">
-	<span>
-		{dateGetWeekday(date)}
-	</span>
-	<small>
-		{dateGetDay(date)}
-	</small>
-</div>
+{#if !hasNoWeekdays}
+	<div class="date">
+		<span>
+			{dateGetWeekday(date).substr(0, (hasShortWeekAbbrivations ? 1 : 3))}
+		</span>
+	</div>
+{/if}
 
 <style>
 	
@@ -71,38 +72,24 @@
 		left:50%;
 		transform: translateX(-50%);
 		text-align: center;
+		z-index:600;
 	}
 
 	.date span {
 		position: relative;
 		display: inline-block;
-		font-size:12px;
+		font-size:9px;
 		line-height:12px;
 		padding:6px 0;
-	}
-
-	.date small {
-		display: block;
-		padding:0 6px;
-		font-size:12px;
-		line-height:24px;
-		white-space: nowrap;
-		font-weight:600;
-		opacity:0;
-		border-radius: 6px;
 	}
 
 	.bar-wrapper {
 		position: absolute;
 		top:0;
-		bottom:48px;
+		bottom:0;
 		left:0;
 		width:100%;
 		z-index:500;
-	}
-
-	.bar-wrapper:hover + .date small {
-		opacity:1;
 	}
 
 	.bar {

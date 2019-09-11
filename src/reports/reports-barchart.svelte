@@ -86,9 +86,16 @@
 		{/each}
 	</div>
 </div>
-
 </div>
 
+<div class="dates">
+	<div class="date first-date">
+		{dateGetHumanDate($reportsStore.firstDate)}
+	</div>
+	<div class="date last-date">
+		{dateGetHumanDate($reportsStore.lastDate)}
+	</div>
+</div>
 
 <style>
 	.barchart-wrapper {
@@ -140,20 +147,20 @@
 		opacity: .5;
 	}
 
-	.legend {
+	/*.legend {
 		position: absolute;
 		bottom:0;
 		left:0;
 		width:100%;
 		height:48px;
 		background:#FAF9F7;
-	}
+	}*/
 
 	.line-wrapper {
 		pointer-events: none;
 		position: absolute;
 		top:0;
-		bottom:48px;
+		bottom:0;
 		left:0;
 		right:0;
 	}
@@ -161,7 +168,7 @@
 	.line {
 		content:'';
 		position: absolute;
-		bottom:48px;
+		bottom:0;
 		left:24px;
 		right:0;
 		height: 1px;
@@ -203,5 +210,23 @@
 		.line span {
 			transform:translateY(-50%) scale(1, 2);
 		}
+	}
+
+	.dates {
+		width:100%;
+		display:flex;
+		flex-direction:row;
+	}
+
+	.date {
+		flex:1;
+		font-size:12px;
+		line-height:12px;
+		padding:12px 0 0 0;
+		font-weight:600;
+	}
+
+	.last-date {
+		text-align: right;
 	}
 </style>
