@@ -8,9 +8,19 @@
 	export let value = ''
 	export let disabled = false
 
-	let focused = false
+	let el,
+		focused = false,
+		prefilled = false
 
 	$: disabledVal = disabled ? 'disabled' : ''
+
+	onMount(() => {
+		setTimeout(() => {
+			if (window.getComputedStyle(el.querySelector('input')).content === `"${String.fromCharCode(0xFEFF)}"`) {
+				prefilled = true
+			}
+		}, 100)
+	})
 
 	function focus(e) {
 		focused = true
@@ -23,17 +33,19 @@
 	}
 
 	function keydown(e) {
+		prefilled = false
 		dispatch('keydown', e.keyCode)
 	}
 
 </script>
 
 <div 
-	class="wrapper 
+	bind:this={el}
+	class="wrapper
 		{focused ? 'focused' : ''}
 		{disabled ? 'disabled' : ''}
-		{value.length > 0 ? 'filled' : ''}"
-	on:keydown={e => keydown(e)}>
+		{value.length > 0 || prefilled ? 'filled' : ''}"
+		on:keydown={e => keydown(e)}>
 	<label>
 		{label}
 	</label>
@@ -127,5 +139,9 @@
 
 .wrapper:hover input, .wrapper:focus input {
 	border-color:#26231E;
+}
+
+.wrapper input:-webkit-autofill {
+  content: "\feff"
 }
 </style>
