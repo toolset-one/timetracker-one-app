@@ -32,7 +32,7 @@
 
 
 	onMount(() => {
-		isNew = data.created.seconds * 1000 >= Date.now() - 2000
+		isNew = (new Date(data.createdAt)).getTime() >= Date.now() - 2000
 
 		if(!isNew) {
 			el.removeAttribute('style')

@@ -1,4 +1,5 @@
 <script>
+	import Page from 'page'
 	import { onMount } from 'svelte';
 	import { authStore, authSignIn } from '../stores/auth-store.js'
 
@@ -19,10 +20,14 @@
 	})
 
 	function signIn(e) {
-		
-		console.log(email, password)
-		authSignIn(email, password, (success, err) => {
-			error = ERROR_MAP[err] || '' + err
+		authSignIn(email, password).then(res => {
+
+			console.log(res)
+
+			error = ''
+			Page('/timelog/')
+		}).catch(err => {
+			error = ERROR_MAP[err.code] || '' + err.code
 		})
 	}
 

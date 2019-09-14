@@ -34,13 +34,12 @@
 	})
 
 	function signUp(e) {
-		
-		authSignUp(email, password, (success, err) => {
+		authSignUp(email, password).then(res => {
+			authSignIn(email, password)
+				.then(() => Page('/timelog/'))
+				.catch(() => Page('/sign-in/'))
+		}).catch(err => {
 			error = ERROR_MAP[err] || '' + err
-
-			if(success) {
-				Page('/timelog/')
-			}
 		})
 	}
 

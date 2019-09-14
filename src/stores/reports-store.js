@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import { routerStore } from '../stores/router-store.js'
-import { timesStore, timesStoreControlDate } from '../stores/times-store.js'
+import { timesStore } from '../stores/times-store.js'
 import { dateNextDate, dateToDatabaseDate, dateDaysBetweenDates } from '../helpers/helpers.js'
 
 export const reportsStore = writable({
@@ -49,7 +49,6 @@ export function reportsStoreUpdateRange(firstDate, lastDate) {
 
 		for(var i = 0; i < daysBetween; i++) {
 			const databaseDateTmp = dateToDatabaseDate(dateTmp)
-			timesStoreControlDate(databaseDateTmp)
 			data.dates[databaseDateTmp] = true
 			dateTmp = dateNextDate(dateTmp)
 		}

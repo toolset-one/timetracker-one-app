@@ -52,7 +52,7 @@
 			alreadyClosed = true
 			dispatch('close', '')
 		} else if( e.keyCode === 13) { // ENTER
-			save()
+			el.blur()
 		}
 
 		el.dispatchEvent(new CustomEvent('trigger-focus-resize', { bubbles: true }))

@@ -20,7 +20,7 @@
 
 
 	onMount(() =>
-		isNew = data.created.seconds * 1000 >= Date.now() - 2000
+		isNew = new Date(data.createdAt).getTime() * 1000 >= Date.now() - 2000
 	)
 
 	function dispatchDesktopAndKeyboard(event, eventData) {
