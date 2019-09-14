@@ -76,4 +76,5 @@ export function teamStoreChangeTitle(id, title) {
 
 export function teamStoreInvite(email, name, cb) {
 	// TODO
+	console.log('INVITE', email, name, cb)
 }
