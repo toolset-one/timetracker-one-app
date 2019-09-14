@@ -27,8 +27,6 @@
   "homepage": "https://github.com/toolset-one/timetracker-one-app#readme",
   "dependencies": {
     "eslint": "^5.16.0",
-    "firebase-admin": "~7.0.0",
-    "firebase-functions": "^2.3.0",
     "page": "^1.11.4"
   },
   "devDependencies": {
