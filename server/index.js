@@ -4,11 +4,13 @@ const http = require('http'),
   wsServer = require('ws').Server,
   authInit = require('./libs/auth.js'),
   { signUp } = require('./libs/auth/sign-up.js'),
-  { signIn } = require('./libs/auth/sign-in.js')
+  { signIn } = require('./libs/auth/sign-in.js'),
+  { syncToServer } = require('./libs/sync/sync-to-server.js')
 
   let ACTIONS = {
     signUp,
-    signIn
+    signIn,
+    syncToServer
   }
 
 const wss = new wsServer({

@@ -132,19 +132,46 @@ swsServer.db = {
 
 				Object.values(swsServer.db.models).forEach(model => {
 					swsServer.db.objectStores[model.col] = swsServer.db.db.createObjectStore(model.col, { keyPath: 'id' })
-					swsServer.db.createIndex(swsServer.db.objectStores[model.col], ['sync'])
+					swsServer.db.createIndex(swsServer.db.objectStores[model.col], ['__sync'])
 
 					model.indexes.forEach(val => {
 						swsServer.db.createIndex(swsServer.db.objectStores[model.col], val)
 					})
 				})
+
+				swsServer.db.__sync()
+
 				resolve()
 			}
 		})
 	},
 
 	__sync: () => {
-		console.log('SYNC! PRETTY LITTLE THING! :P')
+		Object.keys(swsServer.db.models).forEach(col => {
+
+			const req = swsServer.db.db.transaction(col, 'readonly').objectStore(col).index('__sync').get(1)
+			req.onsuccess = e => {
+				if(req.result) {
+					swsServer.gateway.send({
+						action: 'syncToServer',
+						col,
+						data: req.result
+					}).then(res => {
+						const req2 = swsServer.db.db.transaction(col).objectStore(col).get(req.result.id)
+						req2.onsuccess = e => {
+							req2.result.__sync = 0
+							const req3 = swsServer.db.db.transaction(col, 'readwrite').objectStore(col).put(req2.result)
+							req3.onsuccess = e => swsServer.db.__sync()
+						}
+					}).catch(err => {
+						console.log(err)
+						// swsServer.db.__sync()
+					})
+				}
+			}
+
+		})
+
 	},
 
 
@@ -161,7 +188,7 @@ swsServer.db = {
 			__updates: {
 				__deleted: date
 			},
-			__toSync: true
+			__sync: true
 		}
 
 		Object.keys(swsServer.db.models[col].attributes).forEach(attr => {
@@ -220,7 +247,7 @@ swsServer.db = {
 					obj[key] = data[key]
 					obj.__updates[key] = date
 					obj.updatedAt = date
-					obj.__sync = true
+					obj.__sync = 1
 				}
 			})
 
