@@ -431,39 +431,25 @@ swsServer.gateway = {
 
 
 swsServer.bridge = {
+
+	functionMap: {
+		init: swsServer.init,
+
+		signUp: swsServer.auth.signUp,
+		signIn: swsServer.auth.signIn,
+		signOut: swsServer.auth.signOut,
+
+		new: swsServer.db.new,
+		query: swsServer.db.query,
+		hook: swsServer.db.hook,
+		unhook: swsServer.db.unhook,
+		get: swsServer.db.get,
+		update: swsServer.db.update
+	}
+
 	postMessage: jsonString => {
 		const json = JSON.parse(jsonString)
-		switch(json.action) {
-			case 'init':
-				swsServer.init(json)
-				break
-			case 'signUp':
-				swsServer.auth.signUp(json)
-				break
-			case 'signIn':
-				swsServer.auth.signIn(json)
-				break
-			case 'signOut':
-				swsServer.auth.signOut(json)
-				break
-			case 'new':
-				swsServer.db.new(json)
-				break
-			case 'query':
-				swsServer.db.query(json)
-				break
-			case 'hook':
-				swsServer.db.hook(json)
-				break
-			case 'get':
-				swsServer.db.get(json)
-			case 'unhook':
-				swsServer.db.unhook(json)
-				break
-			case 'update':
-				swsServer.db.update(json)
-				break
-		}
+		swsServer.bridge.functionMap[json.action](json)
 	},
 
 	answer: json => {
