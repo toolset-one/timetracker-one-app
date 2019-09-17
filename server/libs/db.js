@@ -66,6 +66,15 @@ db.findOne = ({ collection, object }) =>
     })
   })
 
+db.get = ({ collection, id }) =>
+  new Promise((resolve, reject) => {
+    database.collection(collection).findOne(new ObjectID(id), (err, res) => {
+      err
+        ? reject(err)
+        : resolve(res)
+    })
+  })
+
 
 
 exports.db = db

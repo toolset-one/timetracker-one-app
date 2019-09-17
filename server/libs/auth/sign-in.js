@@ -77,6 +77,18 @@ exports.signIn = async (ws, sockets, { promiseId, email, password }) =>
 			return
 		}
 
+		const safetyToken = await db.create({
+			collection: 'tokens',
+			object: {
+				user: user._id,
+				sync: new Date(2000, 0, 0)
+			}
+		}).catch(err => {
+			reject({
+				code: 'token-was-not-created'
+			})
+		})
+
 		//
 		ws.send(
 			JSON.stringify({
@@ -91,7 +103,8 @@ exports.signIn = async (ws, sockets, { promiseId, email, password }) =>
 					id: user._id,
 					email: user.email,
 					emailVerified: user.emailVerified,
-					teams: user.teams
+					teams: user.teams,
+					safetyToken: safetyToken._id
 				})
 			})
 		)

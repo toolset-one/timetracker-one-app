@@ -9,25 +9,39 @@ export const setSWS = swsToSet => sws = swsToSet
 
 swsServer.init = async json => {
 
-	swsServer.gateway.init(json.server)
+	await swsServer.db.init(json.models)
 	await swsServer.store.init()
+	swsServer.gateway.init(json.server)
 	swsServer.auth.init()
-	swsServer.db.init(json.models)
 
 	swsServer.bridge.answer({
 		promiseId: json.promiseId,
 		answer: {}
 	})
+
+	// Unhandled Promise Bla
 }
 
 
 
 swsServer.auth = {
 
+	serverKnowsAuth: false,
+
 	init: async () => {
 		const authData = await swsServer.store.get('authData')
 		if(authData) {
 			swsServer.auth.updateAuth(authData.user, authData.jwt, false)
+			swsServer.gateway.send({
+				action: 'signInWithToken',
+				jwt: authData.jwt
+			}).then(res => {
+				swsServer.auth.serverKnowsAuth = true
+				swsServer.db.__sync()
+			}).catch(err => {
+				// TODO: Re-Sign In? Sign Out?
+			})
+
 		} else {
 			swsServer.auth.updateAuth(null, null, false)
 		}
@@ -118,10 +132,11 @@ swsServer.db = {
 		return new Promise((resolve, reject) => {
 			swsServer.db.models = models
 
-			const req = indexedDB.open('database', 1)
+			const req = indexedDB.open('database', 2)
 
 			req.onsuccess = e => {
 				swsServer.db.db = e.target.result
+				swsServer.db.__sync()
 				resolve()
 			}
 
@@ -139,39 +154,38 @@ swsServer.db = {
 					})
 				})
 
-				swsServer.db.__sync()
-
 				resolve()
 			}
 		})
 	},
 
 	__sync: () => {
-		Object.keys(swsServer.db.models).forEach(col => {
-
-			const req = swsServer.db.db.transaction(col, 'readonly').objectStore(col).index('__sync').get(1)
-			req.onsuccess = e => {
-				if(req.result) {
-					swsServer.gateway.send({
-						action: 'syncToServer',
-						col,
-						data: req.result
-					}).then(res => {
-						const req2 = swsServer.db.db.transaction(col).objectStore(col).get(req.result.id)
-						req2.onsuccess = e => {
-							req2.result.__sync = 0
-							const req3 = swsServer.db.db.transaction(col, 'readwrite').objectStore(col).put(req2.result)
-							req3.onsuccess = e => swsServer.db.__sync()
-						}
-					}).catch(err => {
-						console.log(err)
-						// swsServer.db.__sync()
-					})
+		if(swsServer.auth.serverKnowsAuth) {
+			Object.keys(swsServer.db.models).forEach(col => {
+				const req = swsServer.db.db.transaction(col, 'readonly').objectStore(col).index('__sync').get(1)
+				req.onsuccess = e => {
+					if(req.result) {
+						swsServer.gateway.send({
+							action: 'syncToServer',
+							col,
+							data: req.result
+						}).then(res => {
+							console.log('RES', res)
+							const req2 = swsServer.db.db.transaction(col).objectStore(col).get(req.result.id)
+							req2.onsuccess = e => {
+								req2.result.__sync = 0
+								const req3 = swsServer.db.db.transaction(col, 'readwrite').objectStore(col).put(req2.result)
+								req3.onsuccess = e => swsServer.db.__sync()
+							}
+						}).catch(err => {
+							console.log(err)
+							swsServer.db.__sync()
+						})
+					}
 				}
-			}
 
-		})
-
+			})
+		}
 	},
 
 
@@ -188,7 +202,7 @@ swsServer.db = {
 			__updates: {
 				__deleted: date
 			},
-			__sync: true
+			__sync: 1
 		}
 
 		Object.keys(swsServer.db.models[col].attributes).forEach(attr => {
@@ -445,7 +459,7 @@ swsServer.bridge = {
 		unhook: swsServer.db.unhook,
 		get: swsServer.db.get,
 		update: swsServer.db.update
-	}
+	},
 
 	postMessage: jsonString => {
 		const json = JSON.parse(jsonString)

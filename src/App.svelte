@@ -94,7 +94,7 @@ const MODELS = {
 			userStoreInit()
 			teamStoreInit()
 			reportsStoreInit()
-		}, 200)
+		}, 1000)
 	})
 
 	function resize() {

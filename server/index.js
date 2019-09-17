@@ -5,12 +5,14 @@ const http = require('http'),
   authInit = require('./libs/auth.js'),
   { signUp } = require('./libs/auth/sign-up.js'),
   { signIn } = require('./libs/auth/sign-in.js'),
+  { signInWithToken } = require('./libs/auth/sign-in-with-token.js'),
   { syncToServer } = require('./libs/sync/sync-to-server.js')
 
   let ACTIONS = {
     signUp,
     signIn,
-    syncToServer
+    syncToServer,
+    signInWithToken
   }
 
 const wss = new wsServer({
@@ -27,6 +29,8 @@ wss.on('connection', ws => {
 
   ws.on('message', async req => {
     const data = JSON.parse(req)
+
+    console.log(data.action)
 
     const test = ACTIONS[data.action](ws, sockets, data).then(res => {
       ws.send(
