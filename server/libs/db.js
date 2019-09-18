@@ -35,7 +35,7 @@ db.create = ({ collection, object, id }) =>
   new Promise((resolve, reject) => {
     let newObj = object
     if(id)
-      newObj._id = id
+      newObj._id = ObjectID(id)
 
     database.collection(collection).insertOne(newObj, (err, res) => {
       err
@@ -69,6 +69,17 @@ db.findOne = ({ collection, object }) =>
 db.get = ({ collection, id }) =>
   new Promise((resolve, reject) => {
     database.collection(collection).findOne(new ObjectID(id), (err, res) => {
+      err
+        ? reject(err)
+        : resolve(res)
+    })
+  })
+
+db.update = ({ collection, id, obj}) =>
+  new Promise((resolve, reject) => {
+    database.collection(collection).findOneAndReplace({
+      _id: new ObjectID(id)
+    }, obj, (err, res) => {
       err
         ? reject(err)
         : resolve(res)

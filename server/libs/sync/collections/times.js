@@ -1,13 +1,16 @@
 const jwt = require('jsonwebtoken')
 const { db } = require('../../../libs/db.js')
 
-const ATTRIBUTES = [
+const STANDARD_ATTRIBUTES = [
 	'id',
 	'createdAt',
 	'updatedAt',
 	'__deleted',
 	'__updates',
-	'__sync',
+	'__sync'
+]
+
+const ATTRIBUTES = [
 	'duration',
 	'day',
 	'task',
@@ -15,17 +18,25 @@ const ATTRIBUTES = [
 	'user',
 	'team'
 ]
+exports.ATTRIBUTES = ATTRIBUTES
 
 
 exports.shouldBeSynced = async (obj, user) =>
 	new Promise(async (resolve, reject) => {
 
-		if(Object.keys(obj).length != ATTRIBUTES.length) {
+		if(Object.keys(obj).length != (ATTRIBUTES.length + STANDARD_ATTRIBUTES.length)) {
+			console.log(Object.keys(obj).length, (ATTRIBUTES.length + STANDARD_ATTRIBUTES.length))
 			resolve(false)
 		}
 
 		ATTRIBUTES.forEach(attr => {
-			if(obj.hasOwnProperty(attr)) {
+			if(!obj.hasOwnProperty(attr)) {
+				resolve(false)
+			}
+		})
+
+		STANDARD_ATTRIBUTES.forEach(attr => {
+			if(!obj.hasOwnProperty(attr)) {
 				resolve(false)
 			}
 		})
@@ -38,14 +49,7 @@ exports.shouldBeSynced = async (obj, user) =>
 			resolve(false)
 		}
 
-
-		console.log('##############')
-		console.log('shouldBeSynced')
-		console.log('##############')
-		console.log(obj)
-		console.log(Object.keys(obj).length)
-		console.log(user)
+		// TODO: Maybe control type of every attribute?
 
 		resolve(true)
-
 	})

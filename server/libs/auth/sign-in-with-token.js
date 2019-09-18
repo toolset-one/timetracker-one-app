@@ -47,6 +47,8 @@ exports.signInWithToken = async (ws, sockets, { promiseId, jwt }) =>
 			return
 		}
 
+		console.log(decodedWebToken.safetyToken)
+
 		const safetyToken = await db.get({
 			collection: 'tokens',
 			id: decodedWebToken.safetyToken
