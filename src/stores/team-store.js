@@ -25,8 +25,8 @@ export function teamGetActiveId() {
 	return authData.hasAuth ? Object.keys(authData.user.teams)[0] : null
 }
 
-function setListener() {
 	authStore.subscribe(authData => {
+function setListener() {
 
 		if(authData.hasAuth) {
 			teamStore.update(data => {
@@ -63,13 +63,12 @@ function setListener() {
 	})
 }
 
-
-function setInvitationListener() {
+export function teamStoreChangeTitle(id, title) {
 	// TODO
 }
 
 
-export function teamStoreChangeTitle(id, title) {
+function setInvitationListener() {
 	// TODO
 }
 

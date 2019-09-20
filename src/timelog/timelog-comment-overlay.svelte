@@ -20,8 +20,7 @@
 
 	onMount(() => {
 
-		value = comment.replace(regex, '')
-		value = comment.replace('  ', ' ')
+		value = (comment.replace(regex, '')).replace('  ', ' ')
 
 		const boundingRect = document.querySelector('#entry-'+ id +' .comment').getBoundingClientRect()
 		top = boundingRect.top
@@ -87,7 +86,9 @@
 		data-disable="true"></textarea>
 </div>
 
-<div bind:this={sizeTestEl} class="size-test" style="{'max-width:'+ maxWidth +'px;'}">{value}&nbsp;</div>
+<div bind:this={sizeTestEl} class="size-test" style="{'max-width:'+ maxWidth +'px;'}">
+	{value}&nbsp;
+</div>
 <style>
 	.input-wrapper {
 		position: absolute;

@@ -32,6 +32,17 @@ swsServer.auth = {
 		const authData = await swsServer.store.get('authData')
 		if(authData) {
 			swsServer.auth.updateAuth(authData.user, authData.jwt, false)
+		} else {
+			swsServer.auth.updateAuth(null, null, false)
+		}
+	},
+
+	newConnection: async () => {
+		const authData = await swsServer.store.get('authData')
+		if(authData) {
+
+			console.log('AUTH DATA', authData)
+
 			swsServer.gateway.send({
 				action: 'signInWithToken',
 				jwt: authData.jwt
@@ -42,8 +53,6 @@ swsServer.auth = {
 				// TODO: Re-Sign In? Sign Out?
 			})
 
-		} else {
-			swsServer.auth.updateAuth(null, null, false)
 		}
 	},
 
@@ -178,12 +187,16 @@ swsServer.db = {
 							req2.onsuccess = e => {
 								req2.result.__sync = 0
 								const req3 = swsServer.db.db.transaction(col, 'readwrite').objectStore(col).put(req2.result)
-								req3.onsuccess = e => swsServer.db.__sync()
+								req3.onsuccess = e => {
+									setTimeout(() => {
+										swsServer.db.__sync()
+									}, 1000)
+								}
 							}
 						}).catch(err => {
 							console.log(err)
 							setTimeout(() => {
-								//swsServer.db.__sync()
+								swsServer.db.__sync()
 							}, 1000)
 						})
 					}
@@ -408,6 +421,8 @@ swsServer.gateway = {
 
 		swsServer.gateway.ws.onopen = () => {
 			swsServer.gateway.connected = true
+
+			swsServer.auth.newConnection()
 		}
 
 		swsServer.gateway.ws.onclose = () => {

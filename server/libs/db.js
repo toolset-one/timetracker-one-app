@@ -75,11 +75,11 @@ db.get = ({ collection, id }) =>
     })
   })
 
-db.update = ({ collection, id, obj}) =>
+db.update = ({ collection, id, obj }) =>
   new Promise((resolve, reject) => {
-    database.collection(collection).findOneAndReplace({
+    database.collection(collection).updateOne({
       _id: new ObjectID(id)
-    }, obj, (err, res) => {
+    }, { $set: obj }, (err, res) => {
       err
         ? reject(err)
         : resolve(res)

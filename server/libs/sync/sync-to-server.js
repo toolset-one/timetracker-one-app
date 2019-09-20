@@ -7,8 +7,6 @@ let collections = {}
 exports.syncToServer = async (ws, sockets, { col, data }) =>
 	new Promise(async (resolve, reject) => {
 
-		console.log('BLU')
-
 		if(!collections[col]) {
 			collections[col] = require('./collections/'+ col +'.js')
 		}
@@ -20,8 +18,6 @@ exports.syncToServer = async (ws, sockets, { col, data }) =>
 				code: 'should-not-be-synced'
 			})
 		}
-
-		console.log('data.id', data.id)
 
 		let dataInDb = await db.get({
 			collection: col,
@@ -42,6 +38,10 @@ exports.syncToServer = async (ws, sockets, { col, data }) =>
 				if((new Date(data.__updates[attr])) > (new Date(dataInDb.__updates[attr]))) {
 					dataInDb[attr] = data[attr]
 					dataInDb.__updates[attr] = new Date(data.__updates[attr])
+
+					if(new Date(data.__updates[attr]) > new Date(dataInDb.updatedAt)) {
+						dataInDb.updatedAt = new Date(data.__updates[attr])
+					}
 				}
 			})
 
@@ -50,6 +50,7 @@ exports.syncToServer = async (ws, sockets, { col, data }) =>
 				id: data.id,
 				obj: dataInDb
 			}).catch(err => {
+				console.log(err)
 				reject({
 					code: 'update-failed'
 				})
