@@ -25,10 +25,13 @@ export function teamGetActiveId() {
 	return authData.hasAuth ? Object.keys(authData.user.teams)[0] : null
 }
 
-	authStore.subscribe(authData => {
+
 function setListener() {
 
+	authStore.subscribe(authData => {
+
 		if(authData.hasAuth) {
+
 			teamStore.update(data => {
 				data.activeId = Object.keys(authData.user.teams)[0]
 				return data
