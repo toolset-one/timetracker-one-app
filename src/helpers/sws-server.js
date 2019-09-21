@@ -10,7 +10,7 @@ export const setSWS = swsToSet => sws = swsToSet
 swsServer.init = async ({ promiseId, models, server }) => {
 
 	await swsServer.db.init(models)
-	await swsServer.store.init()
+	swsServer.store.init()
 	swsServer.gateway.init(server)
 	swsServer.auth.init()
 
