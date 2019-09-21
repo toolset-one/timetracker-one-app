@@ -1,7 +1,7 @@
 const jsonwebtoken = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const { db } = require('../../libs/db.js')
-const { sendMail } = require('../../libs/mail.js')
+const { syncToUserClient } = require('../../libs/sync/sync-to-client.js')
 
 const SECRET = '5oF79a0z8zsbTyn61IJjPX2y7XDGlyOmDeyL2YrRIUHCOl2cxFP3RlljYLQQv2tZUnX3UGEoJ4xzTztv'
 
@@ -47,8 +47,6 @@ exports.signInWithToken = async (ws, sockets, { promiseId, jwt }) =>
 			return
 		}
 
-		console.log(decodedWebToken.safetyToken)
-
 		const safetyToken = await db.get({
 			collection: 'tokens',
 			id: decodedWebToken.safetyToken
@@ -63,10 +61,13 @@ exports.signInWithToken = async (ws, sockets, { promiseId, jwt }) =>
 			reject({
 				code: 'safety-token-not-equal'
 			})
+			return
 		}
 
 		ws.userData = decodedWebToken
 		ws.userData.syncDate = safetyToken.sync
+
+		syncToUserClient(ws)
 
 		resolve(true)
 	})

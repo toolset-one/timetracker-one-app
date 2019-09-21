@@ -41,7 +41,7 @@ swsServer.auth = {
 		const authData = await swsServer.store.get('authData')
 		if(authData) {
 
-			console.log('AUTH DATA', authData)
+			// console.log('AUTH DATA', authData)
 
 			swsServer.gateway.send({
 				action: 'signInWithToken',
@@ -51,6 +51,10 @@ swsServer.auth = {
 				swsServer.db.__sync()
 			}).catch(err => {
 				// TODO: Re-Sign In? Sign Out?
+				if(err.code === 'safety-token-not-equal') {
+					swsServer.store.set('authData', null)
+					window.location.reload()
+				}
 			})
 
 		}
@@ -81,6 +85,7 @@ swsServer.auth = {
 			email: json.email,
 			password: json.password
 		}).then(res => {
+			swsServer.auth.newConnection()
 			swsServer.bridge.answer({
 				promiseId: json.promiseId,
 				answer: res
@@ -401,6 +406,71 @@ swsServer.db = {
 				}
 			}
 		})
+	},
+
+	__syncToClient: (col, objs) => {
+		objs.forEach(obj => {
+			obj.id = obj._id
+			delete obj._id
+			swsServer.db.__syncObjToClient(col, obj)
+		})
+	},
+
+	__syncObjToClient: (col, obj) => {
+		return new Promise((resolve, reject) => {
+
+			const req = swsServer.db.db.transaction(col).objectStore(col).get(obj.id)
+
+			req.onerror = err => {
+				console.log('ERR', err)
+			}
+
+			req.onsuccess = e => {
+				if (!req.result) {
+					const req2 = swsServer.db.db.transaction(col, 'readwrite').objectStore(col).put(obj)
+
+					req2.onerror = err => {
+						console.log('ERR', err)
+					}
+
+					req2.onsuccess = e => {	
+						swsServer.db.__processHooks(col, obj)
+					}
+				} else {
+					console.log(req.result, obj)
+				}
+
+				/*let obj = req.result
+
+				Object.keys(data).forEach(key => {
+					if (swsServer.db.models[col].attributes.hasOwnProperty(key) || key === '__deleted') {
+						obj[key] = data[key]
+						obj.__updates[key] = date
+						obj.updatedAt = date
+						obj.__sync = 1
+					}
+				})
+
+				const req2 = swsServer.db.db.transaction(col, 'readwrite').objectStore(col).put(obj)
+
+				req2.onerror = err => {
+					swsServer.bridge.answer({
+						promiseId,
+						err
+					})
+				}
+
+				req2.onsuccess = e => {
+					swsServer.bridge.answer({
+						promiseId,
+						answer: obj
+					})
+
+					swsServer.db.__processHooks(col, obj)
+					swsServer.db.__sync()
+				}*/
+			}
+		})
 	}
 }
 
@@ -443,6 +513,9 @@ swsServer.gateway = {
 				switch(json.action) {
 					case 'updateAuth':
 						swsServer.auth.updateAuth(json.user, json.jwt, true)
+						break;
+					case 'syncToClient':
+						swsServer.db.__syncToClient(json.col, json.objects)
 						break;
 				}
 			}
@@ -532,71 +605,3 @@ swsServer.store = {
 		})
 	}
 }
-
-
-
-
-
-
-
-
-/*
-
-queryOld: ({ promiseId, col, query }) => {
-
-		console.log(query)
-
-		const answer = objs => {
-			swsServer.bridge.answer({
-				promiseId,
-				answer: objs
-			})
-		}
-
-		values = (typeof values === 'object' ? values : [values]).sort()
-
-		let objs = [],
-			i = 0
-
-		const req = swsServer.db.db.transaction(col, 'readonly').objectStore(col).index(index).openCursor()
-
-		req.onerror = err => {
-			swsServer.bridge.answer({
-				promiseId,
-				err
-			})
-		}
-
-		req.onsuccess = e => {
-			let cursor = e.target.result
-
-			if (!cursor) {
-				answer(objs)
-				return
-			}
-
-			let key = cursor.key
-			while (key > values[i]) {
-				i++
-				if (i === values.length) {
-					answer(objs)
-					return
-				}
-			}
-
-			if (key === values[i]) {
-				let cursorValue = cursor.value
-				if (!cursorValue.__deleted) {
-					delete cursorValue.__deleted
-					delete cursorValue.__updates
-					delete cursorValue.__sync
-					objs.push(cursorValue)
-				}
-				cursor.continue()
-			} else {
-				cursor.continue(values[i])
-			}
-		}
-	},
-
-*/

@@ -6,12 +6,14 @@ const http = require('http'),
   { signUp } = require('./libs/auth/sign-up.js'),
   { signIn } = require('./libs/auth/sign-in.js'),
   { signInWithToken } = require('./libs/auth/sign-in-with-token.js'),
-  { syncToServer } = require('./libs/sync/sync-to-server.js')
+  { syncToServer } = require('./libs/sync/sync-to-server.js'),
+  { syncToClient } = require('./libs/sync/sync-to-client.js')
 
   let ACTIONS = {
     signUp,
     signIn,
     syncToServer,
+    syncToClient,
     signInWithToken
   }
 

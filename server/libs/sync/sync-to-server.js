@@ -45,6 +45,10 @@ exports.syncToServer = async (ws, sockets, { col, data }) =>
 				}
 			})
 
+			dataInDb.createdAt = new Date(dataInDb.createdAt)
+			dataInDb.updatedAt = new Date(dataInDb.updatedAt)
+			Object.keys(dataInDb.__updates).forEach(key => dataInDb.__updates[key] = new Date(dataInDb.__updates[key]))
+
 			const success = await db.update({
 				collection: col,
 				id: data.id,
@@ -60,6 +64,10 @@ exports.syncToServer = async (ws, sockets, { col, data }) =>
 	
 			const id = data.id
 			delete data.id
+
+			data.createdAt = new Date(data.createdAt)
+			data.updatedAt = new Date(data.updatedAt)
+			Object.keys(data.__updates).forEach(key => data.__updates[key] = new Date(data.__updates[key]))
 
 			newObj = await db.create({
 				collection: col,
