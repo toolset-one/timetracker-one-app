@@ -77,24 +77,22 @@ const MODELS = {
 	}
 }
 
-	onMount(() => {
-
-		sws.init({
-			server: 'ws://localhost:8080/',
-			models: MODELS
-		})
+	onMount(async () => {
 
 		uiStoreInit()
 		uiStoreSetBreakpoint(getWindowWidth())
 
-		setTimeout(() => {
-			authInit()
-			timesStoreInit()
-			tasksStoreInit()
-			userStoreInit()
-			teamStoreInit()
-			reportsStoreInit()
-		}, 1000)
+		await sws.init({
+			server: 'ws://localhost:8080/',
+			models: MODELS
+		})
+
+		authInit()
+		timesStoreInit()
+		tasksStoreInit()
+		userStoreInit()
+		teamStoreInit()
+		reportsStoreInit()
 	})
 
 	function resize() {

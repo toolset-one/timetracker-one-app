@@ -6,12 +6,13 @@ setSWS(sws)
 
 
 
-sws.init = async ({ server, models }) =>
-	sws.bridge.send({
+sws.init = async ({ server, models }) => {
+	return sws.bridge.send({
 		action: 'init',
 		server,
 		models
 	})
+}
 
 
 

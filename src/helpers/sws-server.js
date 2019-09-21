@@ -7,15 +7,15 @@ export const setSWS = swsToSet => sws = swsToSet
 
 
 
-swsServer.init = async json => {
+swsServer.init = async ({ promiseId, models, server }) => {
 
-	await swsServer.db.init(json.models)
+	await swsServer.db.init(models)
 	await swsServer.store.init()
-	swsServer.gateway.init(json.server)
+	swsServer.gateway.init(server)
 	swsServer.auth.init()
 
 	swsServer.bridge.answer({
-		promiseId: json.promiseId,
+		promiseId,
 		answer: {}
 	})
 
@@ -171,6 +171,8 @@ swsServer.db = {
 					})
 				})
 
+				swsServer.db.db.createObjectStore('keyvalue')
+
 				resolve()
 			}
 		})
@@ -312,6 +314,8 @@ swsServer.db = {
 
 
 	query: ({ promiseId, col, query }) => {
+
+		console.log(col, query)
 
 		const index = (Object.keys(query).sort()).join(','),
 			values = (Object.keys(query).sort()).map(key => query[key]),
@@ -591,28 +595,13 @@ swsServer.store = {
 
 	init: () => {
 		return new Promise((resolve, reject) => {
-			const createIndex = (objStore, index) => objStore.createIndex(index, index, { unique: false })
-
-			const req = indexedDB.open('keyvalue', 1)
-
-			req.onsuccess = e => {
-				swsServer.store.db = e.target.result
-				resolve()
-			}
-
-			req.onerror = err => reject(err)
-
-			req.onupgradeneeded = e => {
-				swsServer.store.db = e.target.result
-				swsServer.store.db.createObjectStore('keyvalue')
-				resolve()
-			}
+			resolve()
 		})
 	},
 
 	set: (key, val) => {
 		return new Promise((resolve, reject) => {
-			const req = swsServer.store.db.transaction('keyvalue', 'readwrite').objectStore('keyvalue').put(val, key)
+			const req = swsServer.db.db.transaction('keyvalue', 'readwrite').objectStore('keyvalue').put(val, key)
 			req.onerror = e => reject(e)
 			req.onsuccess = e => resolve(e)
 		})
@@ -620,7 +609,7 @@ swsServer.store = {
 
 	get: key => {
 		return new Promise((resolve, reject) => {
-			const req = swsServer.store.db.transaction('keyvalue', 'readonly').objectStore('keyvalue').get(key)
+			const req = swsServer.db.db.transaction('keyvalue', 'readonly').objectStore('keyvalue').get(key)
 			req.onerror = e => reject(e)
 			req.onsuccess = e => resolve(req.result)
 		})

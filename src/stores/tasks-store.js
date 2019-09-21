@@ -19,34 +19,38 @@ export function tasksStoreInit() {
 
 function setListener(dbDate) {
 
-	sws.db.query({
-		col: 'tasks',
-		query: {
-			team: teamGetActiveId()
-		}
-	}).then(res => {
-		tasksStore.update(data => {
-			data.json = {}
-			data.array = res
-			res.forEach(val => {
-				data.json[val.id] = val
+	authStore.subscribe(authData => {
+		if(authData.hasAuth) {
+			sws.db.query({
+				col: 'tasks',
+				query: {
+					team: teamGetActiveId()
+				}
+			}).then(res => {
+				tasksStore.update(data => {
+					data.json = {}
+					data.array = res
+					res.forEach(val => {
+						data.json[val.id] = val
+					})
+					return data
+				})
 			})
-			return data
-		})
-	})
 
-	sws.db.hook({
-		hook: 'tasks',
-		col: 'tasks',
-		query: {
-			team: teamGetActiveId()
-		},
-		fn: obj => {
-			console.log('OBJ', obj)
-			tasksStore.update(data => {
-				data.json[obj.id] = obj
-				data.array = Object.values(data.json)
-				return data
+			sws.db.hook({
+				hook: 'tasks',
+				col: 'tasks',
+				query: {
+					team: teamGetActiveId()
+				},
+				fn: obj => {
+					console.log('OBJ', obj)
+					tasksStore.update(data => {
+						data.json[obj.id] = obj
+						data.array = Object.values(data.json)
+						return data
+					})
+				}
 			})
 		}
 	})

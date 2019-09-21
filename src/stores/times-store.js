@@ -26,55 +26,70 @@ export function timesStoreInit() {
 			}
 		} catch(err) {}
 	})
+
+	authStore.subscribe(authData => {
+		const routerData = get(routerStore)
+		try {
+			let dbDate = dateToDatabaseDate(dateStringToDate(routerData.subview))
+			if(dbDate) {
+				setListener(dbDate)
+			}
+		} catch(err) {}		
+	})
 }
 
 
 function setListener(dbDate) {
 
-	sws.db.query({
-		col: 'times',
-		query: {
-			day: dbDate,
-			team: teamGetActiveId()
-		}
-	}).then(res => {
-		timesStore.update(data => {
-			data.timesNew = res
-			return data
-		})
-	})
+	const authData = get(authStore)
 
-	sws.db.hook({
-		hook: 'times',
-		col: 'times',
-		query: {
-			day: dbDate,
-			team: teamGetActiveId()
-		},
-		fn: obj => {
+	if(authData.hasAuth) {
+
+		sws.db.query({
+			col: 'times',
+			query: {
+				day: dbDate,
+				team: teamGetActiveId()
+			}
+		}).then(res => {
 			timesStore.update(data => {
-
-				if(obj.__deleted) {
-					data.timesNew = data.timesNew.filter(val => val.id != obj.id)
-				} else {
-					let found = false
-					data.timesNew = data.timesNew.map(val => {
-						if(val.id === obj.id) {
-							found = true
-							return obj
-						} 
-						return val
-					})
-
-					if(!found) {
-						data.timesNew.push(obj)
-					}
-				}
-
+				data.timesNew = res
 				return data
 			})
-		}
-	})
+		})
+
+		sws.db.hook({
+			hook: 'times',
+			col: 'times',
+			query: {
+				day: dbDate,
+				team: teamGetActiveId()
+			},
+			fn: obj => {
+				timesStore.update(data => {
+
+					if(obj.__deleted) {
+						data.timesNew = data.timesNew.filter(val => val.id != obj.id)
+					} else {
+						let found = false
+						data.timesNew = data.timesNew.map(val => {
+							if(val.id === obj.id) {
+								found = true
+								return obj
+							} 
+							return val
+						})
+
+						if(!found) {
+							data.timesNew.push(obj)
+						}
+					}
+
+					return data
+				})
+			}
+		})
+	}
 }
 
 
