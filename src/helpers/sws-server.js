@@ -408,16 +408,35 @@ swsServer.db = {
 		})
 	},
 
-	__syncToClient: (col, objs) => {
-		objs.forEach(obj => {
-			obj.id = obj._id
-			delete obj._id
-			swsServer.db.__syncObjToClient(col, obj)
+	__syncToClient: async (col, objs) => {
+
+		let lastDate = new Date(2000, 0, 0),
+			lastId = null
+
+		await Promise.all(
+			objs.map(async obj => {
+				obj.id = obj._id
+				delete obj._id
+				lastDate = new Date(obj.updatedAt)
+				lastId = obj.id
+				return swsServer.db.__syncObjToClient(col, obj)
+			})
+		).catch(err => {
+			console.log('PROMISE ALL ERR', err)
+		})
+
+		console.log('ALL DONE')
+		swsServer.gateway.send({
+			action: 'verifySyncToClient',
+			col,
+			date: lastDate,
+			id: lastId
 		})
 	},
 
 	__syncObjToClient: (col, obj) => {
 		return new Promise((resolve, reject) => {
+			obj.__sync = 0
 
 			const req = swsServer.db.db.transaction(col).objectStore(col).get(obj.id)
 
@@ -435,9 +454,11 @@ swsServer.db = {
 
 					req2.onsuccess = e => {	
 						swsServer.db.__processHooks(col, obj)
+						resolve(true)
 					}
 				} else {
 					console.log(req.result, obj)
+					resolve(true)
 				}
 
 				/*let obj = req.result

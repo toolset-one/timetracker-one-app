@@ -61,7 +61,7 @@ db.find = ({ collection, object }) =>
   new Promise((resolve, reject) => {
     database.collection(collection).find(object).sort({ 
       updatedAt: 1
-    }).limit(10).toArray((err, res) => {
+    }).limit(2).toArray((err, res) => {
       err
         ? reject(err)
         : resolve(res)

@@ -13,16 +13,11 @@ const syncToUserClient = async ws =>
 
 		let found = false
 
+		console.log('### FIRST ###', ws.userData)
+
 		const objs = await Promise.all(
 			Object.keys(ws.userData.syncDate).map(async col => {
-				let objects = []
-				if(!found) {
-					objects = await getObjectsToSync(col, ws.userData.syncDate[col].date)
-
-					if(objects.length >= 1) {
-						found = true
-					}
-				}
+				objects = await getObjectsToSync(col, ws.userData.syncDate[col].date)
 
 				return {
 					col,
@@ -30,8 +25,6 @@ const syncToUserClient = async ws =>
 				}
 			})
 		)
-
-		console.log(objs)
 
 		objs.forEach(val => {
 			if(val.objects.length >= 1) {
@@ -51,7 +44,9 @@ const syncToUserClient = async ws =>
 exports.syncToUserClient = syncToUserClient
 
 
+
 const getObjectsToSync = async (col, date) => {
+	console.log('DATE DATE', date)
 	const objectsToSync = await db.find({
 		collection: col,
 		object: {
@@ -66,5 +61,49 @@ const getObjectsToSync = async (col, date) => {
 		return []
 	})
 
+	console.log(objectsToSync.length)
+
 	return objectsToSync
+}
+
+
+
+exports.verifySyncToClient = async(ws, sockets, { col, id, date }) => {
+	new Promise(async (resolve, reject) => {
+		console.log(ws.userData.safetyToken)
+
+		let safetyToken = await db.get({
+			collection: 'tokens',
+			id: ws.userData.safetyToken
+		}).catch(err => {
+			console.log('ERR', err)
+		})
+
+		if(!safetyToken) {
+			reject({
+				code: 'no-safety-token'
+			})
+			return
+		}
+
+		safetyToken.sync[col].lastId = id
+		safetyToken.sync[col].date = new Date(date)
+
+		const success = await db.update({
+			collection: 'tokens',
+			id: ws.userData.safetyToken,
+			obj: safetyToken
+		}).catch(err => {
+			reject({
+				code: 'update-failed'
+			})
+			return
+		})
+
+		ws.userData.syncDate = safetyToken.sync
+
+		syncToUserClient(ws)
+		
+		resolve(true)
+	})
 }

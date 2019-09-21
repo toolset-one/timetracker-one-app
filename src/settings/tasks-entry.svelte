@@ -33,7 +33,7 @@
 		unsubscribe()
 	}
 
-
+	
 	function dispatchDesktopAndKeyboard(event, eventData) {
 		const unsubscribe = uiStore.subscribe(data => {
 			if(!data.isTouchDevice && data.breakpoint != 'xs') {
