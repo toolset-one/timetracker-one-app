@@ -16,10 +16,11 @@
 
 	onMount(() => {
 		setTimeout(() => {
-			if (window.getComputedStyle(el.querySelector('input')).content === `"${String.fromCharCode(0xFEFF)}"`) {
+			const inputEl = el.querySelector('input')
+			if (inputEl && window.getComputedStyle(el.querySelector('input')).content === `"${String.fromCharCode(0xFEFF)}"`) {
 				prefilled = true
 			}
-		}, 100)
+		}, 10)
 	})
 
 	function focus(e) {
