@@ -149,7 +149,7 @@ swsServer.db = {
 		return new Promise((resolve, reject) => {
 			swsServer.db.models = models
 
-			const req = indexedDB.open('database', 2)
+			const req = indexedDB.open('database', 1)
 
 			req.onsuccess = e => {
 				swsServer.db.db = e.target.result
@@ -172,8 +172,6 @@ swsServer.db = {
 				})
 
 				swsServer.db.db.createObjectStore('keyvalue')
-
-				resolve()
 			}
 		})
 	},
