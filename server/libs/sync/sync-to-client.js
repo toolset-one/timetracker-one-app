@@ -11,23 +11,42 @@ exports.syncToClient = async (ws, sockets, {}) =>
 const syncToUserClient = async ws =>
 	new Promise(async (resolve, reject) => {
 
-		let found = false
 
-		console.log('### FIRST ###', ws.userData)
+		console.log('### FIRST ###')
 
-		const objs = await Promise.all(
+		/* const objs = await Promise.all(
 			Object.keys(ws.userData.syncDate).map(async col => {
 				objects = await getObjectsToSync(col, ws.userData.syncDate[col].date)
-
+				
 				return {
 					col,
 					objects
 				}
 			})
-		)
+		)*/
+
+		let i = 0,
+			found = false,
+			objs = []
+		while(!found && Object.keys(ws.userData.syncDate)[i]) {
+			const col = Object.keys(ws.userData.syncDate)[i],
+				objects = await getObjectsToSync(col, ws.userData.syncDate[col].date)
+
+			i++
+
+			if(objects.length > 0) {
+				found = true
+				objs.push({
+					col,
+					objects
+				})
+			}
+		}
+
+		console.log('OBJS', objs)
 
 		objs.forEach(val => {
-			if(val.objects.length >= 1) {
+			//if(val.objects.length >= 1) {
 				ws.send(
 					JSON.stringify({
 						action: 'syncToClient',
@@ -35,7 +54,7 @@ const syncToUserClient = async ws =>
 						objects: val.objects
 					})
 				)
-			}
+			//}
 		})
 
 		resolve(true)
@@ -102,7 +121,9 @@ exports.verifySyncToClient = async(ws, sockets, { col, id, date }) => {
 
 		ws.userData.syncDate = safetyToken.sync
 
-		syncToUserClient(ws)
+		// setTimeout(() => {
+			syncToUserClient(ws)
+		// }, 5000)
 		
 		resolve(true)
 	})

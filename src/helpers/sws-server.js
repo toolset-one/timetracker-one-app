@@ -187,7 +187,6 @@ swsServer.db = {
 							col,
 							data: req.result
 						}).then(res => {
-							console.log('RES', res)
 							const req2 = swsServer.db.db.transaction(col).objectStore(col).get(req.result.id)
 							req2.onsuccess = e => {
 								req2.result.__sync = 0
@@ -199,7 +198,7 @@ swsServer.db = {
 								}
 							}
 						}).catch(err => {
-							console.log(err)
+							console.log('ERR', err)
 							setTimeout(() => {
 								swsServer.db.__sync()
 							}, 1000)
@@ -313,8 +312,6 @@ swsServer.db = {
 
 	query: ({ promiseId, col, query }) => {
 
-		console.log(col, query)
-
 		const index = (Object.keys(query).sort()).join(','),
 			values = (Object.keys(query).sort()).map(key => query[key]),
 			req = swsServer.db.db.transaction(col, 'readonly').objectStore(col).index(index).getAll(values.length === 1 ? values[0] : values)
@@ -415,6 +412,8 @@ swsServer.db = {
 		let lastDate = new Date(2000, 0, 0),
 			lastId = null
 
+		const someId = Math.round(Math.random() * 100)
+
 		await Promise.all(
 			objs.map(async obj => {
 				obj.id = obj._id
@@ -427,7 +426,6 @@ swsServer.db = {
 			console.log('PROMISE ALL ERR', err)
 		})
 
-		console.log('ALL DONE')
 		swsServer.gateway.send({
 			action: 'verifySyncToClient',
 			col,
@@ -459,39 +457,31 @@ swsServer.db = {
 						resolve(true)
 					}
 				} else {
-					console.log(req.result, obj)
-					resolve(true)
-				}
+					let objInDb = req.result
 
-				/*let obj = req.result
+					Object.keys(obj).forEach(key => {
+						if (swsServer.db.models[col].attributes.hasOwnProperty(key) || key === '__deleted') {
+							if(new Date(obj.__updates[key]) > new Date(objInDb.__updates[key])) {
+								objInDb[key] = obj[key]
+								objInDb.__updates[key] = obj.__updates[key]
+							}
+						}
+					})
 
-				Object.keys(data).forEach(key => {
-					if (swsServer.db.models[col].attributes.hasOwnProperty(key) || key === '__deleted') {
-						obj[key] = data[key]
-						obj.__updates[key] = date
-						obj.updatedAt = date
-						obj.__sync = 1
+					if(obj.updatedAt > objInDb.updatedAt) {
+						objInDb.updatedAt = obj.updatedAt
 					}
-				})
 
-				const req2 = swsServer.db.db.transaction(col, 'readwrite').objectStore(col).put(obj)
+					const req2 = swsServer.db.db.transaction(col, 'readwrite').objectStore(col).put(objInDb)
 
-				req2.onerror = err => {
-					swsServer.bridge.answer({
-						promiseId,
-						err
-					})
+					req2.onerror = err => {
+						console.log('ERR', err)
+					}
+
+					req2.onsuccess = e => {
+						resolve(true)
+					}
 				}
-
-				req2.onsuccess = e => {
-					swsServer.bridge.answer({
-						promiseId,
-						answer: obj
-					})
-
-					swsServer.db.__processHooks(col, obj)
-					swsServer.db.__sync()
-				}*/
 			}
 		})
 	}
