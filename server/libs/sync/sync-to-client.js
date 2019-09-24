@@ -1,7 +1,12 @@
-const jwt = require('jsonwebtoken')
-const { db } = require('../../libs/db.js')
+const jwt = require('jsonwebtoken'),
+	ObjectID = require('mongodb').ObjectID,
+	{ db } = require('../../libs/db.js')
 
-let collections = {}
+const collections = {
+	times: require('./collections/times.js'),
+	tasks: require('./collections/tasks.js'),
+	settings: require('./collections/settings.js')
+}
 
 
 exports.syncToClient = async (ws, sockets, {}) => 
@@ -11,26 +16,14 @@ exports.syncToClient = async (ws, sockets, {}) =>
 const syncToUserClient = async ws =>
 	new Promise(async (resolve, reject) => {
 
-
-		console.log('### FIRST ###')
-
-		/* const objs = await Promise.all(
-			Object.keys(ws.userData.syncDate).map(async col => {
-				objects = await getObjectsToSync(col, ws.userData.syncDate[col].date)
-				
-				return {
-					col,
-					objects
-				}
-			})
-		)*/
+		console.log('syncToUserClient syncToUserClient syncToUserClient')
 
 		let i = 0,
 			found = false,
 			objs = []
 		while(!found && Object.keys(ws.userData.syncDate)[i]) {
 			const col = Object.keys(ws.userData.syncDate)[i],
-				objects = await getObjectsToSync(col, ws.userData.syncDate[col].date)
+				objects = await getObjectsToSync(ws.userData.id, Object.keys(ws.userData.teams), col, ws.userData.syncDate[col].date)
 
 			i++
 
@@ -43,10 +36,10 @@ const syncToUserClient = async ws =>
 			}
 		}
 
-		console.log('OBJS', objs)
-
 		objs.forEach(val => {
 			//if(val.objects.length >= 1) {
+
+				console.log('COL', val.col, val.objects.length)
 				ws.send(
 					JSON.stringify({
 						action: 'syncToClient',
@@ -64,23 +57,40 @@ exports.syncToUserClient = syncToUserClient
 
 
 
-const getObjectsToSync = async (col, date) => {
-	console.log('DATE DATE', date)
-	const objectsToSync = await db.find({
-		collection: col,
-		object: {
+const getObjectsToSync = async (userId, teams, col, date) => {
+
+	let searchObject = {
+		...collections[col].DB_SEARCH, 
+		...{
 			updatedAt: {
 				$gt: new Date(date)
 			}
 		}
+	}
+
+	Object.keys(searchObject).forEach(key => {
+		if(searchObject[key] === '$TEAM') {
+			searchObject[key] = {
+				$in: teams
+			}
+		} 
+
+		if(searchObject[key] === '$USER') {
+			searchObject[key] = new ObjectID(userId)
+		} 
+	})
+
+	console.log(searchObject)
+
+	const objectsToSync = await db.find({
+		collection: col,
+		object: searchObject
 	}).catch(err => {
 		reject({
 			code: ''
 		})
 		return []
 	})
-
-	console.log(objectsToSync.length)
 
 	return objectsToSync
 }

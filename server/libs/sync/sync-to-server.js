@@ -1,5 +1,7 @@
-const jwt = require('jsonwebtoken')
-const { db } = require('../../libs/db.js')
+const jwt = require('jsonwebtoken'),
+	{ db } = require('../../libs/db.js'),
+	{ socketsTeams } = require('../../libs/sockets.js'),
+	{ syncToUserClient } = require('../../libs/sync/sync-to-client.js')
 
 let collections = {}
 
@@ -60,6 +62,8 @@ exports.syncToServer = async (ws, sockets, { col, data }) =>
 				})
 			})
 
+			newObj = dataInDb
+
 		} else {
 	
 			const id = data.id
@@ -79,6 +83,10 @@ exports.syncToServer = async (ws, sockets, { col, data }) =>
 				})
 			})
 		}
+
+		const shouldBeSyncedOutTo = collections[col].shouldBeSyncedOut(ws, socketsTeams, newObj)
+
+		shouldBeSyncedOutTo.forEach(clientSocket => syncToUserClient(clientSocket))
 
 		resolve(true)
 	})

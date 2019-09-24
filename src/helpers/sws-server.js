@@ -479,6 +479,7 @@ swsServer.db = {
 					}
 
 					req2.onsuccess = e => {
+						swsServer.db.__processHooks(col, objInDb)
 						resolve(true)
 					}
 				}

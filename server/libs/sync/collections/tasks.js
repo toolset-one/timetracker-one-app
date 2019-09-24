@@ -10,6 +10,7 @@ const STANDARD_ATTRIBUTES = [
 	'__sync'
 ]
 
+
 const ATTRIBUTES = [
 	'title',
 	'project',
@@ -19,6 +20,13 @@ const ATTRIBUTES = [
 	'team'
 ]
 exports.ATTRIBUTES = ATTRIBUTES
+
+
+
+const DB_SEARCH = {
+	team: '$TEAM'
+}
+exports.DB_SEARCH = DB_SEARCH
 
 
 exports.shouldBeSynced = async (obj, user) =>
@@ -53,3 +61,12 @@ exports.shouldBeSynced = async (obj, user) =>
 
 		resolve(true)
 	})
+
+
+exports.shouldBeSyncedOut = (ws, socketsTeams, newObj) => {
+	if(socketsTeams[newObj.team]) {
+		return (socketsTeams[newObj.team]).filter(client => client.clientId != ws.clientId)
+	}
+
+	return []
+}

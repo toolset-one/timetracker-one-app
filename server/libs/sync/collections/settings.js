@@ -10,12 +10,19 @@ const STANDARD_ATTRIBUTES = [
 	'__sync'
 ]
 
+
 const ATTRIBUTES = [
 	'language',
 	'stopwatchEntryId',
 	'stopwatchStartTime'
 ]
 exports.ATTRIBUTES = ATTRIBUTES
+
+
+const DB_SEARCH = {
+	_id: '$USER'
+}
+exports.DB_SEARCH = DB_SEARCH
 
 
 exports.shouldBeSynced = async (obj, user) =>
@@ -52,3 +59,24 @@ exports.shouldBeSynced = async (obj, user) =>
 
 		resolve(true)
 	})
+
+
+exports.shouldBeSyncedOut = (ws, socketsTeams, newObj) => {
+
+	let socketClients = []
+
+	Object.keys(ws.userData.teams).forEach(teamId => {
+		if(socketsTeams[teamId]) {
+			socketsTeams[teamId].forEach(socketClient => {
+				console.log(socketClient.clientId, socketClient.userData.id, ws.userData.id)
+				if(socketClient.clientId != ws.clientId && socketClient.userData.id === ws.userData.id) {
+					socketClients.push(socketClient)
+				}
+			})
+		}
+	})
+
+	console.log(socketClients.length)
+
+	return socketClients
+}

@@ -1,7 +1,8 @@
-const jsonwebtoken = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
-const { db } = require('../../libs/db.js')
-const { syncToUserClient } = require('../../libs/sync/sync-to-client.js')
+const jsonwebtoken = require('jsonwebtoken'),
+	bcrypt = require('bcrypt'),
+	{ db } = require('../../libs/db.js'),
+	{ syncToUserClient } = require('../../libs/sync/sync-to-client.js'),
+	{ socketsAddToTeam } = require('../../libs/sockets.js')
 
 const SECRET = '5oF79a0z8zsbTyn61IJjPX2y7XDGlyOmDeyL2YrRIUHCOl2cxFP3RlljYLQQv2tZUnX3UGEoJ4xzTztv'
 
@@ -63,6 +64,10 @@ exports.signInWithToken = async (ws, sockets, { promiseId, jwt }) =>
 			})
 			return
 		}
+
+		Object.keys(decodedWebToken.teams).forEach(teamId => {
+			socketsAddToTeam(ws, teamId)
+		})
 
 		ws.userData = decodedWebToken
 		ws.userData.syncDate = safetyToken.sync
