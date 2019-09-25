@@ -116,13 +116,6 @@ sws.db = {
 	},
 
 
-	__processHook: async (hook, obj) => {
-		if(sws.db.hooks[hook]) {
-			sws.db.hooks[hook](obj)
-		}
-	},
-
-
 	delete: async ({ col, id }) => {
 		return sws.bridge.send({
 			action: 'update',
@@ -132,7 +125,24 @@ sws.db = {
 				__deleted: true
 			}
 		})
-	}
+	},
+
+
+	getReportData: async ({ team, dates, filterTasks }) => {
+		return sws.bridge.send({
+			action: 'getReportData',
+			team,
+			dates,
+			filterTasks
+		})
+	},
+
+
+	__processHook: async (hook, obj) => {
+		if(sws.db.hooks[hook]) {
+			sws.db.hooks[hook](obj)
+		}
+	},
 }
 
 

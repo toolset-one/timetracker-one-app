@@ -382,6 +382,76 @@ swsServer.db = {
 		delete swsServer.db.hooks[hook]
 	},
 
+
+	getReportData: async ({ promiseId, team, dates, filterTasks }) => {
+
+		const data = await Promise.all(
+			Object.keys(dates).map(async date =>
+				new Promise((resolve, reject) => {
+					const req = swsServer.db.db.transaction('times', 'readonly').objectStore('times').index('day,team').getAll([parseInt(date), team])
+					req.onerror = err => resolve({
+						date,
+						entries: []
+					}) 
+					req.onsuccess = e => resolve({
+						date,
+						entries: req.result
+					})
+				})
+			)
+		)
+
+
+		let chartData = {
+			total: 0,
+			tasks: {},
+			totalDayMax: 0,
+			days: {}
+		}
+
+
+		const allTasks = filterTasks.length === 0
+
+
+		data.forEach(dayData => {
+
+			chartData.days[dayData.date] = {
+				total: 0,
+				tasks: {}
+			}
+
+			dayData.entries.forEach(time => {
+				const { task, duration } = time
+
+				if(allTasks || filterTasks.includes(task) ) {
+					chartData.total += duration
+					chartData.days[dayData.date].total += duration
+
+					if(!chartData.days[dayData.date].tasks[task]) {
+						chartData.days[dayData.date].tasks[task] = 0
+					}
+					chartData.days[dayData.date].tasks[task] += duration
+
+					if(!chartData.tasks[task]) {
+						chartData.tasks[task] = 0
+					}
+
+					chartData.tasks[task] += duration
+				}
+			})
+			chartData.totalDayMax = Math.max( chartData.totalDayMax, chartData.days[dayData.date].total )
+		})
+
+		chartData.totalDayMax = Math.ceil(chartData.totalDayMax / 3600) * 3600
+
+
+		swsServer.bridge.answer({
+			promiseId,
+			answer: chartData
+		})
+	},
+
+
 	__processHooks: (col, obj) => {
 		Object.keys(swsServer.db.hooks).forEach(key => {
 			const hook = swsServer.db.hooks[key]
@@ -565,7 +635,8 @@ swsServer.bridge = {
 		hook: swsServer.db.hook,
 		unhook: swsServer.db.unhook,
 		get: swsServer.db.get,
-		update: swsServer.db.update
+		update: swsServer.db.update,
+		getReportData: swsServer.db.getReportData
 	},
 
 	postMessage: jsonString => {

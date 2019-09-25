@@ -1,7 +1,9 @@
 import { writable } from 'svelte/store';
 import { routerStore } from '../stores/router-store.js'
 import { timesStore } from '../stores/times-store.js'
+import { teamGetActiveId } from '../stores/team-store.js'
 import { dateNextDate, dateToDatabaseDate, dateDaysBetweenDates } from '../helpers/helpers.js'
+import { sws } from '../helpers/sws-client.js'
 
 export const reportsStore = writable({
 	firstDate: new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
@@ -67,52 +69,16 @@ export function reportsStoreSetActive(id) {
 	})
 }
 
-function buildChartData(reportsStore) {
+async function buildChartData(reportsStore) {
 
-	var chartData = {
-		total: 0,
-		tasks: {},
-		totalDayMax: 0,
-		days: {}
-	}
+	if(teamGetActiveId()) {
 
-	const unsubscribe = timesStore.subscribe(timesStore => {
-
-		const allTasks = reportsStore.filterTasks.length === 0
-
-		Object.keys(reportsStore.dates).forEach(date => {
-			chartData.days[date] = {
-				total: 0,
-				tasks: {}
-			}
-
-			Object.keys(timesStore.dayIndex[date] || []).forEach(timeId => {
-				const { task, duration } = timesStore.times[timeId]
-
-				if(allTasks || reportsStore.filterTasks.includes(task) ) {
-					chartData.total += duration
-					chartData.days[date].total += duration
-
-					if(!chartData.days[date].tasks[task]) {
-						chartData.days[date].tasks[task] = 0
-					}
-					chartData.days[date].tasks[task] += duration
-
-					if(!chartData.tasks[task]) {
-						chartData.tasks[task] = 0
-					}
-
-					chartData.tasks[task] += duration
-				}
-			})
-
-			chartData.totalDayMax = Math.max( chartData.totalDayMax, chartData.days[date].total )
+		const chartData = await sws.db.getReportData({
+			team: teamGetActiveId(),
+			dates: reportsStore.dates,
+			filterTasks: reportsStore.filterTasks
 		})
 
-		chartData.totalDayMax = Math.ceil(chartData.totalDayMax / 3600) * 3600
-
 		reportsStoreBarchartData.set(chartData)	
-	})
-	unsubscribe()
-
+	}
 }
