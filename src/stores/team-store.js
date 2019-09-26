@@ -5,9 +5,7 @@ import { sws } from '../helpers/sws-client.js'
 
 export const teamStore = writable({
 	teams: {},
-	activeId: null,
-	active: null,
-	invitations: {}
+	active: null
 })
 
 let listenerMember,
@@ -27,47 +25,21 @@ export function teamGetActiveId() {
 
 
 function setListener() {
-
-	authStore.subscribe(authData => {
-
-		if(authData.hasAuth) {
-
-			teamStore.update(data => {
-				data.activeId = Object.keys(authData.user.teams)[0]
-				return data
-			})
-		
-			Object.keys(authData.user.teams).forEach(teamId => {
-				sws.db.get({
-					col: 'teams',
-					id: teamId
-				}).then(res => {
-					teamStore.update(data => {
-						data.teams[teamId] = res
-						return data
-					})
-				})
-
-				sws.db.hook({
-					hook: 'teams-'+ teamId,
-					col: 'teams',
-					query: {
-						id: teamId
-					},
-					fn: obj => {
-						teamStore.update(data => {
-							data.teams[teamId] = obj
-							return data
-						})
-					}
-				})
-			})
-		}
+	sws.auth.hookIntoTeamState(teams => {
+		teams = teams ? teams : {}
+		teamStore.update(data => {
+			data.teams = teams
+			data.active = Object.values(teams)[0]
+			return data
+		})
 	})
 }
 
 export function teamStoreChangeTitle(id, title) {
-	// TODO
+	sws.auth.setTeamTitle({
+		id,
+		title
+	})
 }
 
 

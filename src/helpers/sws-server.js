@@ -10,7 +10,6 @@ export const setSWS = swsToSet => sws = swsToSet
 swsServer.init = async ({ promiseId, models, server }) => {
 
 	await swsServer.db.init(models)
-	swsServer.store.init()
 	swsServer.gateway.init(server)
 	swsServer.auth.init()
 
@@ -40,9 +39,6 @@ swsServer.auth = {
 	newConnection: async () => {
 		const authData = await swsServer.store.get('authData')
 		if(authData) {
-
-			// console.log('AUTH DATA', authData)
-
 			swsServer.gateway.send({
 				action: 'signInWithToken',
 				jwt: authData.jwt
@@ -56,7 +52,6 @@ swsServer.auth = {
 					window.location.reload()
 				}
 			})
-
 		}
 	},
 
@@ -119,6 +114,43 @@ swsServer.auth = {
 		swsServer.bridge.answer({
 			action: 'updateAuth',
 			answer: authData
+		})
+	},
+
+	updateTeams: async team => {
+
+		let teamData = await swsServer.store.get('teamData')
+		
+		if(!teamData) {
+			teamData = {}
+		}
+
+		teamData[team.id] = team
+
+		await swsServer.store.set('teamData', teamData)
+
+
+		swsServer.bridge.answer({
+			action: 'updateTeams',
+			answer: teamData
+		})
+	},
+
+	setTeamTitle: ({ promiseId, id, title }) => {
+		swsServer.gateway.send({
+			action: 'setTeamTitle',
+			id,
+			title
+		}).then(res => {
+			swsServer.bridge.answer({
+				promiseId: promiseId,
+				answer: res
+			})
+		}).catch(err => {
+			swsServer.bridge.answer({
+				promiseId: promiseId,
+				err
+			})
 		})
 	}
 }
@@ -601,6 +633,9 @@ swsServer.gateway = {
 					case 'syncToClient':
 						swsServer.db.__syncToClient(json.col, json.objects)
 						break;
+					case 'updateTeams':
+						swsServer.auth.updateTeams(json.team, true)
+						break;
 				}
 			}
 		} 
@@ -629,6 +664,7 @@ swsServer.bridge = {
 		signUp: swsServer.auth.signUp,
 		signIn: swsServer.auth.signIn,
 		signOut: swsServer.auth.signOut,
+		setTeamTitle: swsServer.auth.setTeamTitle,
 
 		new: swsServer.db.new,
 		query: swsServer.db.query,
@@ -652,13 +688,6 @@ swsServer.bridge = {
 
 
 swsServer.store = {
-
-	init: () => {
-		return new Promise((resolve, reject) => {
-			resolve()
-		})
-	},
-
 	set: (key, val) => {
 		return new Promise((resolve, reject) => {
 			const req = swsServer.db.db.transaction('keyvalue', 'readwrite').objectStore('keyvalue').put(val, key)

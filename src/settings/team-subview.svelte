@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import { authSignOut } from '../stores/auth-store.js'
 	import { uiStore } from '../stores/ui-store.js'
-	import { teamStore,teamStoreChangeTitle } from '../stores/team-store.js'
+	import { teamStore, teamStoreChangeTitle } from '../stores/team-store.js'
 
 	import UiBackdrop from '../ui/ui-backdrop.svelte'
 	import UiButton from '../ui/ui-button.svelte'
@@ -44,7 +44,7 @@
 
 <section>
 
-	{#if !$teamStore.active || ($teamStore.active.title.length === 0 && $teamStore.teams.length === 1)}
+	{#if !$teamStore.active || $teamStore.active.title.length === 0 }
 		<TeamEmpty />
 	{:else}
 
@@ -61,24 +61,24 @@
 
 
 		<ul class="entries">
-			{#each $teamStore.active.admins as admin, i}
-				<TeamEntry data={$teamStore.active.memberData[admin] ? $teamStore.active.memberData[admin] : { id: admin }}
+			{#each $teamStore.active.users as user, i}
+				<TeamEntry data={user}
 					first={i == 0}
-					last={i == $teamStore.active.admins.length - 1}
+					last={i == $teamStore.active.users.length - 1}
 					on:open={e => openOverlayComponent(e.detail)} />
 			{/each}
 		</ul>
 
-		{#if Object.keys($teamStore.invitations).length > 0}
+		{#if $teamStore.active.invitations.length > 0}
 			<h3>
 				Invitations to the team
 			</h3>
 			<ul class="entries">
-				{#each Object.keys($teamStore.invitations) as invitation, i}
-					<TeamEntry data={$teamStore.invitations[invitation]}
+				{#each $teamStore.active.invitations as invitation, i}
+					<TeamEntry data={invitation}
 						invitation={true}
 						first={i == 0}
-						last={i == Object.keys($teamStore.invitations).length - 1} />
+						last={i == $teamStore.active.invitations.length - 1} />
 				{/each}
 			</ul>
 		{/if}

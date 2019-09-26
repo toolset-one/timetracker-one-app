@@ -10,7 +10,8 @@ const http = require('http'),
   { signIn } = require('./libs/auth/sign-in.js'),
   { signInWithToken } = require('./libs/auth/sign-in-with-token.js'),
   { syncToServer } = require('./libs/sync/sync-to-server.js'),
-  { syncToClient, verifySyncToClient } = require('./libs/sync/sync-to-client.js')
+  { syncToClient, verifySyncToClient } = require('./libs/sync/sync-to-client.js'),
+  { setTeamTitle } = require('./libs/auth/team-title.js')
 
   let ACTIONS = {
     signUp,
@@ -18,7 +19,8 @@ const http = require('http'),
     syncToServer,
     syncToClient,
     signInWithToken,
-    verifySyncToClient
+    verifySyncToClient,
+    setTeamTitle
   }
 
 const wss = new wsServer({

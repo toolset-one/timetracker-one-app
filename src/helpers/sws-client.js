@@ -19,8 +19,10 @@ sws.init = async ({ server, models }) => {
 sws.auth = {
 
 	user: null,
+	teams: null,
 
 	authStateHooks: [],
+	teamStateHooks: [],
 
 	hookIntoAuthState: fn => {
 		sws.auth.authStateHooks.push(fn)
@@ -52,6 +54,24 @@ sws.auth = {
 		return sws.bridge.send({
 			action: 'signOut'
 		}).then(() => location.reload(true))
+	},
+
+	hookIntoTeamState: fn => {
+		sws.auth.teamStateHooks.push(fn)
+		fn(sws.auth.teams)
+	},
+
+	updateTeams: (teams) => {
+		sws.auth.teams = teams
+		sws.auth.teamStateHooks.forEach(fn => fn(sws.auth.teams))
+	},
+
+	setTeamTitle: ({ id, title }) => {
+		return sws.bridge.send({
+			action: 'setTeamTitle',
+			id,
+			title
+		})
 	}
 }
 
@@ -169,10 +189,13 @@ sws.bridge = {
 				case 'updateAuth':
 					sws.auth.updateAuth(json.answer.user, json.answer.jwt)
 					break;
+				case 'updateTeams':
+					sws.auth.updateTeams(json.answer)
+					break;
 				case 'processHook':
 					sws.db.__processHook(json.answer.hook, json.answer.obj)
 					break;
-				}
+			}
 		}
 	}
 }

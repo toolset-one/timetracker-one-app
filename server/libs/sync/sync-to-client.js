@@ -16,8 +16,6 @@ exports.syncToClient = async (ws, sockets, {}) =>
 const syncToUserClient = async ws =>
 	new Promise(async (resolve, reject) => {
 
-		console.log('syncToUserClient syncToUserClient syncToUserClient')
-
 		let i = 0,
 			found = false,
 			objs = []
@@ -37,17 +35,13 @@ const syncToUserClient = async ws =>
 		}
 
 		objs.forEach(val => {
-			//if(val.objects.length >= 1) {
-
-				console.log('COL', val.col, val.objects.length)
-				ws.send(
-					JSON.stringify({
-						action: 'syncToClient',
-						col: val.col,
-						objects: val.objects
-					})
-				)
-			//}
+			ws.send(
+				JSON.stringify({
+					action: 'syncToClient',
+					col: val.col,
+					objects: val.objects
+				})
+			)
 		})
 
 		resolve(true)
@@ -79,8 +73,6 @@ const getObjectsToSync = async (userId, teams, col, date) => {
 			searchObject[key] = new ObjectID(userId)
 		} 
 	})
-
-	console.log(searchObject)
 
 	const objectsToSync = await db.find({
 		collection: col,
