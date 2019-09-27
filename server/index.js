@@ -11,7 +11,8 @@ const http = require('http'),
   { signInWithToken } = require('./libs/auth/sign-in-with-token.js'),
   { syncToServer } = require('./libs/sync/sync-to-server.js'),
   { syncToClient, verifySyncToClient } = require('./libs/sync/sync-to-client.js'),
-  { setTeamTitle } = require('./libs/auth/team-title.js')
+  { setTeamTitle } = require('./libs/auth/team-title.js'),
+  { inviteMember } = require('./libs/auth/team-invite-member.js')
 
   let ACTIONS = {
     signUp,
@@ -20,7 +21,8 @@ const http = require('http'),
     syncToClient,
     signInWithToken,
     verifySyncToClient,
-    setTeamTitle
+    setTeamTitle,
+    inviteMember
   }
 
 const wss = new wsServer({

@@ -48,7 +48,12 @@ function setInvitationListener() {
 }
 
 
-export function teamStoreInvite(email, name, cb) {
-	// TODO
-	console.log('INVITE', email, name, cb)
+export function teamStoreInvite(email, name) {
+	const teamData = get(teamStore)
+
+	sws.auth.inviteMember({
+		teamId: teamData.active.id,
+		email,
+		name
+	})
 }

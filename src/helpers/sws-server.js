@@ -152,6 +152,25 @@ swsServer.auth = {
 				err
 			})
 		})
+	},
+
+	inviteMember: ({ promiseId, teamId, email, name }) => {
+		swsServer.gateway.send({
+			action: 'inviteMember',
+			teamId,
+			email,
+			name
+		}).then(res => {
+			swsServer.bridge.answer({
+				promiseId: promiseId,
+				answer: res
+			})
+		}).catch(err => {
+			swsServer.bridge.answer({
+				promiseId: promiseId,
+				err
+			})
+		})
 	}
 }
 
@@ -665,6 +684,7 @@ swsServer.bridge = {
 		signIn: swsServer.auth.signIn,
 		signOut: swsServer.auth.signOut,
 		setTeamTitle: swsServer.auth.setTeamTitle,
+		inviteMember: swsServer.auth.inviteMember,
 
 		new: swsServer.db.new,
 		query: swsServer.db.query,
