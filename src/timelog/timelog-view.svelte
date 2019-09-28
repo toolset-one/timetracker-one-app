@@ -41,7 +41,7 @@
 	$: dateNow = dateStringToDate($routerStore.subview)
 	$: databaseDate = dateToDatabaseDate((dateStringToDate($routerStore.subview)))
 
-	$: entries = $timesStore.timesNew.sort((a, b) => b.createdAt - a.createdAt)
+	$: entries = $timesStore.times.sort((a, b) => b.createdAt - a.createdAt)
 	$: total = entries.reduce((sum, entry) => {
 		return sum + ($userStore.stopwatchEntryId === entry.id ? $userStopwatchStore : entry.duration)
 	}, 0)

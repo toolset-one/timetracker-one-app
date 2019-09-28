@@ -1,6 +1,6 @@
 import { writable, get } from 'svelte/store'
 import { authStore } from '../stores/auth-store.js'
-import { teamStore, teamGetActiveId } from '../stores/team-store.js'
+import { teamStore } from '../stores/team-store.js'
 import { COLORS } from '../helpers/helpers.js'
 import { sws } from '../helpers/sws-client.js'
 
@@ -9,48 +9,49 @@ export const tasksStore = writable({
 	array: []
 })
 
-let listener
+let listener,
+teamId
 
 
 export function tasksStoreInit() {
-	setListener()
-
+	teamStore.subscribe(teamData => {
+		if(teamData.active && teamData.active.id != teamId) {
+			teamId = teamData.active.id
+			setListener(teamId)
+		}
+	})
 }
 
-function setListener(dbDate) {
+function setListener(teamId) {
 
-	authStore.subscribe(authData => {
-		if(authData.hasAuth) {
-			sws.db.query({
-				col: 'tasks',
-				query: {
-					team: teamGetActiveId()
-				}
-			}).then(res => {
-				tasksStore.update(data => {
-					data.json = {}
-					data.array = res
-					res.forEach(val => {
-						data.json[val.id] = val
-					})
-					return data
-				})
+	sws.db.query({
+		col: 'tasks',
+		query: {
+			team: teamId
+		}
+	}).then(res => {
+		tasksStore.update(data => {
+			data.json = {}
+			data.array = res
+			res.forEach(val => {
+				data.json[val.id] = val
 			})
+			return data
+		})
+	})
 
-			sws.db.hook({
-				hook: 'tasks',
-				col: 'tasks',
-				query: {
-					team: teamGetActiveId()
-				},
-				fn: obj => {
-					console.log('OBJ', obj)
-					tasksStore.update(data => {
-						data.json[obj.id] = obj
-						data.array = Object.values(data.json)
-						return data
-					})
-				}
+	sws.db.hook({
+		hook: 'tasks',
+		col: 'tasks',
+		query: {
+			team: teamId
+		},
+		fn: obj => {
+			console.log('OBJ', obj)
+			tasksStore.update(data => {
+				data.json[obj.id] = obj
+				data.array = Object.values(data.json)
+				return data
 			})
 		}
 	})
@@ -60,13 +61,14 @@ function setListener(dbDate) {
 export function tasksStoreNewTask(cb) {
 
 
-	const { user } = get(authStore)
+	const { user } = get(authStore),
+		teamData = get(teamStore)
 
 	sws.db.new({
 		col: 'tasks',
 		data: {
 			user: user.id,
-			team: teamGetActiveId(),
+			team: teamData.active.id,
 			color: COLORS[Math.floor(Math.random() * COLORS.length)]
 		}
 	}).then(() => {

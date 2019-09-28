@@ -1,20 +1,19 @@
 import { writable, get } from 'svelte/store'
 import { routerStore } from '../stores/router-store.js'
 import { authStore } from '../stores/auth-store.js'
-import { teamStore, teamGetActiveId } from '../stores/team-store.js'
+import { teamStore } from '../stores/team-store.js'
 import { sws } from '../helpers/sws-client.js'
 import { dateToDatabaseDate, dateStringToDate } from '../helpers/helpers.js'
 
 export const timesStore = writable({
-	timesNew: [],
-	times: {},
+	times: [],
 	dayIndex: {}
 })
 
 
 let listener,
-	userId = null,
-	monthListener = {}
+	monthListener = {},
+	teamId = null
 
 
 export function timesStoreInit() {
@@ -22,38 +21,39 @@ export function timesStoreInit() {
 		try {
 			let dbDate = dateToDatabaseDate(dateStringToDate(routerData.subview))
 			if(dbDate) {
-				setListener(dbDate)
+				setListener(dbDate, teamId)
 			}
 		} catch(err) {}
 	})
 
-	authStore.subscribe(authData => {
+	teamStore.subscribe(teamData => {
 		const routerData = get(routerStore)
 		try {
 			let dbDate = dateToDatabaseDate(dateStringToDate(routerData.subview))
-			if(dbDate) {
-				setListener(dbDate)
+			if(dbDate && teamData.active && teamData.active.id != teamId) {
+				teamId = teamData.active.id
+				setListener(dbDate, teamId)
 			}
 		} catch(err) {}		
 	})
 }
 
 
-function setListener(dbDate) {
+function setListener(dbDate, teamId) {
 
 	const authData = get(authStore)
 
-	if(authData.hasAuth) {
+	if(teamId) {
 
 		sws.db.query({
 			col: 'times',
 			query: {
 				day: dbDate,
-				team: teamGetActiveId()
+				team: teamId
 			}
 		}).then(res => {
 			timesStore.update(data => {
-				data.timesNew = res
+				data.times = res
 				return data
 			})
 		})
@@ -63,16 +63,16 @@ function setListener(dbDate) {
 			col: 'times',
 			query: {
 				day: dbDate,
-				team: teamGetActiveId()
+				team: teamId
 			},
 			fn: obj => {
 				timesStore.update(data => {
 
 					if(obj.__deleted) {
-						data.timesNew = data.timesNew.filter(val => val.id != obj.id)
+						data.times = data.times.filter(val => val.id != obj.id)
 					} else {
 						let found = false
-						data.timesNew = data.timesNew.map(val => {
+						data.times = data.times.map(val => {
 							if(val.id === obj.id) {
 								found = true
 								return obj
@@ -81,7 +81,7 @@ function setListener(dbDate) {
 						})
 
 						if(!found) {
-							data.timesNew.push(obj)
+							data.times.push(obj)
 						}
 					}
 
@@ -101,7 +101,7 @@ export function timesStoreNewTime(day, cb) {
 		col: 'times',
 		data: {
 			user: user.id,
-			team: teamGetActiveId(),
+			team: teamId,
 			day: day,
 		}
 	}).then(() => {

@@ -1,9 +1,11 @@
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
 import { routerStore } from '../stores/router-store.js'
 import { timesStore } from '../stores/times-store.js'
-import { teamGetActiveId } from '../stores/team-store.js'
+import { teamStore } from '../stores/team-store.js'
 import { dateNextDate, dateToDatabaseDate, dateDaysBetweenDates } from '../helpers/helpers.js'
 import { sws } from '../helpers/sws-client.js'
+
+let teamId = null
 
 export const reportsStore = writable({
 	firstDate: new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
@@ -22,16 +24,27 @@ export const reportsStoreBarchartData = writable({
 
 
 export function reportsStoreInit() {
-	// reportsStoreUpdateRange(new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0))
-	
 
 	timesStore.subscribe(() => {
-		const unsubscribe = reportsStore.subscribe(data => {
-			buildChartData(data)
-		})
-		unsubscribe()
+		if(teamId) {
+			const reportsData = get(reportsStore)
+			buildChartData(reportsData, teamId)
+		}
 	})
-	reportsStore.subscribe(buildChartData)
+
+	teamStore.subscribe(teamData => {
+		if(teamData.active && teamData.active.id != teamId) {
+			teamId = teamData.active.id
+			const reportsData = get(reportsStore)
+			buildChartData(reportsData, teamId)
+		}
+	})
+
+	reportsStore.subscribe(reportsData => {
+		if(teamId) {
+			buildChartData(reportsData, teamId)
+		}
+	})
 }
 
 export function reportsStoreSetPeriod(period) {
@@ -69,16 +82,13 @@ export function reportsStoreSetActive(id) {
 	})
 }
 
-async function buildChartData(reportsStore) {
+async function buildChartData(reportsStore, teamId) {
 
-	if(teamGetActiveId()) {
+	const chartData = await sws.db.getReportData({
+		team: teamId,
+		dates: reportsStore.dates,
+		filterTasks: reportsStore.filterTasks
+	})
 
-		const chartData = await sws.db.getReportData({
-			team: teamGetActiveId(),
-			dates: reportsStore.dates,
-			filterTasks: reportsStore.filterTasks
-		})
-
-		reportsStoreBarchartData.set(chartData)	
-	}
+	reportsStoreBarchartData.set(chartData)	
 }

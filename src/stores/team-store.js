@@ -18,11 +18,6 @@ export function teamStoreInit() {
 	setListener()
 }
 
-export function teamGetActiveId() {
-	const authData = get(authStore)
-	return authData.hasAuth ? Object.keys(authData.user.teams)[0] : null
-}
-
 
 function setListener() {
 	sws.auth.hookIntoTeamState(teams => {
