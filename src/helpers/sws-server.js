@@ -55,19 +55,21 @@ swsServer.auth = {
 		}
 	},
 
-	signUp: json => {
+	signUp: ({ promiseId, email, password, code }) => {
+
 		swsServer.gateway.send({
 			action: 'signUp',
-			email: json.email,
-			password: json.password
+			email,
+			password,
+			code
 		}).then(res => {
 			swsServer.bridge.answer({
-				promiseId: json.promiseId,
+				promiseId,
 				answer: res
 			})
 		}).catch(err => {
 			swsServer.bridge.answer({
-				promiseId: json.promiseId,
+				promiseId,
 				err
 			})
 		})
@@ -190,10 +192,10 @@ swsServer.db = {
 	},
 
 	getNewId: () => {
-	    var timestamp = (new Date().getTime() / 1000 | 0).toString(16)
-	    return timestamp + 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, () => {
-	        return (Math.random() * 16 | 0).toString(16)
-	    }).toLowerCase()
+		var timestamp = (new Date().getTime() / 1000 | 0).toString(16)
+		return timestamp + 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, () => {
+			return (Math.random() * 16 | 0).toString(16)
+		}).toLowerCase()
 	},
 
 	init: models => {

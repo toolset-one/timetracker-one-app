@@ -18,8 +18,6 @@ export function authInit() {
 
 	sws.auth.hookIntoAuthState(user => {
 
-		console.log(user)
-
 		if(user) {
 			authStore.set({
 				inited: true,
@@ -44,8 +42,8 @@ export function authSignIn(email, password) {
 }
 
 
-export function authSignUp(email, password) {
-	return sws.auth.signUp(email, password)
+export function authSignUp(email, password, code) {
+	return sws.auth.signUp(email, password, code)
 }
 
 export function authSignOut() {

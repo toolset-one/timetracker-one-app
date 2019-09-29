@@ -53,7 +53,7 @@ function setListener(dbDate, teamId) {
 			}
 		}).then(res => {
 			timesStore.update(data => {
-				data.times = res
+				data.times = res.filter(entry => entry.user === authData.user.id)
 				return data
 			})
 		})

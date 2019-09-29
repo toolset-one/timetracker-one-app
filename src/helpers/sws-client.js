@@ -34,11 +34,12 @@ sws.auth = {
 		sws.auth.authStateHooks.forEach(fn => fn(sws.auth.user))
 	},
 
-	signUp: (email, password) => {
+	signUp: (email, password, code) => {
 		return sws.bridge.send({
 			action: 'signUp',
 			email,
-			password
+			password,
+			code
 		})
 	},
 

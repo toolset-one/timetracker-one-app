@@ -28,7 +28,7 @@ const isEmailValid = email => {
 }
 
 
-exports.signUp = async (ws, sockets, { promiseId, email, password, inviteToken }) =>
+exports.signUp = async (ws, sockets, { promiseId, email, password, code }) =>
 	new Promise(async (resolve, reject) => {
 
 		if(!isEmailValid(email.toLowerCase())) {
@@ -37,18 +37,37 @@ exports.signUp = async (ws, sockets, { promiseId, email, password, inviteToken }
 			}
 		}
 
-		let teams = {}
+		let teams = {},
+			hasCorrectInvitation = false,
+			invitationData = null,
+			teamWithInvite = null,
+			teamId = null,
+			inviteToken = null
 
-		if(inviteToken) {
-			const inviteObject = await db.findOne({
-				collection: 'invites',
-				object: {
-					token: inviteToken
-				}
+		if(code) {
+
+			[teamId, inviteToken] = code.split('-')
+
+			teamWithInvite = await db.get({
+				collection: 'teams',
+				id: teamId
+			}).catch(err => {
+				reject({
+					code: 'db-error'
+				})
 			})
 
-			if(inviteObject) {
-				teams[inviteObject.team] = 'USER'
+			if(teamWithInvite) {
+				teamWithInvite.invitations.forEach(invitation => {
+					if(invitation.code === inviteToken && invitation.email === email.toLowerCase()) {
+						invitationData = invitation
+						hasCorrectInvitation = true
+					}
+				})
+
+				if(hasCorrectInvitation) {
+					teams[teamId] = 'USER'
+				}
 			}
 		}
 
@@ -56,7 +75,7 @@ exports.signUp = async (ws, sockets, { promiseId, email, password, inviteToken }
 			teams[db.getNewId()] = 'ADMIN'
 		}
 
-		db.create({
+		const user = await db.create({
 			collection: 'users',
 			object: {
 				email: email.toLowerCase(),
@@ -64,25 +83,47 @@ exports.signUp = async (ws, sockets, { promiseId, email, password, inviteToken }
 				emailVerified: false,
 				teams
 			}
-		}).then(user => {
-			
-			/*sendMail({
-				from: 'no-reply@timetracker.one',
-				to: email,
-				subject: 'Your New Account',
-				body: 'Welcome to Timetracker.One, please have fun using it!'
-			}).then(() => {
-				resolve(true)
-			}).catch(err => {
-				reject(err)
-			})*/
-
-
-			resolve(true)
 		}).catch(err => {
 			reject(err.code === 11000
         		? 'duplicate-key'
         		: err
         	)
 		})
+
+
+		if(hasCorrectInvitation) {
+
+			console.log(user)
+
+			teamWithInvite.invitations = teamWithInvite.invitations.filter(invitation => invitation.code != inviteToken)
+			teamWithInvite.users.push({
+				id: user._id,
+				title: invitationData.name,
+				role: 'USER'
+			})
+
+			const success = await db.update({
+				collection: 'teams',
+				id: teamId,
+				obj: teamWithInvite
+			}).catch(err => {
+				reject({
+					code: 'update-failed'
+				})
+			})
+		}
+
+
+		/*sendMail({
+			from: 'no-reply@timetracker.one',
+			to: email,
+			subject: 'Your New Account',
+			body: 'Welcome to Timetracker.One, please have fun using it!'
+		}).then(() => {
+			resolve(true)
+		}).catch(err => {
+			reject(err)
+		})*/
+
+		resolve(true)
 	})

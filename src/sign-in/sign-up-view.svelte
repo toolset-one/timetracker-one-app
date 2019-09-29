@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte'
 	import { get } from 'svelte/store'
 	import { isEmailValid } from '../helpers/helpers.js'
-	import { authStore, authSignUp } from '../stores/auth-store.js'
+	import { authStore, authSignUp, authSignIn } from '../stores/auth-store.js'
 	import { routerStore } from '../stores/router-store.js'
 
 	import UiInput from '../ui/ui-input.svelte'
@@ -18,23 +18,37 @@
 	let isInvitation = false,
 		email = '',
 		password = '',
-		error = ''
+		error = '',
+		code = ''
 
 	onMount(() => {
 		const routerStoreData = get(routerStore)
 
-		if(routerStoreData.key && routerStoreData.email && isEmailValid(routerStoreData.email)) {
+		/* if(routerStoreData.key && routerStoreData.email && isEmailValid(routerStoreData.email)) {
 			// TODO: Why is UiInput not reactive without setTimeout?
 			setTimeout(() => {
 				isInvitation = true
 				email = routerStoreData.email
+			}, 10)
+		}*/
+
+		const url = new URL(window.location.href),
+			urlEmail = url.searchParams.get('email'),
+			urlCode = url.searchParams.get('code')
+
+		if(urlEmail && urlCode) {
+			// TODO: Why is UiInput not reactive without setTimeout?
+			setTimeout(() => {
+				email = urlEmail.toLowerCase()
+				code = urlCode
+				isInvitation = true
 			}, 10)
 		}
 		
 	})
 
 	function signUp(e) {
-		authSignUp(email, password).then(res => {
+		authSignUp(email, password, code).then(res => {
 			authSignIn(email, password)
 				.then(() => Page('/timelog/'))
 				.catch(() => Page('/sign-in/'))
