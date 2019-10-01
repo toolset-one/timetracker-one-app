@@ -56,21 +56,24 @@
 			bind:value={value}
 			on:focus={e => focus(e)}
 			on:blur={e => blur(e)}
-			{disabled}>
+			{disabled}
+			data-disable="true">
 	{:else if type === 'password'}
 		<input
 			type="password"
 			bind:value={value}
 			on:focus={e => focus(e)}
 			on:blur={e => blur(e)}
-			{disabled}>
+			{disabled}
+			data-disable="true">
 	{:else}
 		<input
 			type="text"
 			bind:value={value}
 			on:focus={e => focus(e)}
 			on:blur={e => blur(e)}
-			{disabled}>
+			{disabled}
+			data-disable="true">
 	{/if}
 
 </div>

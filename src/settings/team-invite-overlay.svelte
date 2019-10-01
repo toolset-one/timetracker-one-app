@@ -7,9 +7,8 @@
 	import UiInput from '../ui/ui-input.svelte'
 	import UiButton from '../ui/ui-button.svelte'
 
-	let email = 'Benjamin.Kowalski.1987@gmail.com',
+	let email = '',
 		username = '',
-		emailEl,
 		top = 0,
 		right = 0,
 		alreadyClosed = false,
@@ -50,6 +49,13 @@
 		}
 	}
 
+	function keydown(e) {
+		console.log(e.keyCode)
+		if( e.keyCode === 13) {
+			save()
+		}
+	}
+
 </script>
 
 <div
@@ -59,7 +65,7 @@
 		'right:'+ right +'px;'
 	}"
 	class="wrapper {opened ? 'opened' : ''}">
-	<div bind:this={emailEl}>
+	<form on:keydown={e => keydown(e)}>
 		<div class="form-item">
 			Please provide the e-mail address of the one you'd like to invite. After clicking the button, we will send an invitation to join your team.
 		</div>
@@ -82,7 +88,7 @@
 				disabled={!emailValid}
 				on:click={e => save()} />
 		</div>
-	</div>
+	</form>
 </div>
 
 <style>
