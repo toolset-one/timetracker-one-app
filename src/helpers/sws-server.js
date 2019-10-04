@@ -9,7 +9,10 @@ export const setSWS = swsToSet => sws = swsToSet
 
 swsServer.init = async ({ promiseId, models, server }) => {
 
-	await swsServer.db.init(models)
+	await swsServer.db.init(models).catch(err => {
+		console.log(err)
+	})
+	
 	swsServer.gateway.init(server)
 	swsServer.auth.init()
 
@@ -17,8 +20,6 @@ swsServer.init = async ({ promiseId, models, server }) => {
 		promiseId,
 		answer: {}
 	})
-
-	// Unhandled Promise Bla
 }
 
 
