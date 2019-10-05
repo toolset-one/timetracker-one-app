@@ -26,7 +26,9 @@ swsServer.init = async ({ promiseId, models, server }) => {
 
 swsServer.auth = {
 
+
 	serverKnowsAuth: false,
+
 
 	init: async () => {
 		const authData = await swsServer.store.get('authData')
@@ -36,6 +38,7 @@ swsServer.auth = {
 			swsServer.auth.updateAuth(null, null, false)
 		}
 	},
+
 
 	newConnection: async () => {
 		const authData = await swsServer.store.get('authData')
@@ -55,6 +58,7 @@ swsServer.auth = {
 			})
 		}
 	},
+
 
 	signUp: ({ promiseId, email, password, code }) => {
 
@@ -96,12 +100,14 @@ swsServer.auth = {
 		})
 	},
 
+
 	signOut: async json => {
 		await swsServer.store.set('authData', null)
 		swsServer.bridge.answer({
 			promiseId: json.promiseId
 		})
 	},
+
 
 	updateAuth: (user, jwt, shouldSet) => {
 
@@ -119,6 +125,7 @@ swsServer.auth = {
 			answer: authData
 		})
 	},
+
 
 	updateTeams: async team => {
 
@@ -139,6 +146,7 @@ swsServer.auth = {
 		})
 	},
 
+
 	setTeamTitle: ({ promiseId, id, title }) => {
 		swsServer.gateway.send({
 			action: 'setTeamTitle',
@@ -156,6 +164,7 @@ swsServer.auth = {
 			})
 		})
 	},
+
 
 	inviteMember: ({ promiseId, teamId, email, name }) => {
 		swsServer.gateway.send({
@@ -184,6 +193,7 @@ swsServer.db = {
 	objectStores: {},
 	hooks: {},
 
+
 	createIndex: (objStore, index) => {
 		index = index.sort()
 		const objStoreIndex = index.length === 1 ? index[0] : index
@@ -192,12 +202,14 @@ swsServer.db = {
 		})
 	},
 
+
 	getNewId: () => {
 		var timestamp = (new Date().getTime() / 1000 | 0).toString(16)
 		return timestamp + 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, () => {
 			return (Math.random() * 16 | 0).toString(16)
 		}).toLowerCase()
 	},
+
 
 	init: models => {
 		return new Promise((resolve, reject) => {
@@ -229,6 +241,7 @@ swsServer.db = {
 			}
 		})
 	},
+
 
 	__sync: () => {
 		if(swsServer.auth.serverKnowsAuth) {
@@ -266,7 +279,6 @@ swsServer.db = {
 
 
 	new: ({ promiseId, col, data, id = swsServer.db.getNewId() }) => {
-
 
 		const date = new Date()
 
@@ -386,8 +398,6 @@ swsServer.db = {
 	},
 
 
-
-
 	get: ({ promiseId, col, id }) => {
 		const req = swsServer.db.db.transaction(col, 'readonly').objectStore(col).get(id)
 
@@ -432,6 +442,7 @@ swsServer.db = {
 		}
 	},
 
+
 	unhook: ({ hook }) => {
 		delete swsServer.db.hooks[hook]
 	},
@@ -455,7 +466,6 @@ swsServer.db = {
 			)
 		)
 
-
 		let chartData = {
 			total: 0,
 			tasks: {},
@@ -463,9 +473,7 @@ swsServer.db = {
 			days: {}
 		}
 
-
 		const allTasks = filterTasks.length === 0
-
 
 		data.forEach(dayData => {
 
@@ -531,6 +539,7 @@ swsServer.db = {
 		})
 	},
 
+
 	__syncToClient: async (col, objs) => {
 
 		let lastDate = new Date(2000, 0, 0),
@@ -557,6 +566,7 @@ swsServer.db = {
 			id: lastId
 		})
 	},
+
 
 	__syncObjToClient: (col, obj) => {
 		return new Promise((resolve, reject) => {
@@ -615,8 +625,12 @@ swsServer.db = {
 
 
 swsServer.gateway = {
+
+
 	promises: {},
 	ws: null,
+
+
 	init: serverUrl => {
 
 		swsServer.gateway.serverUrl = serverUrl
@@ -663,6 +677,7 @@ swsServer.gateway = {
 		} 
 	},
 
+
 	send: json => {
 		json.promiseId = Math.floor(Math.random() * 1000000000000)
 
@@ -679,6 +694,7 @@ swsServer.gateway = {
 
 
 swsServer.bridge = {
+
 
 	functionMap: {
 		init: swsServer.init,
@@ -698,10 +714,12 @@ swsServer.bridge = {
 		getReportData: swsServer.db.getReportData
 	},
 
+
 	postMessage: jsonString => {
 		const json = JSON.parse(jsonString)
 		swsServer.bridge.functionMap[json.action](json)
 	},
+
 
 	answer: json => {
 		sws.bridge.postMessage(JSON.stringify(json))
@@ -711,6 +729,8 @@ swsServer.bridge = {
 
 
 swsServer.store = {
+
+
 	set: (key, val) => {
 		return new Promise((resolve, reject) => {
 			const req = swsServer.db.db.transaction('keyvalue', 'readwrite').objectStore('keyvalue').put(val, key)
@@ -718,6 +738,7 @@ swsServer.store = {
 			req.onsuccess = e => resolve(e)
 		})
 	},
+	
 
 	get: key => {
 		return new Promise((resolve, reject) => {
