@@ -12,26 +12,42 @@
 	}
 
 	let email = '',
+		emailError = '',
 		password = '',
+		passwordError = '',
 		error = ''
 
 	onMount(() => {
 		
 	})
 
-	function signIn(e) {
+	function signIn() {
 		authSignIn(email, password).then(res => {
-
-			console.log(res)
-
 			error = ''
 			Page('/timelog/')
 		}).catch(err => {
-			error = ERROR_MAP[err.code] || '' + err.code
+			console.log(err)
+			if(err.code === 'user-not-found') {
+				emailError = 'Account not found'
+			} else if(err.code === 'email-not-valid') {
+				emailError = 'Please provide a correct email address'
+			} else if(err.code === 'not-connected') {
+				emailError = 'Connection error to the server – please try again'
+			} else if(err.code === 'password-not-correct') {
+				passwordError = 'Password does not match'
+			}
 		})
 	}
 
+	function keydown(e) {
+		if(e.keyCode === 13) {
+			signIn()
+		}
+	}
+
 </script>
+
+<div class="spacer"></div>
 
 <section class="container">
 
@@ -45,13 +61,21 @@
 		</p>
 	{/if}
 
-	<form on:submit|preventDefault={e => signIn(e)}>
+	<form on:keydown={e => keydown(e)}>
 
 		<div class="form-item">
-			<UiInput label="E-Mail" type="email" bind:value={email} />
+			<UiInput
+				label="E-Mail"
+				type="email"
+				bind:value={email}
+				bind:error={emailError} />
 		</div>
 		<div class="form-item">
-			<UiInput label="Password" type="password" bind:value={password} />
+			<UiInput
+				label="Password"
+				type="password"
+				bind:value={password}
+				bind:error={passwordError} />
 		</div>
 		
 		<UiButton label="Sign In" on:click={e => signIn(e)} />
@@ -70,17 +94,22 @@
 	</div>
 </section>
 
+<div class="spacer"></div>
+
 
 <style>
 	.container {
 		position: relative;
 		max-width:540px;
-		margin:60px auto;
-		border:#CCC9C4 0px solid;
+		margin:0 auto;
 		border-radius: 6px;
 		background:#FFF;
 		padding:0 30px 30px 30px;
 		box-shadow:0 1px 1px rgba(0, 0, 0, .05), 0 2px 3px rgba(0, 0, 0, .1);
+	}
+
+	.spacer {
+		height:60px;
 	}
 
 	h2 {

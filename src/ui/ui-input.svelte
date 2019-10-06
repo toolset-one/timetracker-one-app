@@ -1,5 +1,6 @@
 <script>
-	import { onMount, createEventDispatcher } from 'svelte';
+	import { onMount, createEventDispatcher } from 'svelte'
+	import { fade } from 'svelte/transition'
 
 	const dispatch = createEventDispatcher()
 
@@ -7,6 +8,7 @@
 	export let type = 'text'
 	export let value = ''
 	export let disabled = false
+	export let error = ''
 
 	let el,
 		focused = false,
@@ -16,11 +18,13 @@
 
 	onMount(() => {
 		setTimeout(() => {
-			const inputEl = el.querySelector('input')
-			if (inputEl && window.getComputedStyle(el.querySelector('input')).content === `"${String.fromCharCode(0xFEFF)}"`) {
-				prefilled = true
+			if(el) {
+				const inputEl = el.querySelector('input')
+				if(inputEl) {
+					inputEl.addEventListener('animationstart', () => prefilled = true)
+				}
 			}
-		}, 10)
+		})
 	})
 
 	function focus(e) {
@@ -35,6 +39,7 @@
 
 	function keydown(e) {
 		prefilled = false
+		error = ''
 		dispatch('keydown', e.keyCode)
 	}
 
@@ -74,6 +79,12 @@
 			on:blur={e => blur(e)}
 			{disabled}
 			data-disable="true">
+	{/if}
+
+	{#if error && error.length > 0}
+		<div class="error" transition:fade="{{delay: 0, duration: 100}}">
+			{error}
+		</div>
 	{/if}
 
 </div>
@@ -146,6 +157,35 @@
 }
 
 .wrapper input:-webkit-autofill {
-  content: "\feff"
+	animation-duration: 50000s;
+	animation-name: onautofillstart;
 }
+
+.error {
+	position: absolute;
+	top:100%;
+	left:18px;
+	background:#26231E;
+	font-size:14px;
+	line-height: 24px;
+	margin:-3px 0 0 0;
+	padding:0 12px;
+	border-radius: 6px;
+	color:#FFF;
+	box-shadow:0 4px 0 -2px rgba(0, 0, 0, .05),  0 3px 6px rgba(0, 0, 0, .1);
+}
+
+.error:after {
+	content:'';
+	display: block;
+	width:6px;
+	height:6px;
+	position: absolute;
+	top:0;
+	left:50%;
+	background:#26231E;
+	transform: translateX(-50%) translateY(-50%) rotateZ(45deg);
+}
+
+@keyframes onautofillstart { from {} }
 </style>

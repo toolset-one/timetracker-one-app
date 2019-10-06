@@ -626,7 +626,7 @@ swsServer.db = {
 
 swsServer.gateway = {
 
-
+	connected: false,
 	promises: {},
 	ws: null,
 
@@ -634,12 +634,7 @@ swsServer.gateway = {
 	init: serverUrl => {
 
 		swsServer.gateway.serverUrl = serverUrl
-
-		try {
-			swsServer.gateway.ws = new WebSocket(swsServer.gateway.serverUrl)
-		} catch(err) {
-			console.log('ERR', err)
-		}
+		swsServer.gateway.ws = new WebSocket(swsServer.gateway.serverUrl)
 
 		swsServer.gateway.ws.onopen = () => {
 			swsServer.gateway.connected = true
@@ -686,7 +681,14 @@ swsServer.gateway = {
 				resolve,
 				reject
 			}
-			swsServer.gateway.ws.send(JSON.stringify(json))
+
+			if(swsServer.gateway.connected) {
+				swsServer.gateway.ws.send(JSON.stringify(json))
+			} else {
+				reject({
+					code: 'not-connected'
+				})
+			}
 		})
 	}
 }
@@ -738,7 +740,7 @@ swsServer.store = {
 			req.onsuccess = e => resolve(e)
 		})
 	},
-	
+	 
 
 	get: key => {
 		return new Promise((resolve, reject) => {
