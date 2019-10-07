@@ -6,11 +6,6 @@
 	import UiInput from '../ui/ui-input.svelte'
 	import UiButton from '../ui/ui-button.svelte'
 
-	const ERROR_MAP = {
-		'auth/invalid-email': 'The provided email is not valid.',
-		'auth/wrong-password': 'The provided password does not match.'
-	}
-
 	let email = '',
 		emailError = '',
 		password = '',
@@ -26,7 +21,6 @@
 			error = ''
 			Page('/timelog/')
 		}).catch(err => {
-			console.log(err)
 			if(err.code === 'user-not-found') {
 				emailError = 'Account not found'
 			} else if(err.code === 'email-not-valid') {
@@ -35,6 +29,8 @@
 				emailError = 'Connection error to the server – please try again'
 			} else if(err.code === 'password-not-correct') {
 				passwordError = 'Password does not match'
+			} else {
+				console.log('ERR', err)
 			}
 		})
 	}

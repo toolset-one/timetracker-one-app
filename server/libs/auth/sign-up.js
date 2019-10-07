@@ -85,7 +85,7 @@ exports.signUp = async (ws, sockets, { promiseId, email, password, code }) =>
 			}
 		}).catch(err => {
 			reject(err.code === 11000
-        		? 'duplicate-key'
+        		? { code: 'duplicate-key' }
         		: err
         	)
 		})
