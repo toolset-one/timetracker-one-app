@@ -109,6 +109,24 @@ swsServer.auth = {
 	},
 
 
+	sendPasswordMail: json => {
+		swsServer.gateway.send({
+			action: 'sendPasswordMail',
+			email: json.email
+		}).then(res => {
+			swsServer.bridge.answer({
+				promiseId: json.promiseId,
+				answer: res
+			})
+		}).catch(err => {
+			swsServer.bridge.answer({
+				promiseId: json.promiseId,
+				err
+			})
+		})
+	},
+
+
 	updateAuth: (user, jwt, shouldSet) => {
 
 		const authData = {
@@ -704,6 +722,7 @@ swsServer.bridge = {
 		signUp: swsServer.auth.signUp,
 		signIn: swsServer.auth.signIn,
 		signOut: swsServer.auth.signOut,
+		sendPasswordMail: swsServer.auth.sendPasswordMail,
 		setTeamTitle: swsServer.auth.setTeamTitle,
 		inviteMember: swsServer.auth.inviteMember,
 

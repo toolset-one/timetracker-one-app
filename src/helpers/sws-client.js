@@ -57,6 +57,13 @@ sws.auth = {
 		}).then(() => location.reload(true))
 	},
 
+	sendPasswordMail: (email) => {
+		return sws.bridge.send({
+			action: 'sendPasswordMail',
+			email
+		})
+	},
+
 	hookIntoTeamState: fn => {
 		sws.auth.teamStateHooks.push(fn)
 		fn(sws.auth.teams)

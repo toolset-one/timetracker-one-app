@@ -10,20 +10,36 @@
 	}
 
 	let email = '',
+		emailError = '',
 		error = ''
 
 	onMount(() => {
 		
 	})
 
-	function getNewPassword(e) {
+	function getNewPassword() {
 		
-		authStoreNewPassword(email, (success, err) => {
-			error = ERROR_MAP[err] || '' + err
+
+		authStoreNewPassword(email).then(res => {
+
+		}).catch(err => {
+			if(err.code === 'not-connected') {
+				emailError = 'Connection error to the server – please try again'
+			} else {
+				console.log('ERR', err)
+			}
 		})
 	}
 
+	function keydown(e) {
+		if(e.keyCode === 13) {
+			getNewPassword()
+		}
+	}
+
 </script>
+
+<div class="spacer"></div>
 
 <section class="container">
 
@@ -31,19 +47,17 @@
 		New password for Timetracker.One
 	</h2>
 
-	{#if error.length > 0}
-		<p>
-			{error}
-		</p>
-	{/if}
-
-	<form on:submit|preventDefault={e => getNewPassword(e)}>
+	<form on:keydown={e => keydown(e)}>
 
 		<div class="form-item">
-			<UiInput label="E-Mail" type="email" bind:value={email} />
+			<UiInput
+				label="E-Mail"
+				type="email"
+				bind:value={email}
+				bind:error={emailError} />
 		</div>
 		
-		<UiButton label="Get New Password" on:click={e => getNewPassword(e)} />
+		<UiButton label="Get New Password" on:click={e => getNewPassword()} />
 		<span>
 			or
 			<a href="/sign-in/">
@@ -54,6 +68,7 @@
 
 </section>
 
+<div class="spacer"></div>
 
 <style>
 	.container {
@@ -64,6 +79,10 @@
 		background:#FFF;
 		padding:0 30px 30px 30px;
 		box-shadow:0 1px 1px rgba(0, 0, 0, .05), 0 2px 3px rgba(0, 0, 0, .1);
+	}
+
+	.spacer {
+		height:60px;
 	}
 
 	h2 {

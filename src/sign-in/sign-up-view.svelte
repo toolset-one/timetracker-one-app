@@ -14,7 +14,6 @@
 		emailError = '',
 		password = '',
 		passwordError = '',
-		error = '',
 		code = ''
 
 	onMount(() => {
@@ -72,12 +71,6 @@
 	{#if isInvitation}
 		<p>
 			You followed an invitation email to timetracker.one. Please set a passwort below, and you'll be added directly to the team.
-		</p>
-	{/if}
-
-	{#if error.length > 0}
-		<p>
-			{error}
 		</p>
 	{/if}
 

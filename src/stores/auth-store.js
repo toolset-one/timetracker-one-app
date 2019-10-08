@@ -51,18 +51,8 @@ export function authSignOut() {
 }
 
 
-export function authStoreNewPassword(email, cb) {
-
-	const actionCodeSettings = {
-		url: 'https://app.timetracker.one/new-password-verification/?email=' + email,
-		handleCodeInApp: true
-	}
-
-	sws.auth.sendPasswordMail(email).then(() => {
-		cb(true)
-	}).catch(function(error) {
-		cb(false)
-	})
+export function authStoreNewPassword(email) {
+	return sws.auth.sendPasswordMail(email)
 }
 
 
