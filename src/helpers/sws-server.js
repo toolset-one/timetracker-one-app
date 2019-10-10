@@ -102,9 +102,12 @@ swsServer.auth = {
 
 
 	signOut: async json => {
+		indexedDB.deleteDatabase('database')
 		await swsServer.store.set('authData', null)
-		swsServer.bridge.answer({
-			promiseId: json.promiseId
+		setTimeout(() => {
+			swsServer.bridge.answer({
+				promiseId: json.promiseId
+			})
 		})
 	},
 
