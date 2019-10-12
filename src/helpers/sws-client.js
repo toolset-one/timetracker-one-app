@@ -18,21 +18,25 @@ sws.init = async ({ server, models }) => {
 
 sws.auth = {
 
+
 	user: null,
 	teams: null,
 
 	authStateHooks: [],
 	teamStateHooks: [],
 
+
 	hookIntoAuthState: fn => {
 		sws.auth.authStateHooks.push(fn)
 		fn(sws.auth.user)
 	},
 
+
 	updateAuth: (user, jwt) => {
 		sws.auth.user = user
 		sws.auth.authStateHooks.forEach(fn => fn(sws.auth.user))
 	},
+
 
 	signUp: (email, password, code) => {
 		return sws.bridge.send({
@@ -43,6 +47,7 @@ sws.auth = {
 		})
 	},
 
+
 	signIn: (email, password) => {
 		return sws.bridge.send({
 			action: 'signIn',
@@ -51,11 +56,13 @@ sws.auth = {
 		})
 	},
 
+
 	signOut: () => {
 		return sws.bridge.send({
 			action: 'signOut'
 		}).then(() => location.reload(true))
 	},
+
 
 	sendPasswordMail: (email) => {
 		return sws.bridge.send({
@@ -64,15 +71,18 @@ sws.auth = {
 		})
 	},
 
+
 	hookIntoTeamState: fn => {
 		sws.auth.teamStateHooks.push(fn)
 		fn(sws.auth.teams)
 	},
 
+
 	updateTeams: (teams) => {
 		sws.auth.teams = teams
 		sws.auth.teamStateHooks.forEach(fn => fn(sws.auth.teams))
 	},
+
 
 	setTeamTitle: ({ id, title }) => {
 		return sws.bridge.send({
@@ -81,6 +91,7 @@ sws.auth = {
 			title
 		})
 	},
+
 
 	inviteMember: ({ teamId, email, name }) => {
 		return sws.bridge.send({
@@ -93,9 +104,12 @@ sws.auth = {
 }
 
 
+
 sws.db = {
 
+
 	hooks: {},
+
 
 	new: async ({ col, data, id }) => {
 		return sws.bridge.send({
@@ -106,6 +120,7 @@ sws.db = {
 		})
 	},
 
+
 	update: async ({ col, id, data }) => {
 		return sws.bridge.send({
 			action: 'update',
@@ -114,6 +129,7 @@ sws.db = {
 			data
 		})
 	},
+
 
 	get: async ({ col, id }) => {
 		return sws.bridge.send({
@@ -183,8 +199,13 @@ sws.db = {
 }
 
 
+
 sws.bridge = {
+
+
 	promises: {},
+
+
 	send: async json => {
 		json.promiseId = Math.floor(Math.random() * 1000000000000)
 		return new Promise((resolve, reject) => {
@@ -195,6 +216,7 @@ sws.bridge = {
 			swsServer.bridge.postMessage(JSON.stringify(json))
 		})
 	},
+
 
 	postMessage: jsonString => {
 		const json = JSON.parse(jsonString)
