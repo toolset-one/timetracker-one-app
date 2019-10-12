@@ -1,4 +1,4 @@
-FROM node:8.7.0-alpine
+FROM devillex/docker-firebase:latest
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY ./package.json /usr/src/app/
