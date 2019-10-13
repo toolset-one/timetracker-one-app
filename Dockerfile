@@ -1,10 +1,12 @@
-FROM devillex/docker-firebase:latest
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
-COPY ./package.json /usr/src/app/
-RUN npm install && npm cache clean --force
-COPY ./ /usr/src/app
-ENV NODE_ENV production
-ENV PORT 5000
+# Stage 0, "build-stage", based on Node.js, to build and compile the frontend
+FROM node:latest as build-stage
+WORKDIR /app
+COPY package*.json /app/
+RUN npm install
+COPY ./ /app/
 RUN npm run build
-CMD [ "npm", "start" ]
+
+# Stage 1, based on Nginx, to have only the compiled app, ready for production with Nginx
+FROM nginx:latest
+
+COPY --from=build-stage /app/public/ /usr/share/nginx/html
