@@ -83,7 +83,7 @@ const MODELS = {
 		uiStoreSetBreakpoint(getWindowWidth())
 
 		await sws.init({
-			server: 'ws://tto-server.caprover.team-bas.de:8081/',
+			server: 'ws://tto-server.caprover.team-bas.de:8080/',
 			models: MODELS
 		})
 
