@@ -32,7 +32,7 @@
 
 
 	onMount(() => {
-		isNew = data.created.seconds * 1000 >= Date.now() - 2000
+		isNew = (new Date(data.createdAt)).getTime() >= Date.now() - 2000
 
 		if(!isNew) {
 			el.removeAttribute('style')
@@ -161,10 +161,10 @@
 		display:flex;
 		flex-flow:row wrap;
 		position:relative;
-		margin:0 0 1px 0;
+		margin:0 0 0 0;
 		padding:0;
 		background:#FFF;
-		border-radius:3px;
+		border-radius:0;
 		box-shadow:0 1px 1px rgba(0, 0, 0, .05), 0 2px 3px rgba(0, 0, 0, .1);
 		outline:none;
 	}
@@ -175,7 +175,7 @@
 		margin:0;
 	}
 
-	li.bp-xs:after {
+	li:after {
 		content:'';
 		position: absolute;
 		bottom:0;
@@ -185,8 +185,14 @@
 		background:#E6E4E1;
 	}
 
+	li.bp-l:after {
+		left:6px;
+		right:6px;
+		width:auto;
+	}
+
 	@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
-		li.bp-xs:after {
+		li:after {
 			background:#CCC9C4;
 			transform:scale(1, 0.5);
 			transform-origin: 0 100%;

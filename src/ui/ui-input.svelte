@@ -1,5 +1,6 @@
 <script>
-	import { onMount, createEventDispatcher } from 'svelte';
+	import { onMount, createEventDispatcher } from 'svelte'
+	import { fade } from 'svelte/transition'
 
 	const dispatch = createEventDispatcher()
 
@@ -7,10 +8,24 @@
 	export let type = 'text'
 	export let value = ''
 	export let disabled = false
+	export let error = ''
 
-	let focused = false
+	let el,
+		focused = false,
+		prefilled = false
 
 	$: disabledVal = disabled ? 'disabled' : ''
+
+	onMount(() => {
+		setTimeout(() => {
+			if(el) {
+				const inputEl = el.querySelector('input')
+				if(inputEl) {
+					inputEl.addEventListener('animationstart', () => prefilled = true)
+				}
+			}
+		})
+	})
 
 	function focus(e) {
 		focused = true
@@ -23,17 +38,20 @@
 	}
 
 	function keydown(e) {
+		prefilled = false
+		error = ''
 		dispatch('keydown', e.keyCode)
 	}
 
 </script>
 
 <div 
-	class="wrapper 
+	bind:this={el}
+	class="wrapper
 		{focused ? 'focused' : ''}
 		{disabled ? 'disabled' : ''}
-		{value.length > 0 ? 'filled' : ''}"
-	on:keydown={e => keydown(e)}>
+		{value.length > 0 || prefilled ? 'filled' : ''}"
+		on:keydown={e => keydown(e)}>
 	<label>
 		{label}
 	</label>
@@ -43,21 +61,30 @@
 			bind:value={value}
 			on:focus={e => focus(e)}
 			on:blur={e => blur(e)}
-			{disabled}>
+			{disabled}
+			data-disable="true">
 	{:else if type === 'password'}
 		<input
 			type="password"
 			bind:value={value}
 			on:focus={e => focus(e)}
 			on:blur={e => blur(e)}
-			{disabled}>
+			{disabled}
+			data-disable="true">
 	{:else}
 		<input
 			type="text"
 			bind:value={value}
 			on:focus={e => focus(e)}
 			on:blur={e => blur(e)}
-			{disabled}>
+			{disabled}
+			data-disable="true">
+	{/if}
+
+	{#if error && error.length > 0}
+		<div class="error" transition:fade="{{delay: 0, duration: 100}}">
+			{error}
+		</div>
 	{/if}
 
 </div>
@@ -108,7 +135,6 @@
 	width:100%;
 	max-width:100%;
 	margin:0;
-	border:0;
 	border:#CCC9C4 1px solid;
 	padding:14px 17px 14px 17px;
 	line-height:24px;
@@ -129,4 +155,37 @@
 .wrapper:hover input, .wrapper:focus input {
 	border-color:#26231E;
 }
+
+.wrapper input:-webkit-autofill {
+	animation-duration: 50000s;
+	animation-name: onautofillstart;
+}
+
+.error {
+	position: absolute;
+	top:100%;
+	left:18px;
+	background:#26231E;
+	font-size:14px;
+	line-height: 24px;
+	margin:-3px 0 0 0;
+	padding:0 12px;
+	border-radius: 6px;
+	color:#FFF;
+	box-shadow:0 4px 0 -2px rgba(0, 0, 0, .05),  0 3px 6px rgba(0, 0, 0, .1);
+}
+
+.error:after {
+	content:'';
+	display: block;
+	width:6px;
+	height:6px;
+	position: absolute;
+	top:0;
+	left:50%;
+	background:#26231E;
+	transform: translateX(-50%) translateY(-50%) rotateZ(45deg);
+}
+
+@keyframes onautofillstart { from {} }
 </style>

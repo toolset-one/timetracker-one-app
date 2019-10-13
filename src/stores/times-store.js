@@ -1,97 +1,109 @@
 import { writable, get } from 'svelte/store'
+import { routerStore } from '../stores/router-store.js'
 import { authStore } from '../stores/auth-store.js'
 import { teamStore } from '../stores/team-store.js'
+import { sws } from '../helpers/sws-client.js'
+import { dateToDatabaseDate, dateStringToDate } from '../helpers/helpers.js'
 
 export const timesStore = writable({
-	times: {},
+	times: [],
 	dayIndex: {}
 })
 
-// data.array = (Object.keys(data.times).map(el => data.times[el])).sort((a, b) => b.created.seconds - a.created.seconds)
 
 let listener,
-	userId = null,
-	monthListener = {}
+	monthListener = {},
+	teamId = null
 
 
 export function timesStoreInit() {
-	authStore.subscribe(authData => {
-		if(authData.hasAuth) {
-			userId = authData.user.id
-		} else {
-			userId = null
-		}
+	routerStore.subscribe(routerData => {
+		try {
+			let dbDate = dateToDatabaseDate(dateStringToDate(routerData.subview))
+			if(dbDate) {
+				setListener(dbDate, teamId)
+			}
+		} catch(err) {}
+	})
 
-		Object.keys(monthListener).forEach(monthId => {
-			setListener(userId, monthId)
-		})
+	teamStore.subscribe(teamData => {
+		const routerData = get(routerStore)
+		try {
+			let dbDate = dateToDatabaseDate(dateStringToDate(routerData.subview))
+			if(dbDate && teamData.active && teamData.active.id != teamId) {
+				teamId = teamData.active.id
+				setListener(dbDate, teamId)
+			}
+		} catch(err) {}		
 	})
 }
 
-function setListener(userId, monthId) {
 
-	if(monthListener[monthId] && monthListener[monthId].listener) {
-		monthListener[monthId].listener()
-	}
+function setListener(dbDate, teamId) {
 
-	const { active } = get(teamStore)
+	const authData = get(authStore)
 
-	if(active && userId) {
-		monthListener[monthId].listener = firebase.db.collection('times').where('team', '==', active.id).onSnapshot(snapshot =>
-			snapshot.docChanges().forEach(change => {
-									
-				if (change.type === 'added' || change.type === 'modified') {
+	if(teamId) {
 
-					const entryData = Object.assign({ 
-						id: change.doc.id 
-					}, change.doc.data())
-
-					timesStore.update(data => {
-						data.times[entryData.id] = entryData
-						if(!data.dayIndex[entryData.day]) {
-							data.dayIndex[entryData.day] = {}
-						}
-
-						data.dayIndex[entryData.day][entryData.id] = true
-						return data
-					})
-				} else if (change.type === 'removed') {
-					timesStore.update(data => {
-						delete data.times[change.doc.id]
-						delete data.dayIndex[change.doc.data().day][change.doc.id]
-						return data
-					})
-				}
+		sws.db.query({
+			col: 'times',
+			query: {
+				day: dbDate,
+				team: teamId
+			}
+		}).then(res => {
+			timesStore.update(data => {
+				data.times = res.filter(entry => entry.user === authData.user.id)
+				return data
 			})
-		)
-	}
-}
+		})
 
+		sws.db.hook({
+			hook: 'times',
+			col: 'times',
+			query: {
+				day: dbDate,
+				team: teamId
+			},
+			fn: obj => {
+				timesStore.update(data => {
 
-export function timesStoreControlDate(databaseDate) {
-	const monthId = Math.floor(databaseDate / 100) * 100
-	if( !monthListener[monthId] ) {
-		monthListener[monthId] = {}
-		setListener(userId, monthId)
+					if(obj.__deleted) {
+						data.times = data.times.filter(val => val.id != obj.id)
+					} else {
+						let found = false
+						data.times = data.times.map(val => {
+							if(val.id === obj.id) {
+								found = true
+								return obj
+							} 
+							return val
+						})
+
+						if(!found) {
+							data.times.push(obj)
+						}
+					}
+
+					return data
+				})
+			}
+		})
 	}
-	return true
 }
 
 
 export function timesStoreNewTime(day, cb) {
 
-	const { user } = get(authStore),
-		{ active } = get(teamStore)
+	const { user } = get(authStore)
 
-	firebase.db.collection('times').doc().set({
-		user: user.id,
-		team: active.id,
-		day: day,
-		duration: 0,
-		task: null,
-		comment: '',
-		updated: new Date(),
-		created: new Date()
+	sws.db.new({
+		col: 'times',
+		data: {
+			user: user.id,
+			team: teamId,
+			day: day,
+		}
 	}).then(() => {
 		cb(true)
 	}).catch(err => {
@@ -101,51 +113,53 @@ export function timesStoreNewTime(day, cb) {
 
 
 export function timesStoreGetEntry(id, cb) {
-	firebase.db.collection('times').doc(id).get().then(doc => cb(doc.data())).catch(err =>
-		console.log(err)
-	)
+	sws.db.get({
+		col: 'times',
+		id
+	}).then(obj => {
+		cb(obj)
+	}).catch(err => {
+		cb(null)
+	})
 }
 
 
 export function timesStoreChangeComment(id, comment) {
-	firebase.db.collection('times').doc(id).update({
-		comment,
-		updated: new Date()
-	})	
-
-	timesStore.update(data => {
-		data.times[id].comment = comment
-		return data
+	sws.db.update({
+		col: 'times',
+		id,
+		data: {
+			comment
+		}
 	})
 }
 
 
 export function timesStoreChangeDuration(id, duration) {
-	firebase.db.collection('times').doc(id).update({
-		duration,
-		updated: new Date()
-	})	
-
-	timesStore.update(data => {
-		data.times[id].duration = duration
-		return data
+	sws.db.update({
+		col: 'times',
+		id,
+		data: {
+			duration
+		}
 	})
 }
 
 
 export function timesStoreChangeTask(id, task) {
-	firebase.db.collection('times').doc(id).update({
-		task,
-		updated: new Date()
-	})	
-
-	timesStore.update(data => {
-		data.times[id].task = task
-		return data
+	sws.db.update({
+		col: 'times',
+		id,
+		data: {
+			task
+		}
 	})
 }
 
 
 export function timesStoreDeleteEntry(id) {
-	firebase.db.collection('times').doc(id).delete()
+	sws.db.delete({
+		col: 'times',
+		id
+	})
 }

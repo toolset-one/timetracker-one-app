@@ -1,13 +1,18 @@
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
 import { routerStore } from '../stores/router-store.js'
-import { timesStore, timesStoreControlDate } from '../stores/times-store.js'
-import { dateNextDate, dateToDatabaseDate } from '../helpers/helpers.js'
+import { timesStore } from '../stores/times-store.js'
+import { teamStore } from '../stores/team-store.js'
+import { dateNextDate, dateToDatabaseDate, dateDaysBetweenDates } from '../helpers/helpers.js'
+import { sws } from '../helpers/sws-client.js'
+
+let teamId = null
 
 export const reportsStore = writable({
-	date: new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
+	firstDate: new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
+	lastDate: new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
 	dates: {},
-	period: 7,
-	filterTasks: []
+	filterTasks: [],
+	active: null
 })
 
 export const reportsStoreBarchartData = writable({
@@ -19,14 +24,27 @@ export const reportsStoreBarchartData = writable({
 
 
 export function reportsStoreInit() {
-	reportsStoreUpdateDate(new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0))
+
 	timesStore.subscribe(() => {
-		const unsubscribe = reportsStore.subscribe(data => {
-			buildChartData(data)
-		})
-		unsubscribe()
+		if(teamId) {
+			const reportsData = get(reportsStore)
+			buildChartData(reportsData, teamId)
+		}
 	})
-	reportsStore.subscribe(buildChartData)
+
+	teamStore.subscribe(teamData => {
+		if(teamData.active && teamData.active.id != teamId) {
+			teamId = teamData.active.id
+			const reportsData = get(reportsStore)
+			buildChartData(reportsData, teamId)
+		}
+	})
+
+	reportsStore.subscribe(reportsData => {
+		if(teamId) {
+			buildChartData(reportsData, teamId)
+		}
+	})
 }
 
 export function reportsStoreSetPeriod(period) {
@@ -36,71 +54,41 @@ export function reportsStoreSetPeriod(period) {
 	})
 }
 
-export function reportsStoreUpdateDate(date) {
+export function reportsStoreUpdateRange(firstDate, lastDate) {
 	reportsStore.update(data => {
 
 		data.dates = {}
-		let dateTmp = new Date(date)
+		let dateTmp = new Date(firstDate)
 
-		for(var i = 0; i < data.period; i++) {
+		const daysBetween = dateDaysBetweenDates(firstDate, lastDate) + 1 
+
+		for(var i = 0; i < daysBetween; i++) {
 			const databaseDateTmp = dateToDatabaseDate(dateTmp)
-			timesStoreControlDate(databaseDateTmp)
 			data.dates[databaseDateTmp] = true
 			dateTmp = dateNextDate(dateTmp)
 		}
 
-		data.date = date
+		data.firstDate = firstDate
+		data.lastDate = lastDate
 		return data
 	})
 }
 
 
-function buildChartData(reportsStore) {
-
-	var chartData = {
-		total: 0,
-		tasks: {},
-		totalDayMax: 0,
-		days: {}
-	}
-
-	const unsubscribe = timesStore.subscribe(timesStore => {
-
-		const allTasks = reportsStore.filterTasks.length === 0
-
-		Object.keys(reportsStore.dates).forEach(date => {
-			chartData.days[date] = {
-				total: 0,
-				tasks: {}
-			}
-
-			Object.keys(timesStore.dayIndex[date] || []).forEach(timeId => {
-				const { task, duration } = timesStore.times[timeId]
-
-				if(allTasks || reportsStore.filterTasks.includes(task) ) {
-					chartData.total += duration
-					chartData.days[date].total += duration
-
-					if(!chartData.days[date].tasks[task]) {
-						chartData.days[date].tasks[task] = 0
-					}
-					chartData.days[date].tasks[task] += duration
-
-					if(!chartData.tasks[task]) {
-						chartData.tasks[task] = 0
-					}
-
-					chartData.tasks[task] += duration
-				}
-			})
-
-			chartData.totalDayMax = Math.max( chartData.totalDayMax, chartData.days[date].total )
-		})
-
-		chartData.totalDayMax = Math.ceil(chartData.totalDayMax / 3600) * 3600
-
-		reportsStoreBarchartData.set(chartData)	
+export function reportsStoreSetActive(id) {
+	reportsStore.update(data => {
+		data.active = id
+		return data
 	})
-	unsubscribe()
+}
 
+async function buildChartData(reportsStore, teamId) {
+
+	const chartData = await sws.db.getReportData({
+		team: teamId,
+		dates: reportsStore.dates,
+		filterTasks: reportsStore.filterTasks
+	})
+
+	reportsStoreBarchartData.set(chartData)	
 }

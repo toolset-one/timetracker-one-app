@@ -24,7 +24,7 @@
 			y: 0
 		}
 
-	$: boundingRect = el ? el.getBoundingClientRect() : {
+	$: boundingRect = value && el ? el.getBoundingClientRect() : {
 		top: 0,
 		left: 0
 	}
@@ -40,8 +40,10 @@
 	$: activeLeft = activeBoundingRect.left - boundingRect.left - 2
 
 	function click(e, option) {
-		value = option.value
-		dispatch('change', '')
+		if(!option.disabled) {
+			value = option.value
+			dispatch('change', '')
+		}
 	}
 
 </script>
@@ -65,11 +67,14 @@
 			'width:'+ activeWidth +'px;' +
 			'left:'+ activeLeft +'px;'
 		}"></div>
-		{#each options as option}
+		{#each options as option, i}
 			<div
 				bind:this={optionEls[option.value]}
-				class="option {option.value === value ? 'active' : ''}"
-				on:click={e => click(e, option)}>
+				class="option {option.value === value ? 'active' : ''} {option.disabled ? 'disabled' : ''}"
+				on:click={e => click(e, option)}
+				tabindex="{!option.disabled ? '0' : null}"
+				data-left="{i === 0 ? 'REPORTS_RANGE_RADIO_FIRST' : null}"
+				data-config="REPORTS_RANGE_RADIO">
 				{option.title}
 			</div>
 		{/each}
@@ -84,7 +89,6 @@
 		border:0;
 		border-radius: 6px;
 		background:#CCC9C4;
-		cursor: pointer;
 		transition: all 100ms ease;
 		outline:none;
 	}
@@ -96,7 +100,6 @@
 		border-radius: 5px;
 		background:#FAF9F7;
 		padding:0;
-		/* box-shadow: 0 6px 0 -3px rgba(0, 0, 0, .05) inset; */
 	}
 
 	em {
@@ -134,16 +137,23 @@
 		z-index: 100;
 		border-radius: 5px;
 		line-height:40px;
-		padding:0 18px;
+		padding:0 12px;
 		font-size:14px;
 		font-weight:600;
 		color:#99938A;
 		float:left;
 		transition: all 100ms ease;
+		cursor: pointer;
+		outline: none;
 	}
 
 	.option:hover, .option.active {
 		color:#26231E;
+	}
+
+	.option.disabled, .option.disabled:hover {
+		color:#99938A;
+		cursor:default;
 	}
 
 	.indicator {

@@ -20,7 +20,7 @@
 
 	onMount(() => {
 
-		value = comment.replace(/\n/g, '')
+		value = (comment.replace(regex, '')).replace('  ', ' ')
 
 		const boundingRect = document.querySelector('#entry-'+ id +' .comment').getBoundingClientRect()
 		top = boundingRect.top
@@ -38,9 +38,7 @@
 		width = boundingRect.width
 		height = boundingRect.height
 
-		if(regex.test(value)) {
-			value = value.replace(regex, '')
-		}
+		value = (value.replace(regex, '')).replace('  ', ' ')
 
 		setTimeout(() => {
 			el.dispatchEvent(new CustomEvent('trigger-focus-resize', { bubbles: true }))
@@ -52,7 +50,7 @@
 			alreadyClosed = true
 			dispatch('close', '')
 		} else if( e.keyCode === 13) { // ENTER
-			save()
+			el.blur()
 		}
 
 		el.dispatchEvent(new CustomEvent('trigger-focus-resize', { bubbles: true }))
@@ -88,7 +86,9 @@
 		data-disable="true"></textarea>
 </div>
 
-<div bind:this={sizeTestEl} class="size-test" style="{'max-width:'+ maxWidth +'px;'}">{value}</div>
+<div bind:this={sizeTestEl} class="size-test" style="{'max-width:'+ maxWidth +'px;'}">
+	{value}&nbsp;
+</div>
 <style>
 	.input-wrapper {
 		position: absolute;

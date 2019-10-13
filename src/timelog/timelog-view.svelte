@@ -3,10 +3,11 @@
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 	import { routerStore } from '../stores/router-store.js'
-	import { timesStore, timesStoreControlDate, timesStoreNewTime } from '../stores/times-store.js'
+	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
 	import { uiStore, uiScrollstopStore } from '../stores/ui-store.js'
 	import { userStore, userStopwatchStore } from '../stores/user-store.js'
 	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateToDatabaseDate } from '../helpers/helpers.js'
+	import { sws } from '../helpers/sws-client.js'
 
 	import UiButton from '../ui/ui-button.svelte'
 	import UiBackdrop from '../ui/ui-backdrop.svelte'
@@ -39,19 +40,19 @@
 
 	$: dateNow = dateStringToDate($routerStore.subview)
 	$: databaseDate = dateToDatabaseDate((dateStringToDate($routerStore.subview)))
-	$: isDatabaseDateInDatabase = timesStoreControlDate(databaseDate)
 
-	$: entries = $timesStore.dayIndex[databaseDate] 
-		? Object.keys($timesStore.dayIndex[databaseDate]).map(entryId => $timesStore.times[entryId]).sort((a, b) => b.created.seconds - a.created.seconds)
-		: []
+	$: entries = $timesStore.times.sort((a, b) => b.createdAt - a.createdAt)
 	$: total = entries.reduce((sum, entry) => {
-		return sum + ($userStore.stopwatchEntryId === entry.id ? $userStopwatchStore.duration : entry.duration)
+		return sum + ($userStore.stopwatchEntryId === entry.id ? $userStopwatchStore : entry.duration)
 	}, 0)
 
+	$: entryActive = entries.find(entry => entry.id === entryIdActive)
+
+	let entries = []
 
 
 	onMount(() => {
-
+	
 	})
 
 
@@ -171,14 +172,14 @@
 {/if}
 
 
-{#if overlayComponent && $timesStore.times[entryIdActive]}
+{#if overlayComponent && entryActive}
 	<svelte:component
 		this={overlayComponent}
 		bind:this={overlayEl}
 		id={entryIdActive}
-		duration={$timesStore.times[entryIdActive].duration}
-		task={$timesStore.times[entryIdActive].task}
-		comment={$timesStore.times[entryIdActive].comment}
+		duration={entryActive.duration}
+		task={entryActive.task}
+		comment={entryActive.comment}
 		on:open={e => openOverlayComponent(e.detail)}
 		on:close={e => {
 			overlayComponent = null

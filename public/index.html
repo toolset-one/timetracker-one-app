@@ -4,64 +4,16 @@
 	<meta charset='utf8'>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<link rel="manifest" href="/manifest.json" />
-
 	<title>
 		Timetracker One
 	</title>
-
 	<link rel='stylesheet' href='/global.css'>
 	<link rel='stylesheet' href='/bundle.css'>
 </head>
 
 <body>
-
-
-	<script src="/firebase-app.js"></script>
-	<script src="/firebase-auth.js"></script>
-	<script src="/firebase-firestore.js"></script>
-	<!--<script src="/firebase-storage.js"></script>-->
-
 	<script>
 		const loadedTime = Date.now()
-
-		/* if (!navigator.serviceWorker.controller) {
-			navigator.serviceWorker.register('/service-worker.js', {
-			scope: '/'
-			}).then(reg => {
-				console.log(reg.scope, 'register')
-				console.log('Service worker change, registered the service worker')
-			})
-		}*/
-
-	const initFirebase = () => {
-		firebase.initializeApp({
-			apiKey: "AIzaSyBRcdexMtVL8RQ9-0H20210uux0EzFC9Uw",
-			authDomain: "timetracker-one-app.firebaseapp.com",
-			databaseURL: "https://timetracker-one-app.firebaseio.com",
-			projectId: "timetracker-one-app",
-			storageBucket: "",
-			messagingSenderId: "85319145740",
-			appId: "1:85319145740:web:4cc211b877cfbbbc"
-		})
-
-		firebase.db = firebase.firestore()
-
-		firebase.db.settings({ 
-			timestampsInSnapshots: true
-		})
-
-		firebase.db.enablePersistence({
-			experimentalTabSynchronization: true
-		}).catch(err => {
-			console.log(err)
-		})
-
-		firebase.auth().onAuthStateChanged(user => {})
-	}
-
-	initFirebase()
 	</script>
 	
 	<script src='/bundle.js'></script>
-</body>
-</html>

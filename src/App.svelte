@@ -9,6 +9,7 @@
 	import { reportsStoreInit } from './stores/reports-store.js'
 	import { uiStore, uiStoreInit, uiStoreSetBreakpoint } from './stores/ui-store.js'
 	import { getWindowWidth } from './helpers/helpers.js'
+	import { sws } from './helpers/sws-client.js'
 
 	import UiFocus from './ui/ui-focus.svelte'
 
@@ -25,15 +26,73 @@
 	let resizing = false,
 		debounceTimeout
 
-	onMount(() => {
+const MODELS = {
+	'teams': {
+		col: 'teams',
+		attributes: {
+			title: '',
+			members: {}
+		},
+		indexes: []
+	}, 
+	'settings': {
+		col: 'settings',
+		attributes: {
+			language: 'EN',
+			stopwatchEntryId: null,
+			stopwatchStartTime: 0,
+		},
+		indexes: []
+	}, 
+	'times': {
+		col: 'times',
+		attributes: {
+			duration: 0,
+			day: 20000000,
+			task: null,
+			comment: '',
+			user: null,
+			team: null
+		},
+		indexes: [
+			['day', 'team'],
+			['task', 'team'],
+			['user', 'team']
+		]
+	}, 
+	'tasks': {
+		col: 'tasks',
+		attributes: {
+			title: '',
+			project: null,
+			color: '#333',
+			archived: false,
+			user: null,
+			team: null
+		},
+		indexes: [
+			['team'],
+			['project', 'team']
+		]
+	}
+}
+
+	onMount(async () => {
+
+		uiStoreInit()
+		uiStoreSetBreakpoint(getWindowWidth())
+
+		await sws.init({
+			server: 'ws://localhost:8080/',
+			models: MODELS
+		})
+
 		authInit()
 		timesStoreInit()
 		tasksStoreInit()
 		userStoreInit()
 		teamStoreInit()
 		reportsStoreInit()
-		uiStoreInit()
-		uiStoreSetBreakpoint(getWindowWidth())
 	})
 
 	function resize() {
@@ -69,7 +128,7 @@ const COLORS = [
 		{:else}
 			<SignIn />
 		{/if}
-	{:else if $authStore.seemsToHaveAuth && $teamStore.active}
+	{:else}
 		<MainNav />
 
 		{#if $routerStore.view === 'timelog'}
@@ -86,59 +145,3 @@ const COLORS = [
 <UiFocus />
 
 <svelte:window on:resize={e => resize()} />
-
-<style>
-
-
-/*	.loading {
-		position: absolute;
-		top:50%;
-		left:50%;
-		transform: translateX(-50%) translateY(-50%);
-		font-size:60px;
-		color:#EEE;
-	}
-
-.loader, .loader:before, .loader:after {
-	border-radius: 50%;
-	width: 12px;
-	height: 12px;
-	animation: load 1200ms infinite ease-in-out;
-	background:transparent;
-	box-shadow: 0 -12px 0 0 #999;
-}
-.loader {
-	position: absolute;
-	top:50%;
-	left:50%;
-	animation-delay: 200ms;
-	text-indent: -9999px;
-	margin:6px 0 0 -6px;
-}
-.loader:before,
-.loader:after {
-	display:block;
-	content: '';
-	position: absolute;
-	top: 0;
-}
-.loader:before {
-	left: -18px;
-	animation-delay: 0ms;
-}
-.loader:after {
-	left:18px;
-	animation-delay: 400ms;
-}
-
-@keyframes load {
-	0%,
-	80%,
-	100% {
-		box-shadow: 0 -12px 0 0 #999;
-	}
-	40% {
-		box-shadow: 0 -24px 0 0 #999;
-	}
-}*/
-</style>

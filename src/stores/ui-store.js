@@ -1,7 +1,7 @@
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
 import { dateGetHours, dateGetMinutes, dateGetSeconds } from '../helpers/helpers.js'
 import { routerStore } from '../stores/router-store.js'
-import { userStopwatchStore } from '../stores/user-store.js'
+import { userStore, userStopwatchStore } from '../stores/user-store.js'
 
 const TITLE_MAP = {
 	'timelog': 'Timelog',
@@ -54,9 +54,9 @@ export function uiStoreSetBreakpoint(windowWidth) {
 userStopwatchStore.subscribe(userStopwatchData => {
 
 
-	hours = dateGetHours(userStopwatchData.duration)
-	minutes = dateGetMinutes(userStopwatchData.duration)
-	seconds = dateGetSeconds(userStopwatchData.duration)
+	hours = dateGetHours(userStopwatchData)
+	minutes = dateGetMinutes(userStopwatchData)
+	seconds = dateGetSeconds(userStopwatchData)
 
 	uiStopwatchStore.update(data => {
 		return {
@@ -76,6 +76,6 @@ routerStore.subscribe(routerData => {
 
 function setTitle(view, hours, minutes) {
 	divider = divider === ':' ? ' ' : ':'
-	const stopwatchTitle = typeof hours === 'number' ? '['+ hours + divider + minutes +'] ' : ''
+	const stopwatchTitle = (get(userStore).stopwatchEntryId) ? '['+ hours + divider + minutes +'] ' : ''
 	document.title = stopwatchTitle + TITLE_MAP[view] +' · Timetracker.One'
 }

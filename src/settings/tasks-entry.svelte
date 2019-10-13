@@ -20,22 +20,23 @@
 
 
 	onMount(() =>
-		isNew = data.created.seconds * 1000 >= Date.now() - 2000
+		isNew = new Date(data.createdAt).getTime() * 1000 >= Date.now() - 2000
 	)
 
-	function dispatchDesktopAndKeyboard(event, eventData) {
+
+	function dispatchMobileOrTouch(event, eventData) {
 		const unsubscribe = uiStore.subscribe(data => {
-			if(!data.isTouchDevice && data.breakpoint != 'xs') {
+			if(data.isTouchDevice || data.breakpoint === 'xs') {
 				dispatch(event, eventData)
 			}
 		})
 		unsubscribe()
 	}
 
-
-	function dispatchMobileOrTouch(event, eventData) {
+	
+	function dispatchDesktopAndKeyboard(event, eventData) {
 		const unsubscribe = uiStore.subscribe(data => {
-			if(data.isTouchDevice || data.breakpoint === 'xs') {
+			if(!data.isTouchDevice && data.breakpoint != 'xs') {
 				dispatch(event, eventData)
 			}
 		})

@@ -5,10 +5,6 @@
 			'',
 			'/global.css',
 			'/bundle.css',
-			'/firebase-app.js',
-			'/firebase-auth.js',
-			'/firebase-firestore.js',
-			'/firebase-storage.js',
 			'/bundle.js'
 		])
 	}

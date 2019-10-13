@@ -4,46 +4,35 @@
 	import { uiStore } from '../stores/ui-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
-	import { reportsStore, reportsStoreUpdateDate, reportsStoreBarchartData, reportsStoreSetPeriod } from '../stores/reports-store.js'
+	import { reportsStore, reportsStoreUpdateRange, reportsStoreBarchartData, reportsStoreSetPeriod } from '../stores/reports-store.js'
 
-	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateGetWeek, dateGetMonth } from '../helpers/helpers.js'
+	import { RANGE_OPTIONS, RANGE_MAP, dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateGetWeek, dateGetMonth, datePrevMonth, dateNextMonth, dateIsWeek, dateIsMonth, dateGetWeekStart, dateGetMonthStart, dateRangeGetStandard, dateRangeGetStandardForDates } from '../helpers/helpers.js'
 
 	import UiButton from '../ui/ui-button.svelte'
 	import UiMultiselect from '../ui/ui-multiselect.svelte'
 	import UiRadio from '../ui/ui-radio.svelte'
 	import ReportsBarchart from '../reports/reports-barchart.svelte'
 	import ReportsDistribution from '../reports/reports-distribution.svelte'
+	import ReportsLegend from '../reports/reports-legend.svelte'
+	import UiRangePicker from '../ui/ui-range-picker.svelte'
 
-	const PERIOD_OPTIONS = [{
-		title: 'Week',
-		value: 'week'
-	}, {
-		title: 'Month',
-		value: 'month'
-	}/*, {
-		title: 'Year',
-		value: 'year'
-	}*/],
 
-	PERIOD_MAP = {
-		'week': 7,
-		'month': 31,
-		'year': 368
-	}
-
-	let period = 'week',
-		filterTasks,
+	let filterTasks,
 		filterTasksLength = 0,
-		scrollToDateFunction
+		firstDate = dateGetWeekStart(),
+		lastDate = dateNextDate(firstDate, 6),
+		rangeNow = 'current-week'
 
 	$: tasksToFilter = [...$tasksStore.array, {
 		title: 'No Task',
 		id: null
 	}]
 
-	onMount(() => {
 
+	onMount(() => {
+		reportsStore.subscribe(reportsStoreChanged)
 	})
+
 
 	afterUpdate(() => {
 		if(filterTasksLength != filterTasks.length) {
@@ -55,115 +44,76 @@
 		}
 	})
 
-	function getPeriodTitle(date) {
-		if(period === 'week') {
-			if( dateGetWeek(datePrevDate(date)) != dateGetWeek(date)) {
-				return 'Week Number ' + dateGetWeek(date)
-			} else {
-				return dateGetHumanDate(date) +' – '+ dateGetHumanDate(dateNextDate(date, 6))
-			}
-		} else if(period === 'month') {
-			if( (datePrevDate(date)).getMonth() != date.getMonth()) {
-				return dateGetMonth(date) + ' ' + date.getFullYear()
-			} else {
-				return dateGetHumanDate(date) +' – '+ dateGetHumanDate(dateNextDate(date, 30))
-			}
-		}
 
-		return dateGetWeek(date)
-	}
-
-	function prevPeriod(date) {
-		if(period === 'week') {
-			if( dateGetWeek(datePrevDate(date)) != dateGetWeek(date)) {
-				var newDate = datePrevDate(date, 7)
-			} else {
-				while(dateGetWeek(datePrevDate(date)) === dateGetWeek(date)) {
-					date = datePrevDate(date)
-				}
-				var newDate = date
-			}
-		} else if(period === 'month') {
-			if( (datePrevDate(date)).getMonth() != date.getMonth()) {
-				date = datePrevDate(date)
-			} 
-
-			while(datePrevDate(date).getMonth() === date.getMonth()) {
-				date = datePrevDate(date)
-			}
-			var newDate = date
-		}
-
-		reportsStoreUpdateDate(newDate)
-		scrollToDateFunction(newDate)
+	function changed(e) {
+		reportsStoreUpdateRange(e.detail.firstDate, e.detail.lastDate)
 	}
 
 
-	function nextPeriod(date) {
-		if(period === 'week') {
-			if( dateGetWeek(datePrevDate(date)) != dateGetWeek(date)) {
-				var newDate = dateNextDate(date, 7)
-			} else {
-				while(dateGetWeek(datePrevDate(date)) === dateGetWeek(date)) {
-					date = dateNextDate(date)
-				}
-				var newDate = date
-			}
-		} else if(period === 'month') {
-			if(datePrevDate(date).getMonth() != date.getMonth()) {
-				date = dateNextDate(date)
-			}
+	function rangeChanged(e) {
 
-			while(datePrevDate(date).getMonth() === date.getMonth()) {
-				date = dateNextDate(date)
-			}
-			var newDate = date
-		}
+		const newRangeDates = dateRangeGetStandard(rangeNow)
 
-		reportsStoreUpdateDate(newDate)
-		scrollToDateFunction(newDate)
+		firstDate = newRangeDates.firstDate
+		lastDate = newRangeDates.lastDate
+
+		reportsStoreUpdateRange(firstDate, lastDate)
 	}
+
+
+	function reportsStoreChanged({ firstDate, lastDate }) {
+		rangeNow = dateRangeGetStandardForDates(firstDate, lastDate)
+	}
+
+
+	function changeRangeValue(e) {
+		rangeNow = e.detail.value
+		rangeChanged()
+	}
+
+
+	reportsStoreUpdateRange(firstDate, lastDate)
 
 </script>
 
 <section class="filter-header bp-{$uiStore.breakpoint}">
+	<div class="custom-range-wrapper">
+		<UiRangePicker 
+			bind:firstDate={firstDate}
+			bind:lastDate={lastDate}
+			on:input={e => changed(e)}
+			on:changeRangeValue={e => changeRangeValue(e)} />
+	</div>
+	{#if $uiStore.breakpoint === 'l'}
+		<div class="ranges-wrapper">
+			<UiRadio options={RANGE_OPTIONS} bind:value={rangeNow} on:change={e => rangeChanged()} />
+		</div>
+	{/if}
+</section>
+
+
+<section class="filter-buttons bp-{$uiStore.breakpoint}">	
 	<div class="button-wrapper">
 		<UiMultiselect
 			label="Tasks"
 			options={tasksToFilter}
 			bind:value={filterTasks} />
 	</div>
-
-
-		<div class="mobile-range-wrapper">
-			<UiRadio options={PERIOD_OPTIONS} bind:value={period} on:change={e => reportsStoreSetPeriod(PERIOD_MAP[period])} />
-		</div>
-
 </section>
 
-<section class="range-header bp-{$uiStore.breakpoint}">
-	<div class="date-nav">
-		<div class="button-wrapper">
-			<UiButton 
-				type="icon" 
-				icon="arrow-left"
-				on:click={e => prevPeriod($reportsStore.date)} />
-		</div>
-		<div class="button-wrapper">
-			<UiButton 
-				type="icon"
-				icon="arrow-right"
-				on:click={e => nextPeriod($reportsStore.date)} />
-		</div>
-		<h2>
-			{getPeriodTitle($reportsStore.date)}
-		</h2>
-	</div>
-</section>
 
-<section>
-	<ReportsBarchart bind:scrollToDate={scrollToDateFunction} />
+<section class="distribution-wrapper bp-{$uiStore.breakpoint}">
 	<ReportsDistribution />
+</section>
+
+
+<section class="barchart-wrapper bp-{$uiStore.breakpoint}">
+	<ReportsBarchart />
+</section>
+
+
+<section class="legend-wrapper bp-{$uiStore.breakpoint}">
+	<ReportsLegend />
 </section>
 
 
@@ -189,13 +139,37 @@
 		margin-right:12px;
 	}
 
-	.mobile-range-wrapper {
+	.filter-buttons {
+		margin:0 12px 12px 12px;
+	}
+
+	.filter-buttons.bp-l {
+		margin:24px auto;
+	}
+
+	.legend-wrapper {
+		margin:0 12px 84px 12px;
+	}
+
+	.legend-wrapper.bp-l {
+		margin:24px auto;
+	}
+
+	.spacer {
+		
+	}
+
+	.ranges-wrapper {
 		flex:1;
 		text-align: right;
 	}
 
-	.bp-l .mobile-range-wrapper {
-		text-align: left;
+	.custom-range-wrapper {
+		max-width:100%;
+	}
+
+	.bp-l .custom-range-wrapper {
+
 	}
 
 	.range-header {
@@ -207,6 +181,22 @@
 
 	.range-header.bp-l {
 		margin:24px auto;
+	}
+
+	.distribution-wrapper {
+		margin:12px;
+	}
+
+	.distribution-wrapper.bp-l {
+		margin:24px auto;
+	}
+
+	.barchart-wrapper {
+		margin:48px 12px 12px 12px;
+	}
+
+	.barchart-wrapper.bp-l {
+		margin:60px auto;
 	}
 
 	.date-nav {

@@ -13,7 +13,8 @@
 		y = 0,
 		width = 0,
 		height = 0,
-		wiggleClass = ''
+		wiggleClass = '',
+		isLastInputAKey = false
 
 	const blurFunction = e => {
 		removeBlurFunction(e)
@@ -71,11 +72,15 @@
 		document.querySelector('body').addEventListener('keydown', e => {
 			if( ([9, 37, 39, 38, 40, 13, 27, 8]).includes(e.keyCode) ) {
 				if(!targetEl || !document.body.contains(targetEl)) {
-					console.log('Find Focus Event')
+					console.log('Find Focus Event', e.target)
 					findFocusable(e.target).focus()
 				}
 			}
+			isLastInputAKey = true
 		}, false)
+
+		document.querySelector('body').addEventListener('mouseup', e => isLastInputAKey = false)
+		document.querySelector('body').addEventListener('mousedown', e => isLastInputAKey = false)
 	})
 
 
@@ -85,6 +90,8 @@
 		y = boundingRect.y - 3 + (elementConfig['box-y'] || 0)
 		width = boundingRect.width + 6 + (elementConfig['box-width'] || 0)
 		height = boundingRect.height + 6 + (elementConfig['box-height'] || 0)
+
+		console.log(boundingRect)
 	}
 
 
@@ -95,14 +102,18 @@
 
 		if(e.keyCode === 9) { // TAB
 
-		} else if (e.keyCode === 37) { // RIGHT
-			if(elementConfig.left) {
+		} else if (e.keyCode === 37) { // LEFT
+			if(targetEl.dataset.left) {
+				doAction(KEYS_CONFIG[targetEl.dataset.left], e, true)
+			} else if(elementConfig.left) {
 				doAction(elementConfig.left, e, false)
 			} else {
 				initWiggle(false)
 			}
 		} else if (e.keyCode === 39) { // RIGHT
-			if(elementConfig.right) {
+			if(targetEl.dataset.right) {
+				doAction(KEYS_CONFIG[targetEl.dataset.right], e, true)
+			} else if(elementConfig.right) {
 				doAction(elementConfig.right, e, false)
 			} else {
 				initWiggle(false)
@@ -208,7 +219,7 @@
 
 </script>
 
-{#if show && !$uiStore.isTouchDevice}
+{#if show && isLastInputAKey && !$uiStore.isTouchDevice}
 	<div
 		class="{wiggleClass}"
 		style="

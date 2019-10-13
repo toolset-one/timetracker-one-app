@@ -52,6 +52,7 @@
 		on:mouseenter={e => hovered = true}
 		on:mouseleave={e => hovered = false}
 		on:click={e => dispatchMobileOrTouch('open', { component: 'mobileEntry', id: data.id})}>
+
 		{#if !invitation}
 			<div class="color" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'color', id: data.id})}>
 				<div style="{'background-color:' + (data ? data.color : '#333') + ';'}">
@@ -61,7 +62,7 @@
 		{/if}
 		<div class="name" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'name', id: data.id })}>
 			<div>
-				{data.name && data.name.length > 0 ? data.name : 'No name'}
+				{data.title && data.title.length > 0 ? data.title : 'No name'}
 			</div>
 		</div>
 		<div class="email" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'email', id: data.id })}>
@@ -72,7 +73,7 @@
 		{#if !invitation}
 			<div class="role" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'role', id: data.id })}>
 				<div>
-					Admin
+					{data.role === 'ADMIN' ? 'Admin' : 'Member'}
 				</div>
 			</div>
 		{/if}

@@ -1,19 +1,16 @@
 import { writable, get } from 'svelte/store';
 import { routerStore } from '../stores/router-store.js'
-import { authStore, authStoreControlUserToken } from '../stores/auth-store.js'
+import { authStore } from '../stores/auth-store.js'
 import { timesStoreChangeDuration } from '../stores/times-store.js'
+import { sws } from '../helpers/sws-client.js'
 
 export const userStore = writable({
-	hasAnyTeam: false,
 	language: 'EN',
-	termsAccepted: 0,
 	stopwatchEntryId: null,
 	stopwatchStartTime: 0,
 })
 
-export const userStopwatchStore = writable({
-	duration: 0
-})
+export const userStopwatchStore = writable(0)
 
 let listenerUserId,
 	listener,
@@ -26,34 +23,29 @@ export function userStoreInit() {
 
 function setListener() {
 	authStore.subscribe(authData => {
+		if(authData.hasAuth) {
+			console.log('USER ID', authData.user.id)
 
-		// Change listener just, if user id changed
-		if(authData.hasAuth && authData.user.id != listenerUserId) {
-			listenerUserId = authData.user.id
+			sws.db.get({
+				col: 'settings',
+				id: authData.user.id
+			}).then(res => {
+				userStore.update(data => {
+					return res ? res : data
+				})
+			})
 
-			if(listener) {
-				listener()
-			}
-
-			listener = firebase.db.collection('users').doc(authData.user.id).onSnapshot(snapshot => {
-		
-				if(snapshot.data()) {
-					const { hasAnyTeam } = get(userStore)
-
-					// Control token just, if team changed after init
-					if(userStoreInited && hasAnyTeam != snapshot.data().hasAnyTeam) {
-						authStoreControlUserToken()
-					}
-
-					if(JSON.stringify(snapshot.data()) != JSON.stringify(get(userStore))) {
-						userStore.update(data => snapshot.data())
-					}
-
-				} else {
-					updateUser()
+			sws.db.hook({
+				hook: 'settings',
+				col: 'settings',
+				query: {
+					id: authData.user.id
+				},
+				fn: obj => {
+					userStore.update(data => {
+						return obj ? obj : data
+					})
 				}
-
-				userStoreInited = true
 			})
 		}
 	})
@@ -68,7 +60,11 @@ export function updateUser(cb) {
 
 		const userData = get(userStore)
 
-		firebase.db.collection('users').doc(authData.user.id).set(userData).then(res => {
+		sws.db.new({
+			col: 'settings',
+			id: authData.user.id,
+			data: userData
+		}).then(res => {
 			if(cb) {
 				cb(true)
 			}
@@ -77,7 +73,6 @@ export function updateUser(cb) {
 				cb(false)
 			}
 		})
-
 	}
 }
 
@@ -118,24 +113,16 @@ export function userStoreSetUsername(username, cb) {
 userStore.subscribe(userStoreData => {
 	if(userStoreData.stopwatchEntryId) {
 		interval = setInterval(() => {
-			userStopwatchStore.update(data => {
-				return {
-					duration: Math.floor((Date.now() - userStoreData.stopwatchStartTime) / 1000)
-				}
-			})
+			userStopwatchStore.update(data =>
+				Math.floor((Date.now() - userStoreData.stopwatchStartTime) / 1000)
+			)
 		}, 1000)
 		
-		userStopwatchStore.update(data => {
-			return {
-				duration: Math.floor((Date.now() - userStoreData.stopwatchStartTime) / 1000)
-			}
-		})
+		userStopwatchStore.update(data =>
+			Math.floor((Date.now() - userStoreData.stopwatchStartTime) / 1000)
+		)
 	} else {
 		clearInterval(interval)
-			userStopwatchStore.update(data => {
-				return {
-					duration: 0
-				}
-			})
+			userStopwatchStore.update(data => 0)
 	}
 })

@@ -61,20 +61,32 @@
 	<div class="swiper">
 		<div class="options hours" bind:this={hoursEl}>
 			<ul>
+				<li></li>
+				<li></li>
+				<li></li>
 				{#each hours as hour}
 					<li>
 						{hour}
 					</li>
 				{/each}
+				<li></li>
+				<li></li>
+				<li></li>
 			</ul>
 		</div>
 		<div class="options minutes" bind:this={minutesEl}>
 			<ul>
+				<li></li>
+				<li></li>
+				<li></li>
 				{#each minutes as minute}
 					<li>
 						{minute}
 					</li>
 				{/each}
+				<li></li>
+				<li></li>
+				<li></li>
 			</ul>
 		</div>
 		<div class="indicator">
@@ -193,13 +205,14 @@
 	ul {
 		list-style: none;
 		margin:0;
-		padding:126px 0;
+		padding:0;
 		scroll-snap-align: start;
 	}
 
 	li {
 		margin:0;
 		padding:0 12px;
+		height:42px;
 		line-height:42px;
 		font-size:18px;
 		font-family:monospace; /* TODO: OVERPASS */

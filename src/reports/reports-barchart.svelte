@@ -1,13 +1,15 @@
 <script>
 	import { onMount } from 'svelte';
 	import { routerStore } from '../stores/router-store.js'
-	import { reportsStore, reportsStoreUpdateDate } from '../stores/reports-store.js'
+	import { uiStore } from '../stores/ui-store.js'
+	import { reportsStore, reportsStoreBarchartData, reportsStoreUpdateRange } from '../stores/reports-store.js'
 
-	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth, dateToDatabaseDate} from '../helpers/helpers.js'
+	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth, dateToDatabaseDate, dateDatabaseToDate} from '../helpers/helpers.js'
 
 	import ReportsBarchartDay from '../reports/reports-barchart-day.svelte'
 
 	let el,
+	animation = false,
 	elWidth = 960,
 	firstDate = new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
 	startDate = new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), 0, 0, 0),
@@ -15,95 +17,85 @@
 	daysArray = [],
 	timeout,
 	scrollLeft,
-	tmp = 0
+	tmp = 0,
+	activeDate = null
 
-	$: daysBetween = dateDaysBetweenDates(firstDate, startDate)
-	$: periodWidth = elWidth / $reportsStore.period
-	$: daysArray = calculateDaysArray(startDate)
-
-	function calculateDaysArray(startDate) {
-		let dateTmp = new Date(startDate)
-		dateTmp.setDate(dateTmp.getDate() - $reportsStore.period)
-
-		let daysSince = daysBetween,
-			arrayTmp = []
-
-		for(var i = -1 * $reportsStore.period; i <= $reportsStore.period; i++) {
-			arrayTmp.push({
-				date: dateTmp,
-				daysSince
-			})
-
-			dateTmp = dateNextDate(dateTmp)
-			daysSince++
+	$: daysBetween = dateDaysBetweenDates($reportsStore.firstDate, startDate)
+	$: rangeDates = Object.keys($reportsStore.dates).length
+	$: rangeWidth = elWidth / rangeDates
+	$: daysArray = Object.keys($reportsStore.dates).map((key, i) => {
+		return {
+			date: dateDatabaseToDate(key),
+			daysSince: daysBetween + i
 		}
-
-		return arrayTmp
-	}
-
-	onMount(() => {
-
-		elWidth = el.getBoundingClientRect().width
-		el.scrollLeft = 500000
 	})
 
-
-	function timeoutFunction() {
-		let dateTmp = new Date(firstDate)
-		dateTmp.setDate(dateTmp.getDate() + Math.round((el.scrollLeft - 500000) / periodWidth) )
-		reportsStoreUpdateDate(dateTmp)
-	}
-
-
-	function scroll(e) {
-		let dateTmp = new Date(firstDate)
-		dateTmp.setDate(dateTmp.getDate() + Math.round((el.scrollLeft - 500000) / periodWidth) )
-		startDate = dateTmp
-
-		if(timeout) {
-			clearTimeout(timeout)
-		}
-
-		timeout = setTimeout(timeoutFunction, 50)
-	}
-
-	export function scrollToDate(date) {
-		el.scrollLeft = Math.floor(500000 + dateDaysBetweenDates(firstDate, date) * periodWidth)
-	}
+	onMount(() => {
+		elWidth = el.getBoundingClientRect().width
+	})
 
 </script>
 
 <div class="barchart-wrapper" style="{
 	'--chart-width:' + elWidth +'px;'+
-	'--visible-items:'+ $reportsStore.period +';'
+	'--visible-items:'+ rangeDates +';'
 }">
 
 <div class="legend"></div>
 
-<div class="line" style="bottom:calc(48px + 352px)"></div>
-<div class="line" style="bottom:calc(48px + 264px)"></div>
-<div class="line" style="bottom:calc(48px + 176px)"></div>
-<div class="line" style="bottom:calc(48px + 88px)"></div>
-<div class="line line-bottom" style="bottom:calc(48px + 0)"></div>
+<div class="line-wrapper">
+	<div class="line" style="bottom:100%;">
+		<span>
+			{dateGetHours($reportsStoreBarchartData.totalDayMax)}:{dateGetMinutes($reportsStoreBarchartData.totalDayMax)}
+		</span>
+	</div>
+	<div class="line" style="bottom:75%;">
+		<span>
+			{dateGetHours($reportsStoreBarchartData.totalDayMax / 4 * 3)}:{dateGetMinutes($reportsStoreBarchartData.totalDayMax / 4 * 3)}
+		</span>
+	</div>
+	<div class="line" style="bottom:50%;">
+		<span>
+			{dateGetHours($reportsStoreBarchartData.totalDayMax / 2)}:{dateGetMinutes($reportsStoreBarchartData.totalDayMax / 2)}
+		</span>
+	</div>
+	<div class="line" style="bottom:25%;">
+		<span>
+			{dateGetHours($reportsStoreBarchartData.totalDayMax / 4 * 1)}:{dateGetMinutes($reportsStoreBarchartData.totalDayMax / 4 * 1)}
+		</span>
+	</div>
+	<div class="line line-bottom" style="bottom:0%;"></div>
+</div>
 
 <div
-	class="barchart"
-	bind:this={el}
-	on:scroll={e => scroll(e)}>
+	class="barchart bp-{$uiStore.breakpoint} {animation ? 'no-snap' : ''}"
+	bind:this={el}>
 	<div
 		class="inner"
-		bind:this={innerEl}>
+		bind:this={innerEl} style="{'left:'+ (-1 * daysBetween * rangeWidth) +'px'}">
 		{#each daysArray as day, i (day.daysSince)}
-			<div class="day-container" style="{'left:'+ (500000 + (day.daysSince - $reportsStore.period) * periodWidth) +'px'}">
+			<div
+				class="day-container {activeDate === day.daysSince || !activeDate ? '' : 'inactive'}"
+				on:mouseenter={e => activeDate = day.daysSince}
+				on:mouseleave={e => activeDate = null}
+				style="{'left:'+ ((day.daysSince) * rangeWidth) +'px'}"
+				>
 
-				<ReportsBarchartDay date={day.date} />
+				<ReportsBarchartDay date={day.date} active={activeDate === day.daysSince} />
 			</div>
 		{/each}
 	</div>
 </div>
-
 </div>
 
+<div class="dates">
+	<div class="date first-date">
+		{dateGetHumanDate($reportsStore.firstDate)}
+	</div>
+	<div class="date last-date">
+		{dateGetHumanDate($reportsStore.lastDate)}
+	</div>
+</div>
 
 <style>
 	.barchart-wrapper {
@@ -114,24 +106,20 @@
 
 	.barchart {
 		position: relative;
-		height:400px;
-		width:100%;
-		overflow-x:auto;
-		overflow-y:show;
-		scroll-snap-type: x mandatory;
+		height:250px;
+		width:calc(100% - 24px);
 		backface-visibility: hidden;
 		z-index:300;
+		margin:0 0 0 24px;
 	}
 
-	.barchart::-webkit-scrollbar {
-		display: none;
+	.barchart.bp-l {
+		height:360px;
 	}
 
 	.inner {
 		position: relative;
 		height: 100%;
-		width:1000000px !important;
-		backface-visibility: hidden;
 	}
 
 	.day-container {
@@ -139,10 +127,9 @@
 		top:0;
 		width:calc(var(--chart-width) / var(--visible-items));
 		height:100%;
-		scroll-snap-align: start;
 		text-align: center;
 		font-size:14px;
-		z-index:100;
+		z-index:200;
 		border-bottom-right-radius: 6px;
 		border-bottom-left-radius: 6px;
 	}
@@ -155,20 +142,34 @@
 		opacity: 1;
 	}
 
-	.legend {
+	.day-container.inactive {
+		z-index:100;
+		opacity: .5;
+	}
+
+	/*.legend {
 		position: absolute;
 		bottom:0;
 		left:0;
 		width:100%;
 		height:48px;
 		background:#FAF9F7;
+	}*/
+
+	.line-wrapper {
+		pointer-events: none;
+		position: absolute;
+		top:0;
+		bottom:0;
+		left:0;
+		right:0;
 	}
 
 	.line {
 		content:'';
 		position: absolute;
-		bottom:48px;
-		left:0;
+		bottom:0;
+		left:24px;
 		right:0;
 		height: 1px;
 		background:#E6E4E1;
@@ -177,6 +178,22 @@
 
 	.line-bottom {
 		background:#26231E;
+		left:0;
+	}
+
+	.line span {
+		font-size:9px;
+		line-height: 12px;
+		width:24px;
+		text-align: left;
+		padding:0 0 0 1px;
+		position: absolute;
+		top:50%;
+		right:100%;
+		transform:translateY(-50%);
+		border-top-right-radius: 3px;
+		border-bottom-right-radius: 3px;
+		color:#99938A;
 	}
 
  	@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
@@ -189,5 +206,27 @@
 		.line-bottom {
 			background:#26231E;
 		}
+
+		.line span {
+			transform:translateY(-50%) scale(1, 2);
+		}
+	}
+
+	.dates {
+		width:100%;
+		display:flex;
+		flex-direction:row;
+	}
+
+	.date {
+		flex:1;
+		font-size:12px;
+		line-height:12px;
+		padding:12px 0 0 0;
+		font-weight:600;
+	}
+
+	.last-date {
+		text-align: right;
 	}
 </style>
