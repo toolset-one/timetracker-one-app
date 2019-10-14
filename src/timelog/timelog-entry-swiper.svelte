@@ -153,7 +153,7 @@
 	}
 
 	.indicator.neutral {
-		background:#26231E;
+		background:var(--c-darkgrey);
 	}
 
 	.indicator.stopwatch {

@@ -60,7 +60,7 @@
 		class="attr standard-ranges"
 		on:click={e => openStandardRanges(e)}>
 		<div class="attr-icon">
-			<UiIcon type='clock-big' size="big" color="#26231E" />
+			<UiIcon type='clock-big' size="big" color="var(--c-darkgrey)" />
 		</div>
 		<span class="attr-value">
 			{rangeOption}
@@ -71,7 +71,7 @@
 		class="attr first-date"
 		on:click={e => openFirstDate(e)}>
 		<div class="attr-icon">
-			<UiIcon type='clock-big' size="big" color="#26231E" />
+			<UiIcon type='clock-big' size="big" color="var(--c-darkgrey)" />
 		</div>
 		<span class="attr-value">
 			{dateGetHumanDate(firstDate)}
@@ -82,7 +82,7 @@
 		class="attr last-date"
 		on:click={e => openLastDate(e)}>
 		<div class="attr-icon">
-			<UiIcon type='clock-big' size="big" color="#26231E" />
+			<UiIcon type='clock-big' size="big" color="var(--c-darkgrey)" />
 		</div>
 		<span class="attr-value">
 			{dateGetHumanDate(lastDate)}

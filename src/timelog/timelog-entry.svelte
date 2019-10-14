@@ -92,7 +92,7 @@
 					type="{hasStopwatch ? 'entry has-stopwatch' : 'entry'}"
 					icon="{hasStopwatch ? 'pause' : 'play'}"
 					hovered={hovered || focused || hasStopwatch}
-					color="{hovered || focused || hasStopwatch ? '#26231E' : '#E6E4E1'}"
+					color="{hovered || focused || hasStopwatch ? 'var(--c-darkgrey)' : '#E6E4E1'}"
 					on:click={e => userSetStopwatch(data.id, (Date.now() - data.duration * 1000))}
 					focusConfig="TIMELOG_ENTRY_STOPWATCH"
 					focusTop={first ? 'TIMELOG_ENTRY__TO_ADD' : null} />
@@ -144,7 +144,7 @@
 					type="entry"
 					icon="burger"
 					hovered={hovered || focused}
-					color="{hovered || focused ? '#26231E' : '#E6E4E1'}"
+					color="{hovered || focused ? 'var(--c-darkgrey)' : '#E6E4E1'}"
 					on:click={e => dispatch('open', { component: 'contextNav', id: data.id})}
 					focusConfig="TIMELOG_ENTRY_CONEXTNAV"
 					focusTop={first ? 'TIMELOG_ENTRY__TO_ADD' : null} />

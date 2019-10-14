@@ -107,7 +107,7 @@
 	}
 
 	.active, .active:hover {
-		color:#26231E;
+		color:var(--c-darkgrey);
 	}
 
 	span {
@@ -134,7 +134,7 @@
 		left:50%;
 		width:60px;
 		height:2px;
-		background:#26231E;
+		background:var(--c-darkgrey);
 		z-index:100;
 		transition: all 100ms ease;
 		pointer-events: none;

@@ -56,8 +56,8 @@ input {
 	background:transparent;
 	border-radius:0;
 	box-shadow:none;
-	caret-color:#26231E;
-	color:#26231E;
+	caret-color:var(--c-darkgrey);
+	color:var(--c-darkgrey);
 	font-variant-numeric: tabular-nums;
 	font-family: monospace;
 	cursor: pointer;

@@ -62,13 +62,17 @@ html, body {
 	height: 100%;
 }
 
+html {
+    --c-darkgrey: #26231E;
+}
+
 body {
-	color: #333;
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
 	font-family:overpass, sans-serif;
 	background:#F7F5F2;
+    color:var(--c-darkgrey);
 }
 
 *, *:before, *:after {

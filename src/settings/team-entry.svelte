@@ -83,7 +83,7 @@
 					type="entry"
 					icon="burger"
 					hovered={hovered}
-					color="{hovered ? '#26231E' : '#E6E4E1'}"
+					color="{hovered ? 'var(--c-darkgrey)' : '#E6E4E1'}"
 					on:click={e => dispatch('open', { component: 'contextNav', id: data.id})} />
 			</div>
 		{/if}

@@ -193,14 +193,14 @@
 		on:click={e => prevRange(firstDate, lastDate)}
 		tabindex="0"
 		data-config="REPORTS_RANGE_ARROW_LEFT">
-		<UiIcon type="arrow-left" color="#26231E" />	
+		<UiIcon type="arrow-left" color="var(--c-darkgrey)" />	
 	</div>
 	<div
 		class="arrow-right"
 		on:click={e => nextRange(firstDate, lastDate)}
 		tabindex="0"
 		data-config="REPORTS_RANGE_ARROW_RIGHT">
-		<UiIcon type="arrow-right" color="#26231E" />	
+		<UiIcon type="arrow-right" color="var(--c-darkgrey)" />	
 	</div>
 	<span
 		class="title"

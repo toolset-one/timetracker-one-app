@@ -77,7 +77,7 @@
 		class="attr duration"
 		on:click={e => openDuration(e)}>
 		<div class="attr-icon">
-			<UiIcon type='clock-big' size="big" color="#26231E" />
+			<UiIcon type='clock-big' size="big" color="var(--c-darkgrey)" />
 		</div>
 		<span class="attr-value">
 			{#if hasStopwatch}
@@ -91,7 +91,7 @@
 				type="icon"
 				icon="{hasStopwatch ? 'pause' : 'play'}"
 				hovered={hovered || hasStopwatch}
-				color="#26231E"
+				color="var(--c-darkgrey)"
 				on:click={e => userSetStopwatch(id, (Date.now() - entryData.duration * 1000))} />
 		</div>
 	</div>

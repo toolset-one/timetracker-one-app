@@ -126,7 +126,7 @@
 		text-align:center;
 		margin:-6px 0 6px 0;
 		box-shadow:0 4px 0 -2px rgba(0, 0, 0, .05), 0 3px 6px rgba(0, 0, 0, .1);
-		background:#26231E;
+		background:var(--c-darkgrey);
 	}
 
 	.tooltip:after {

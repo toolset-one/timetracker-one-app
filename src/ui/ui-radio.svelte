@@ -10,7 +10,7 @@
 	export let type = 'default'
 	export let icon = 'arrow-left'
 	export let hovered = false
-	export let color = '#26231E'
+	export let color = 'var(--c-darkgrey)'
 	export let link = null
 
 	export let value = null
@@ -148,7 +148,7 @@
 	}
 
 	.option:hover, .option.active {
-		color:#26231E;
+		color:var(--c-darkgrey);
 	}
 
 	.option.disabled, .option.disabled:hover {

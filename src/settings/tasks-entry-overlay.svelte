@@ -57,7 +57,7 @@
 		class="attr title"
 		on:click={e => openTitle(e)}>
 		<div class="attr-icon">
-			<UiIcon type='pen-big' size="big" color="#26231E" />
+			<UiIcon type='pen-big' size="big" color="var(--c-darkgrey)" />
 		</div>
 		<span class="attr-value">
 			{entryData && entryData.title.length > 0

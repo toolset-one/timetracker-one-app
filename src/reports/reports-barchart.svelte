@@ -177,7 +177,7 @@
 	}
 
 	.line-bottom {
-		background:#26231E;
+		background:var(--c-darkgrey);
 		left:0;
 	}
 
@@ -204,7 +204,7 @@
 		}
 
 		.line-bottom {
-			background:#26231E;
+			background:var(--c-darkgrey);
 		}
 
 		.line span {

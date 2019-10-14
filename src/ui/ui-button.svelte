@@ -10,7 +10,7 @@
 	export let type = 'default'
 	export let icon = 'arrow-left'
 	export let hovered = false
-	export let color = '#26231E'
+	export let color = 'var(--c-darkgrey)'
 	export let link = null
 	export let disabled = false
 	export let focusConfig = 'EMPTY'
@@ -167,12 +167,12 @@
 	}
 
 	.type-dark {
-		background:#26231E;
+		background:var(--c-darkgrey);
 	}
 
 	.type-dark span {
 		color:#FFF;
-		background:#26231E;
+		background:var(--c-darkgrey);
 	}
 
 	.has-stopwatch {

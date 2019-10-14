@@ -114,7 +114,7 @@
 .wrapper.focussed label,
 .wrapper.filled label {
 	top:15px;
-	color:#26231E;
+	color:var(--c-darkgrey);
 }
 
 .wrapper.focussed input,
@@ -142,18 +142,18 @@
 	background:#FFF;
 	border-radius:6px;
 	box-shadow:none;
-	caret-color:#26231E;
+	caret-color:var(--c-darkgrey);
 	box-shadow:0 0 0 100px #FFF inset;
 	outline-style:solid;
 	outline-color:rgba(0, 0, 255, .25);
 	outline-width:0;
 	outline-offset:2px;
-	color:#26231E;
+	color:var(--c-darkgrey);
 	transition: border-color 100ms ease;
 }
 
 .wrapper:hover input, .wrapper:focus input {
-	border-color:#26231E;
+	border-color:var(--c-darkgrey);
 }
 
 .wrapper input:-webkit-autofill {
@@ -165,7 +165,7 @@
 	position: absolute;
 	top:100%;
 	left:18px;
-	background:#26231E;
+	background:var(--c-darkgrey);
 	font-size:14px;
 	line-height: 24px;
 	margin:-3px 0 0 0;
@@ -183,7 +183,7 @@
 	position: absolute;
 	top:0;
 	left:50%;
-	background:#26231E;
+	background:var(--c-darkgrey);
 	transform: translateX(-50%) translateY(-50%) rotateZ(45deg);
 }
 
