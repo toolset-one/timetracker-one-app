@@ -72,7 +72,7 @@
 		font-size:14px;
 		outline:none;
 		width:180px;
-		box-shadow:0 4px 0 -2px rgba(0, 0, 0, .05),  0 3px 6px rgba(0, 0, 0, .1);
+		box-shadow:var(--shadow-overlay);
 		font-weight:600;
 		border-radius: 6px;
 	}

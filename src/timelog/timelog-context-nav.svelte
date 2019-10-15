@@ -114,7 +114,7 @@
 		z-index:1010;
 		background:#FFF;
 		border-radius: 6px;
-		box-shadow:0 4px 0 -2px rgba(0, 0, 0, .05),  0 3px 6px rgba(0, 0, 0, .1);
+		box-shadow:var(--shadow-overlay);
 		overflow:hidden;
 		height:36px;
 		width:36px;
