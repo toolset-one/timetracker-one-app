@@ -88,7 +88,7 @@
 		padding:1px;
 		border:0;
 		border-radius: 6px;
-		background:#CCC9C4;
+		background:var(--c-grey);
 		transition: all 100ms ease;
 		outline:none;
 	}
@@ -164,8 +164,8 @@
 		left:0;
 
 		background:#FFF;
-		border-left:#CCC9C4 1px solid;
-		border-right:#CCC9C4 1px solid;
+		border-left:var(--c-grey) 1px solid;
+		border-right:var(--c-grey) 1px solid;
 		border-radius: 5px;
 		box-shadow: 0 6px 0 -3px rgba(0, 0, 0, .05);
 		transition: all 100ms ease;

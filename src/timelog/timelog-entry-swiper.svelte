@@ -157,7 +157,7 @@
 	}
 
 	.indicator.stopwatch {
-		background:#477DB3;
+		background:var(--c-blue);
 	}
 
 	.indicator.delete {

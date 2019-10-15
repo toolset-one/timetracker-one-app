@@ -72,7 +72,7 @@
 
 	@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
 		nav:after {
-			background:#CCC9C4;
+			background:var(--c-grey);
 			transform:scale(1, 0.5);
 			transform-origin: 0 100%;
 		}

@@ -64,6 +64,9 @@ html, body {
 
 html {
     --c-darkgrey: #26231E;
+    --c-grey: #CCC9C4;
+    --c-blue: #477DB3;
+    --c-background:#F7F5F2;
 }
 
 body {
@@ -71,7 +74,7 @@ body {
 	padding: 0;
 	box-sizing: border-box;
 	font-family:overpass, sans-serif;
-	background:#F7F5F2;
+	background:var(--c-background);
     color:var(--c-darkgrey);
 }
 
@@ -82,7 +85,7 @@ body {
 }
 
 a {
-	color: #477DB3;
+	color: var(--c-blue);
 	text-decoration: none;
 }
 

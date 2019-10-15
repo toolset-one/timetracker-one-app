@@ -193,7 +193,7 @@
 
 	@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
 		li:after {
-			background:#CCC9C4;
+			background:var(--c-grey);
 			transform:scale(1, 0.5);
 			transform-origin: 0 100%;
 		}
@@ -216,7 +216,7 @@
 	.has-stopwatch .duration >div,
 	.has-stopwatch.hovered .duration >div {
 		min-width:63px;
-		background:#477DB3;
+		background:var(--c-blue);
 		color:#FFF;
 		cursor:initial;
 		margin-left:-6px;
@@ -238,7 +238,7 @@
 	}
 
 	.mouse.has-stopwatch .duration:hover >div {
-		background:#477DB3;
+		background:var(--c-blue);
 	}
 
 	@keyframes ticking {

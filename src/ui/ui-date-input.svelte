@@ -41,7 +41,7 @@
 }
 
 .wrapper.active {
-	background:#F7F5F2;
+	background:var(--c-background);
 }
 
 input {

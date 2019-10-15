@@ -123,11 +123,11 @@
 }
 
 .wrapper.disabled input {
-	border-color:#F7F5F2;
+	border-color:var(--c-background);
 }
 
 .wrapper.disabled:hover input, .wrapper.disabled:focus input {
-	border-color:#F7F5F2;
+	border-color:var(--c-background);
 }
 
 .wrapper input {
@@ -135,7 +135,7 @@
 	width:100%;
 	max-width:100%;
 	margin:0;
-	border:#CCC9C4 1px solid;
+	border:var(--c-grey) 1px solid;
 	padding:14px 17px 14px 17px;
 	line-height:24px;
 	font-size:16px;

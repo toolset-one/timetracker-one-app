@@ -239,7 +239,7 @@ div {
 	width: 0;
 	height: 0;
 	border-radius: 10px;
-	border: #477DB3 3px solid;
+	border: var(--c-blue) 3px solid;
 	opacity: .5;
 	z-index: 20000;
 	animation: glow 1500ms infinite;

@@ -97,7 +97,7 @@
 
 	@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
 		header:after {
-			background:#CCC9C4;
+			background:var(--c-grey);
 			transform:scale(1, 0.5);
 			transform-origin: 0 100%;
 		}
@@ -179,13 +179,13 @@
 		left:12px;
 		width:18px;
 		height:18px;
-		border:#CCC9C4 1px solid;
+		border:var(--c-grey) 1px solid;
 		border-radius: 3px;
 		transition: 100ms ease;
 	}
 
 	li .active {
-		border-color:#477DB3;
+		border-color:var(--c-blue);
 	}
 	li div:after {
 		content:"";
@@ -195,8 +195,8 @@
 		position: absolute;
 		top:4px;
 		left:4px;
-		border-left:#477DB3 2px solid;
-		border-bottom:#477DB3 2px solid;
+		border-left:var(--c-blue) 2px solid;
+		border-bottom:var(--c-blue) 2px solid;
 		transform: rotate(45deg);
 		opacity:0;
 		transition: 100ms ease;

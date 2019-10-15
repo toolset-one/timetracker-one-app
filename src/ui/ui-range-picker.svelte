@@ -283,7 +283,7 @@
 		padding:1px;
 		border:0;
 		border-radius: 6px;
-		background:#CCC9C4;
+		background:var(--c-grey);
 		cursor: pointer;
 		box-shadow: 0 6px 0 -3px rgba(0, 0, 0, .05);
 		transition: all 100ms ease;
