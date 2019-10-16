@@ -115,7 +115,7 @@
 		display:block;
 		line-height:24px;
 		font-size: 14px;
-		color:#66625C;
+		color:var(--x-middlegrey);
 		max-width:100%;
 		white-space: nowrap;
 		overflow-x: hidden;

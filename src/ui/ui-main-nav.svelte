@@ -115,7 +115,7 @@
 		position: relative;
 		font-size:14px;
 		font-weight:500;
-		color:#66625C;
+		color:var(--x-middlegrey);
 		transition: color 100ms ease;
 		outline:none;
 	}

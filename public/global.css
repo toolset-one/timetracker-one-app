@@ -64,6 +64,7 @@ html, body {
 
 html {
     --c-darkgrey: #26231E;
+    --c-middlegrey: #66625C;
     --c-grey: #CCC9C4;
     --c-blue: #477DB3;
     --c-background: #F7F5F2;
@@ -128,7 +129,7 @@ h2 {
     margin: 0;
     padding: 0;
     font-weight: 600;
-    color:#66625C;
+    color:var(--x-middlegrey);
 }
 
 @media (min-width: 800px) {
