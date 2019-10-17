@@ -153,7 +153,7 @@
 		left:0;
 		width:100%;
 		height:48px;
-		background:#FAF9F7;
+		background:var(--c-background-light);
 	}*/
 
 	.line-wrapper {

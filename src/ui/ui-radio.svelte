@@ -98,7 +98,7 @@
 		display: block;
 		height:40px;
 		border-radius: 5px;
-		background:#FAF9F7;
+		background:var(--c-background-light);
 		padding:0;
 	}
 

@@ -120,7 +120,7 @@
 	}
 
 	a:hover span {
-		background:#FAF9F7;
+		background:var(--c-background-light);
 	}
 
 	.bp-xs span {

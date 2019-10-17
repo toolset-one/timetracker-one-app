@@ -68,6 +68,7 @@ html {
     --c-grey: #CCC9C4;
     --c-blue: #477DB3;
     --c-background: #F7F5F2;
+    --c-background-light: #FAF9F7;
 
     --shadow-overlay: 0 4px 0 -2px rgba(0, 0, 0, .05), 0 3px 6px rgba(0, 0, 0, .1);
 }
