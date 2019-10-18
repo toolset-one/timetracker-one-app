@@ -191,7 +191,7 @@
 	}
 
 	li:hover {
-		background:#F5F3F0;
+		background:var(--c-hover-grey);
 	}
 
 	small {
