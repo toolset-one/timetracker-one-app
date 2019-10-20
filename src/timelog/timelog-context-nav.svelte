@@ -178,7 +178,7 @@
 	}
 
 	.disabled {
-		color:#99938A;
+		color:var(--c-greyed-out);
 		cursor:default;
 	}
 </style>

@@ -193,7 +193,7 @@
 		transform:translateY(-50%);
 		border-top-right-radius: 3px;
 		border-bottom-right-radius: 3px;
-		color:#99938A;
+		color:var(--c-greyed-out);
 	}
 
  	@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 

@@ -140,7 +140,7 @@
 		padding:0 12px;
 		font-size:14px;
 		font-weight:600;
-		color:#99938A;
+		color:var(--c-greyed-out);
 		float:left;
 		transition: all 100ms ease;
 		cursor: pointer;
@@ -152,7 +152,7 @@
 	}
 
 	.option.disabled, .option.disabled:hover {
-		color:#99938A;
+		color:var(--c-greyed-out);
 		cursor:default;
 	}
 

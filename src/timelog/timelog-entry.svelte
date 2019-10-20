@@ -380,7 +380,7 @@
 	}
 
 	.no-comment {
-		color:#99938A;
+		color:var(--c-greyed-out);
 	}
 
 	.nav {
