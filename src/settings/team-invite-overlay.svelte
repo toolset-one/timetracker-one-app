@@ -29,15 +29,6 @@
 		el.querySelector('input[type="email"]').focus()
 	})
 
-	/* function keydown(e) {
-		if( e.keyCode === 27) { // ESC
-			alreadyClosed = true
-			dispatch('close', '')
-		} else if( e.keyCode === 13) { // ENTER
-			save()
-		}
-	} */
-
 	function save() {
 		if(!alreadyClosed) {
 			teamStoreInvite(email, username, (err, res) => {
