@@ -24,19 +24,9 @@
 	newTeamTitle = ''
 
 
-
-	onMount(() => {
-
-	})
-
-
 	function openOverlayComponent(e) {
 		overlayComponent = overlays[e.component]
 		entryIdActive = e.id
-	}
-
-	function newEntry() {
-
 	}
 
 </script>
