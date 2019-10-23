@@ -1,5 +1,4 @@
 <script>
-	import { onMount } from 'svelte';
 	import { authStoreNewPassword } from '../stores/auth-store.js'
 
 	import UiInput from '../ui/ui-input.svelte'
@@ -12,10 +11,6 @@
 	let email = '',
 		emailError = '',
 		error = ''
-
-	onMount(() => {
-		
-	})
 
 	function getNewPassword() {
 		
