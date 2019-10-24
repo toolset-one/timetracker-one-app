@@ -1,5 +1,5 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount } from 'svelte'
 	import { KEYS_CONFIG } from '../helpers/keyyboad-configurations.js'
 	import { uiStore } from '../stores/ui-store.js'
 

@@ -1,5 +1,5 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount } from 'svelte'
 	import { authStoreNewPassword, authStoreVerifyPasswordCode, authStoreConfirmPasswordReset } from '../stores/auth-store.js'
 	import { getUrlParameter } from '../helpers/helpers.js'
 

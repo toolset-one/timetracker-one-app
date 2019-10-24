@@ -1,6 +1,6 @@
 <script>
 	import Page from 'page'
-	import { onMount } from 'svelte';
+	import { onMount } from 'svelte'
 	import { tasksStore, tasksStoreNewTask } from '../stores/tasks-store.js'
 	import { uiStore } from '../stores/ui-store.js'
 

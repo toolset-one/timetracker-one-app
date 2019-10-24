@@ -1,5 +1,5 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount } from 'svelte'
 	import { routerStore } from '../stores/router-store.js'
 	import { uiStore } from '../stores/ui-store.js'
 	import { reportsStore, reportsStoreBarchartData, reportsStoreUpdateRange } from '../stores/reports-store.js'

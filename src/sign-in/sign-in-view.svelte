@@ -1,6 +1,5 @@
 <script>
 	import Page from 'page'
-	import { onMount } from 'svelte';
 	import { authStore, authSignIn } from '../stores/auth-store.js'
 
 	import UiInput from '../ui/ui-input.svelte'
@@ -11,10 +10,6 @@
 		password = '',
 		passwordError = '',
 		error = ''
-
-	onMount(() => {
-		
-	})
 
 	function signIn() {
 		authSignIn(email, password).then(res => {

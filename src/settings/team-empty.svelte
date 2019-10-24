@@ -1,6 +1,6 @@
 <script>
 	import Page from 'page'
-	import { onMount } from 'svelte';
+	import { onMount } from 'svelte'
 	import { uiStore } from '../stores/ui-store.js'
 	import { teamStore, teamStoreChangeTitle } from '../stores/team-store.js'
 

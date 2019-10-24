@@ -1,5 +1,5 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount } from 'svelte'
 	import { routerStore } from './stores/router-store.js'
 	import { authStore, authInit } from './stores/auth-store.js'
 	import { timesStoreInit } from './stores/times-store.js'

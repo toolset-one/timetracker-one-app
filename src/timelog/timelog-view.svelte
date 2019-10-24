@@ -1,6 +1,6 @@
 <script>
 	import Page from 'page'
-	import { onMount } from 'svelte';
+	import { onMount } from 'svelte'
 	import { get } from 'svelte/store';
 	import { routerStore } from '../stores/router-store.js'
 	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'

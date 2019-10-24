@@ -1,6 +1,6 @@
 <script>
 	import Page from 'page'
-	import { onMount } from 'svelte';
+	import { onMount } from 'svelte'
 	import { authSignOut } from '../stores/auth-store.js'
 	import { uiStore } from '../stores/ui-store.js'
 	import { userStore, userStoreSetUsername } from '../stores/user-store.js'
