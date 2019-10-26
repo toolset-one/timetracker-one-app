@@ -1,5 +1,4 @@
 <script>
-	import { onMount } from 'svelte'
 	import { routerStore } from '../stores/router-store.js'
 	import { uiStore } from '../stores/ui-store.js'
 
@@ -7,10 +6,6 @@
 	import TasksSubview from '../settings/tasks-subview.svelte'
 	import TeamSubview from '../settings/team-subview.svelte'
 	import AccountSubview from '../settings/account-subview.svelte'
-
-	onMount(() => {
-	
-	})
 
 </script>
 
