@@ -1,5 +1,5 @@
 <script>
-	import { onMount, createEventDispatcher } from 'svelte'
+	import { createEventDispatcher } from 'svelte'
 	import { get } from 'svelte/store'
 	import { mobileOverlayTransition } from '../helpers/animations.js'
 	import { timesStoreChangeTask } from '../stores/times-store.js'
@@ -12,10 +12,6 @@
 
 	let el,
 		animation = false
-
-	onMount(async () => {
-
-	})
 
 
 	function toggle(id) {

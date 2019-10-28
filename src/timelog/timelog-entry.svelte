@@ -165,7 +165,7 @@
 		padding:0;
 		background:#FFF;
 		border-radius:0;
-		box-shadow:0 1px 1px rgba(0, 0, 0, .05), 0 2px 3px rgba(0, 0, 0, .1);
+		box-shadow:var(--shadow-box);
 		outline:none;
 	}
 

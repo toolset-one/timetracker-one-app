@@ -128,7 +128,7 @@
 		border-radius: 6px;
 		background:#FFF;
 		padding:0 30px 30px 30px;
-		box-shadow:0 1px 1px rgba(0, 0, 0, .05), 0 2px 3px rgba(0, 0, 0, .1);
+		box-shadow:var(--shadow-box);
 	}
 
 	h2 {
