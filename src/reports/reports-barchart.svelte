@@ -147,15 +147,6 @@
 		opacity: .5;
 	}
 
-	/*.legend {
-		position: absolute;
-		bottom:0;
-		left:0;
-		width:100%;
-		height:48px;
-		background:var(--c-background-light);
-	}*/
-
 	.line-wrapper {
 		pointer-events: none;
 		position: absolute;
