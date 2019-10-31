@@ -1,6 +1,5 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
-	import { fade } from 'svelte/transition'
 	import { getWindowWidth, isEmailValid } from '../helpers/helpers.js'
 	import { teamStoreInvite } from '../stores/team-store.js'
 
