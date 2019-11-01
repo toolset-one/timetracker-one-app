@@ -3,6 +3,7 @@ import { dateGetHours, dateGetMinutes, dateGetSeconds } from '../helpers/helpers
 import { routerStore } from '../stores/router-store.js'
 import { userStore, userStopwatchStore } from '../stores/user-store.js'
 
+
 const TITLE_MAP = {
 	'timelog': 'Timelog',
 	'reports': 'Reports',
@@ -15,10 +16,12 @@ let view = '',
 	seconds = null,
 	divider = ':'
 
+
 export const uiStore = writable({
 	breakpoint: 'xs',
 	isTouchDevice: false
 })
+
 
 export const uiStopwatchStore = writable({
 	hours: 0,
@@ -26,9 +29,11 @@ export const uiStopwatchStore = writable({
 	seconds: 0
 })
 
+
 export const uiScrollstopStore = writable({
 	scrollstop: false
 })
+
 
 export function uiStoreInit() {
 	uiStore.update(data => {
@@ -36,6 +41,7 @@ export function uiStoreInit() {
 		return data
 	})
 }
+
 
 export function uiStoreSetBreakpoint(windowWidth) {
 	uiStore.update(data => {
@@ -50,6 +56,7 @@ export function uiStoreSetBreakpoint(windowWidth) {
 		return data
 	})
 }
+
 
 userStopwatchStore.subscribe(userStopwatchData => {
 
@@ -67,6 +74,7 @@ userStopwatchStore.subscribe(userStopwatchData => {
 	})
 	setTitle(view, hours, minutes)
 })
+
 
 routerStore.subscribe(routerData => {
 	view = routerData.view
