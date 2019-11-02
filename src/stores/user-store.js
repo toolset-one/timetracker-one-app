@@ -4,6 +4,7 @@ import { authStore } from '../stores/auth-store.js'
 import { timesStoreChangeDuration } from '../stores/times-store.js'
 import { sws } from '../helpers/sws-client.js'
 
+
 export const userStore = writable({
 	language: 'EN',
 	stopwatchEntryId: null,
@@ -17,9 +18,11 @@ let listenerUserId,
 	interval,
 	userStoreInited = false
 
+
 export function userStoreInit() {
 	setListener()
 }
+
 
 function setListener() {
 	authStore.subscribe(authData => {
@@ -51,7 +54,8 @@ function setListener() {
 	})
 }
 
-// TODO: Let's do everythin async
+
+// TODO: Let's do everything async
 // TODO: Invitation
 export function updateUser(cb) {
 	const authData = get(authStore)
