@@ -2,7 +2,6 @@
 	import { onMount, createEventDispatcher } from 'svelte'
 	import { get } from 'svelte/store'
 	import { mobileOverlayTransition } from '../helpers/animations.js'
-	import { timesStoreChangeTask } from '../stores/times-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 
 	import UiIcon from '../ui/ui-icon.svelte'
@@ -90,7 +89,7 @@
 
 <div class="wrapper" transition:mobileOverlayTransition>
 	<header>
-		Edit Task
+		Pick a range
 	</header>
 
 	<div class="swiper">
