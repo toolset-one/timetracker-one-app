@@ -1,10 +1,6 @@
 import { writable } from 'svelte/store'
 import { sws } from '../helpers/sws-client.js'
 
-const ACTION_CODE_SETTINGS = {
-	url: 'http://'+ (window.location.href.includes('localhost') ? 'localhost:10002' : 'app.timetracker.one') +'/sign-in/validate/',
-	handleCodeInApp: true
-}
 
 export const authStore = writable({
 	inited: false,

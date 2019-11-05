@@ -691,6 +691,10 @@ swsServer.gateway = {
 				}
 			}
 		} 
+
+		swsServer.gateway.ws.onerror = err => {
+			console.log('ERR', err)
+		}
 	},
 
 
