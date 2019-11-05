@@ -21,7 +21,7 @@ export default {
 		file: 'public/bundle.js'
 	},
 	plugins: [
-		!production && replace({
+		replace({
 			'SERVER_URL': process.env.SERVER_URL
 		}),
 		svelte({
