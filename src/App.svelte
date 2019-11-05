@@ -83,7 +83,7 @@ const MODELS = {
 		uiStoreSetBreakpoint(getWindowWidth())
 
 		await sws.init({
-			server: 'ws://timetracker-one-server.herokuapp.com',
+			server: 'wss://timetracker-one-server.herokuapp.com',
 			models: MODELS
 		})
 
