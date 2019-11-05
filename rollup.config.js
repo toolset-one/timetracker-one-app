@@ -1,4 +1,5 @@
 import svelte from 'rollup-plugin-svelte';
+import replace from '@rollup/plugin-replace';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import livereload from 'rollup-plugin-livereload';
@@ -6,6 +7,10 @@ import serve from 'rollup-plugin-serve';
 import { terser } from 'rollup-plugin-terser';
 
 const production = !process.env.ROLLUP_WATCH;
+
+if(!production) {
+  require('dotenv').config()
+}
 
 export default {
 	input: 'src/main.js',
@@ -16,6 +21,9 @@ export default {
 		file: 'public/bundle.js'
 	},
 	plugins: [
+		!production && replace({
+			'SERVER_URL': process.env.SERVER_URL
+		}),
 		svelte({
 			// enable run-time checks when not in production
 			dev: !production,
