@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte'
 	import { get } from 'svelte/store'
 	import { isEmailValid } from '../helpers/helpers.js'
+	import { uiStore } from '../stores/ui-store.js'
 	import { authStore, authSignUp, authSignIn } from '../stores/auth-store.js'
 	import { routerStore } from '../stores/router-store.js'
 
@@ -12,8 +13,10 @@
 	let isInvitation = false,
 		email = '',
 		emailError = '',
+		emailEl,
 		password = '',
 		passwordError = '',
+		passwordEl,
 		code = ''
 
 	onMount(() => {
@@ -30,6 +33,14 @@
 				code = urlCode
 				isInvitation = true
 			}, 10)
+
+			if(!get(uiStore).isTouchDevice) {
+				passwordEl.focus()
+			}
+		} else {
+			if(!get(uiStore).isTouchDevice) {
+				emailEl.focus()
+			}
 		}
 		
 	})
@@ -80,6 +91,7 @@
 			<UiInput
 				label="E-Mail"
 				type="email"
+				bind:this={emailEl}
 				bind:value={email}
 				disabled={isInvitation}
 				bind:error={emailError} />
@@ -88,6 +100,7 @@
 			<UiInput
 				label="Password"
 				type="password"
+				bind:this={passwordEl}
 				bind:value={password}
 				bind:error={passwordError} />
 		</div>

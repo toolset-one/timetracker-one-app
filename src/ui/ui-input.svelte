@@ -27,7 +27,11 @@
 		})
 	})
 
-	function focus(e) {
+	export function focus() {
+		el.querySelector('input').focus()
+	}
+
+	function isFocused(e) {
 		focused = true
 		dispatch('focus')
 	}
@@ -59,7 +63,7 @@
 		<input
 			type="email"
 			bind:value={value}
-			on:focus={e => focus(e)}
+			on:focus={e => isFocused(e)}
 			on:blur={e => blur(e)}
 			{disabled}
 			data-disable="true">
@@ -67,7 +71,7 @@
 		<input
 			type="password"
 			bind:value={value}
-			on:focus={e => focus(e)}
+			on:focus={e => isFocused(e)}
 			on:blur={e => blur(e)}
 			{disabled}
 			data-disable="true">
@@ -75,7 +79,7 @@
 		<input
 			type="text"
 			bind:value={value}
-			on:focus={e => focus(e)}
+			on:focus={e => isFocused(e)}
 			on:blur={e => blur(e)}
 			{disabled}
 			data-disable="true">

@@ -1,4 +1,7 @@
 <script>
+	import { onMount } from 'svelte'
+	import { get } from 'svelte/store'
+	import { uiStore } from '../stores/ui-store.js'
 	import { authStoreNewPassword } from '../stores/auth-store.js'
 
 	import UiInput from '../ui/ui-input.svelte'
@@ -10,7 +13,14 @@
 
 	let email = '',
 		emailError = '',
-		error = ''
+		emailEl
+
+
+	onMount(() => {
+		if(!get(uiStore).isTouchDevice) {
+			emailEl.focus()
+		}
+	})
 
 	function getNewPassword() {
 		
@@ -48,6 +58,7 @@
 			<UiInput
 				label="E-Mail"
 				type="email"
+				bind:this={emailEl}
 				bind:value={email}
 				bind:error={emailError} />
 		</div>

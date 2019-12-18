@@ -1,5 +1,8 @@
 <script>
 	import Page from 'page'
+	import { onMount } from 'svelte'
+	import { get } from 'svelte/store'
+	import { uiStore } from '../stores/ui-store.js'
 	import { authStore, authSignIn } from '../stores/auth-store.js'
 
 	import UiInput from '../ui/ui-input.svelte'
@@ -7,9 +10,17 @@
 
 	let email = '',
 		emailError = '',
+		emailEl,
 		password = '',
 		passwordError = '',
 		error = ''
+
+
+	onMount(() => {
+		if(!get(uiStore).isTouchDevice) {
+			emailEl.focus()
+		}
+	})
 
 	function signIn() {
 		authSignIn(email, password).then(res => {
@@ -58,6 +69,7 @@
 			<UiInput
 				label="E-Mail"
 				type="email"
+				bind:this={emailEl}
 				bind:value={email}
 				bind:error={emailError} />
 		</div>
