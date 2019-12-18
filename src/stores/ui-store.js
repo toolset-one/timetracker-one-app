@@ -5,6 +5,9 @@ import { userStore, userStopwatchStore } from '../stores/user-store.js'
 
 
 const TITLE_MAP = {
+	'sign-in': 'Sign In',
+	'sign-uo': 'Sign Up',
+	'new-password': 'New password',
 	'timelog': 'Timelog',
 	'reports': 'Reports',
 	'settings': 'Settings',
