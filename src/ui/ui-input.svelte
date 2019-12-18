@@ -34,6 +34,10 @@
 	function isFocused(e) {
 		focused = true
 		dispatch('focus')
+
+		document.querySelector('div').dispatchEvent(new CustomEvent('set-last-input-as-key', {
+			bubbles: true
+		}))
 	}
 
 	function blur(e) {
@@ -47,6 +51,16 @@
 		dispatch('keydown', e.keyCode)
 	}
 
+	function mouseup(e) {
+		if(focused) {
+			window.requestAnimationFrame(() => {
+				document.querySelector('div').dispatchEvent(new CustomEvent('set-last-input-as-key', {
+					bubbles: true
+				}))
+			})
+		}
+	}
+
 </script>
 
 <div 
@@ -55,7 +69,8 @@
 		{focused ? 'focused' : ''}
 		{disabled ? 'disabled' : ''}
 		{value.length > 0 || prefilled ? 'filled' : ''}"
-		on:keydown={e => keydown(e)}>
+		on:keydown={e => keydown(e)}
+		on:mouseup={e => mouseup(e)}>
 	<label>
 		{label}
 	</label>

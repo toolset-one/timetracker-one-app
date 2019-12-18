@@ -79,6 +79,7 @@
 			isLastInputAKey = true
 		}, false)
 
+		document.querySelector('body').addEventListener('set-last-input-as-key', e => isLastInputAKey = true)
 		document.querySelector('body').addEventListener('mouseup', e => isLastInputAKey = false)
 		document.querySelector('body').addEventListener('mousedown', e => isLastInputAKey = false)
 	})
