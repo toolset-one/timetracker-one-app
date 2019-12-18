@@ -1,6 +1,7 @@
-import { writable } from 'svelte/store'
+import { writable, get } from 'svelte/store'
 import Page from 'page'
 import { dateToDatestring } from '../helpers/helpers.js'
+import { authStore } from '../stores/auth-store.js'
 
 
 
@@ -9,12 +10,31 @@ export const routerStore = writable({
   subview: null
 })
 
+authStore.subscribe(authData => {
+	if(authData.inited) {
+		if(get(routerStore).view === 'index') {
+			if(authData.hasAuth) {
+				Page('/timelog/' + dateToDatestring(new Date()) + '/')
+			} else {
+				Page('/sign-in/')
+			}
+		}
+	}
+})
+
 
 Page({
 	hashbang: true
 })
 
-Page('/', () => Page('/timelog/' + dateToDatestring(new Date()) + '/'))
+Page('/', () => {
+	const authData = get(authStore)
+	if(authData.hasAuth) {
+		Page('/timelog/' + dateToDatestring(new Date()) + '/')
+	} else {
+		Page('/sign-in/')
+	}
+})
 
 Page('/timelog/', () => Page('/timelog/' + dateToDatestring(new Date()) + '/'))
 
