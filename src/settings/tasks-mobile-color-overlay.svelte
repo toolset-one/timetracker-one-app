@@ -1,6 +1,7 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
 	import { COLORS } from '../helpers/helpers.js'
+	import { i18n } from '../stores/i18n-store.js'
 	import { tasksStoreChangeColor } from '../stores/tasks-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 
@@ -35,7 +36,7 @@
 
 <div class="wrapper {opened ? 'opened' : ''}">
 	<header>
-		Change Color
+		{$i18n.EDIT_COLOR}
 	</header>
 
 	<div class="colors">

@@ -1,6 +1,8 @@
 <script>
 	import Page from 'page'
 	import { onMount } from 'svelte'
+	import { get } from 'svelte/store'
+	import { i18n } from '../stores/i18n-store.js'
 	import { authSignOut } from '../stores/auth-store.js'
 	import { uiStore } from '../stores/ui-store.js'
 	import { userStore, userStoreSetUsername, userStoreSetLanguage } from '../stores/user-store.js'
@@ -30,7 +32,8 @@
 	})
 
 	function usernameFocus(e) {
-		usernameInfo = 'Username is up to date.'
+		const { USERNAME_UP_TO_DATE } = get(i18n)
+		usernameInfo = USERNAME_UP_TO_DATE
 		usernameFocused = true
 	}
 
@@ -41,17 +44,20 @@
 
 	function usernameKeydown(e) {
 
-		usernameInfo = 'Username will be updated…'
+		const { USERNAME_WILL_BE_UPDATED } = get(i18n)
+		usernameInfo = USERNAME_WILL_BE_UPDATED
 
 		if(usernameDebounce) {
 			clearTimeout(usernameDebounce)
 		}
 
+		const { USERNAME_UP_TO_DATE } = get(i18n)
+
 		usernameDebounce = setTimeout(() =>
 			userStoreSetUsername(username, success => {
-				usernameInfo = 'Username is up to date.'
+				usernameInfo = USERNAME_UP_TO_DATE
 				usernameDebounce = setTimeout(() => {
-					usernameInfo = usernameFocused ? 'Username is up to date.' : ''
+					usernameInfo = usernameFocused ? USERNAME_UP_TO_DATE : ''
 				}, 1000)
 			})
 		, 500)
@@ -71,7 +77,7 @@
 		</h2>
 	</div>-->
 	<div class="sign-out-button-wrapper">
-		<UiButton label="Sign Out" on:click={e => authSignOut()} />
+		<UiButton label="{$i18n.SIGN_OUT}" on:click={e => authSignOut()} />
 	</div>
 </header>
 
@@ -79,11 +85,11 @@
 
 	<div class="container">
 		<h2>
-			Your Account {languageNow}
+			{$i18n.YOUR_ACCOUNT}
 		</h2>
 		
 		<UiInput
-			label="Username"
+			label="{$i18n.USERNAME}"
 			type="text"
 			bind:value={username}
 			on:focus={e => usernameFocus(e)}
@@ -95,7 +101,7 @@
 
 
 		<p>
-			Language
+			{$i18n.LANGUAGE}
 		</p>
 		<UiRadio
 			options={LANGUAGE_OPTIONS}

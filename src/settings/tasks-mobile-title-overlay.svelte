@@ -1,5 +1,6 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
+	import { i18n } from '../stores/i18n-store.js'
 	import { tasksStoreChangeTitle } from '../stores/tasks-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 
@@ -48,14 +49,14 @@
 
 <div class="wrapper {opened ? 'opened' : ''}">
 	<header>
-		Edit Title
+		{$i18n.EDIT_TITLE}
 	</header>
 
 	<textarea
 		type="text"
 		bind:this={el}
 		bind:value={value}
-		placeholder="No title"
+		placeholder="{$i18n.NO_TITLE}"
 		on:blur={e => save()}
 		on:keydown={e => keydown(e)}></textarea>
 </div>

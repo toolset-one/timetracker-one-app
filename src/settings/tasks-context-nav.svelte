@@ -2,6 +2,7 @@
 	import { onMount, createEventDispatcher } from 'svelte'
 	import { fade } from 'svelte/transition'
 	import { getWindowWidth } from '../helpers/helpers.js'
+	import { i18n } from '../stores/i18n-store.js'
 	import { tasksStoreDeleteEntry } from '../stores/tasks-store.js'
 
 	export let id = null
@@ -33,10 +34,10 @@
 
 	<ul on:click={e => dispatch('close', '')}>
 		<li on:click={e => dispatch('openTitle', id)}>
-			Edit Title
+			{$i18n.EDIT_TITLE}
 		</li>
 		<li class="border" on:click={e => tasksStoreDeleteEntry(id)}>
-			Delete
+			{$i18n.DELETE}
 		</li>
 	</ul>
 </nav>

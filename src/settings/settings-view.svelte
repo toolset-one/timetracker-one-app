@@ -1,5 +1,6 @@
 <script>
 	import { routerStore } from '../stores/router-store.js'
+	import { i18n } from '../stores/i18n-store.js'
 	import { uiStore } from '../stores/ui-store.js'
 
 	import UiSubNav from '../ui/ui-sub-nav.svelte'
@@ -7,18 +8,27 @@
 	import TeamSubview from '../settings/team-subview.svelte'
 	import AccountSubview from '../settings/account-subview.svelte'
 
+	$:routes = [{
+		title: $i18n.TASKS,
+		slug: 'tasks'
+	}, {
+		title: $i18n.TEAM,
+		slug: 'team'
+	}, {
+		title: $i18n.ACCOUNT,
+		slug: 'account'
+	}]
+
 </script>
 
 <section class="bp-{$uiStore.breakpoint}">
-	<UiSubNav />
+	<UiSubNav routes={routes} />
 </section>
 
 {#if $routerStore.subview === 'tasks'}
 	<TasksSubview />
 {:else if $routerStore.subview === 'team'}
 	<TeamSubview />
-{:else if $routerStore.subview === 'appearance'}
-	Appearance
 {:else if $routerStore.subview === 'account'}
 	<AccountSubview />
 {/if}

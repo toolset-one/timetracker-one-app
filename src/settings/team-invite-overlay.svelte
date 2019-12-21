@@ -1,6 +1,7 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
 	import { getWindowWidth, isEmailValid } from '../helpers/helpers.js'
+	import { i18n } from '../stores/i18n-store.js'
 	import { teamStoreInvite } from '../stores/team-store.js'
 
 	import UiInput from '../ui/ui-input.svelte'
@@ -57,24 +58,24 @@
 	class="wrapper {opened ? 'opened' : ''}">
 	<form on:keydown={e => keydown(e)}>
 		<div class="form-item">
-			Please provide the e-mail address of the one you'd like to invite. After clicking the button, we will send an invitation to join your team.
+			{$i18n.NEW_TEAM_GUIDE}
 		</div>
 		<div class="form-item">
 			<UiInput 
 				type="email"
-				label="E-Mail of new member"
+				label="{$i18n.EMAIL_OF_NEW_MEMBER}"
 				autofocus={true}
 				bind:value={email} />
 		</div>
 		<div class="form-item">
 			<UiInput 
 				type="text"
-				label="Name of new member"
+				label="{$i18n.NAME_OF_NEW_MEMBER}"
 				bind:value={username} />
 		</div>
 		<div class="form-item">
 			<UiButton
-				label="Send Invitation"
+				label="{$i18n.SEND_INVITATION}"
 				disabled={!emailValid}
 				on:click={e => save()} />
 		</div>

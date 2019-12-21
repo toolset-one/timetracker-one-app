@@ -1,6 +1,7 @@
 <script>
 	import Page from 'page'
 	import { onMount } from 'svelte'
+	import { i18n } from '../stores/i18n-store.js'
 	import { authStore, authSignOut } from '../stores/auth-store.js'
 	import { uiStore } from '../stores/ui-store.js'
 	import { teamStore, teamStoreChangeTitle } from '../stores/team-store.js'
@@ -41,12 +42,12 @@
 		<header class="bp-{$uiStore.breakpoint}">
 			<div class="subview-title">
 				<h2>
-					Team &middot; {$teamStore.active.title}
+					{$i18n.TEAM} &middot; {$teamStore.active.title}
 				</h2>
 			</div>
 			{#if $authStore.user && $teamStore.active && $authStore.user.teams[$teamStore.active.id] === 'ADMIN'}
 				<div class="add-button-wrapper">
-					<UiButton label="Invite Member" on:click={e => openOverlayComponent({ component: 'invite', id: null })} />
+					<UiButton label="{$i18n.INVITE_MEMBER}" on:click={e => openOverlayComponent({ component: 'invite', id: null })} />
 				</div>
 			{/if}
 		</header>
@@ -64,7 +65,7 @@
 		{#if $authStore.user && $teamStore.active && $authStore.user.teams[$teamStore.active.id] === 'ADMIN'}
 			{#if $teamStore.active.invitations.length > 0}
 				<h3>
-					Invitations to the team
+					{$i18n.TEAM_INVITATIONS}
 				</h3>
 				<ul class="entries">
 					{#each $teamStore.active.invitations as invitation, i}

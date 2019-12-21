@@ -1,6 +1,7 @@
 <script>
 	import Page from 'page'
 	import { onMount } from 'svelte'
+	import { i18n } from '../stores/i18n-store.js'
 	import { uiStore } from '../stores/ui-store.js'
 	import { teamStore, teamStoreChangeTitle } from '../stores/team-store.js'
 
@@ -14,20 +15,20 @@
 
 <div class="container">
 	<h2>
-		Want to track togehter?
+		{$i18n.TRACK_TOGETHER}
 	</h2>
 			
 	<p>
-		You are tracking solo right now. If you like to create a team, please go ahead:
+		{$i18n.TRACK_TOGETHER_DESCRIPTION}
 	</p>
 
 	<div class="form-item">
 		<UiInput
-			label="Title of new team"
+			label="{$i18n.NEW_TEAM_TITLE}"
 			bind:value={newTeamTitle} />
 	</div>
 	<UiButton
-		label="Create New Team"
+		label="{$i18n.CREATE_NEW_TEAM}"
 		disabled={newTeamTitle.length === 0}
 		on:click={e => teamStoreChangeTitle($teamStore.active.id, newTeamTitle)} />
 

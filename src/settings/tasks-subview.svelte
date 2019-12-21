@@ -1,6 +1,7 @@
 <script>
 	import Page from 'page'
 	import { onMount } from 'svelte'
+	import { i18n } from '../stores/i18n-store.js'
 	import { tasksStore, tasksStoreNewTask } from '../stores/tasks-store.js'
 	import { uiStore } from '../stores/ui-store.js'
 
@@ -52,11 +53,11 @@
 <header class="bp-{$uiStore.breakpoint}">
 	<div class="subview-title">
 		<h2>
-			Tasks
+			{$i18n.TASKS}
 		</h2>
 	</div>
 	<div class="add-button-wrapper">
-		<UiButton label="Add Task" on:click={e => newEntry()} />
+		<UiButton label="{$i18n.NEW_TASK}" on:click={e => newEntry()} />
 	</div>
 </header>
 
@@ -72,7 +73,7 @@
 
 {#if entries.length == 0}
 	<p style="text-align: center;padding:42px 20px;">
-		No tasks created.
+		{$i18n.NO_TASKS_CREATED}
 	</p>
 {/if}
 

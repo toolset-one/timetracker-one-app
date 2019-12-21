@@ -1,5 +1,6 @@
 <script>
 	import { onMount, afterUpdate, createEventDispatcher } from 'svelte';
+	import { i18n } from '../stores/i18n-store.js'
 	import { slide } from 'svelte/transition'
 	import { cubicOut } from 'svelte/easing'
 
@@ -64,7 +65,7 @@
 		</div>
 		<div class="title" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'title', id: data.id})}>
 			<div>
-				{data.title.length > 0 ? data.title : 'No title'}
+				{data.title.length > 0 ? data.title : $i18n.NO_TITLE}
 			</div>
 		</div>
 		{#if $uiStore.breakpoint != 'xs' && !$uiStore.isTouchDevice}

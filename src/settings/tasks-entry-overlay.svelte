@@ -1,5 +1,6 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
+	import { i18n } from '../stores/i18n-store.js'
 	import { tasksStore, tasksStoreDeleteEntry } from '../stores/tasks-store.js'
 
 	import UiButton from '../ui/ui-button.svelte'
@@ -62,7 +63,7 @@
 		<span class="attr-value">
 			{entryData && entryData.title.length > 0
 					? entryData.title 
-					: 'No Title'}
+					: $i18n.NO_TITLE}
 		</span>
 	</div>
 	<div class="attr color"
@@ -71,7 +72,7 @@
 			<div class="color-icon" style="background-color:{entryData.color}"></div>
 		</div>
 		<span class="attr-value" style="color:{entryData.color}">
-			Color
+			{$i18n.COLOR}
 		</span>
 	</div>
 	

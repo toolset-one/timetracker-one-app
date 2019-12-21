@@ -5,6 +5,7 @@
 
 	import { COLORS } from '../helpers/helpers.js'
 
+	import { i18n } from '../stores/i18n-store.js'
 	import { uiStore } from '../stores/ui-store.js'
 
 	import UiButton from '../ui/ui-button.svelte'
@@ -62,18 +63,18 @@
 		{/if}
 		<div class="name" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'name', id: data.id })}>
 			<div>
-				{data.title && data.title.length > 0 ? data.title : 'No name'}
+				{data.title && data.title.length > 0 ? data.title : $i18n.NO_NAME}
 			</div>
 		</div>
 		<div class="email" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'email', id: data.id })}>
 			<div>
-				{data.email && data.email.length > 0 ? data.email : 'No email address'}
+				{data.email && data.email.length > 0 ? data.email : $i18n.NO_EMAIL}
 			</div>
 		</div>
 		{#if !invitation}
 			<div class="role" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'role', id: data.id })}>
 				<div>
-					{data.role === 'ADMIN' ? 'Admin' : 'Member'}
+					{data.role === 'ADMIN' ? $i18n.ADMIN : $i18n.MEMBER}
 				</div>
 			</div>
 		{/if}

@@ -90,8 +90,6 @@
 		y = boundingRect.y - 3 + (elementConfig['box-y'] || 0)
 		width = boundingRect.width + 6 + (elementConfig['box-width'] || 0)
 		height = boundingRect.height + 6 + (elementConfig['box-height'] || 0)
-
-		console.log(boundingRect)
 	}
 
 

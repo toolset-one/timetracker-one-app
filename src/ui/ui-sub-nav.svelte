@@ -5,6 +5,8 @@
 
 	import { uiStore } from '../stores/ui-store.js'
 
+	export let routes = []
+
 	let ROUTES = ['tasks', 'team', 'account'],
 	ELEMENTS_MAP = {},
 
@@ -25,16 +27,16 @@
 
 <nav bind:this={el} class="bp-{$uiStore.breakpoint}">
 	<ul>
-		{#each ROUTES as route}
+		{#each routes as route}
 			<li>
 				<a 
-					href="/settings/{route}/"
-					bind:this={ELEMENTS_MAP[route]}
-					class="{$routerStore.subview === route ? 'active' : ''}"
-					on:mouseenter={e => hoverEl = ELEMENTS_MAP[route]}
+					href="/settings/{route.slug}/"
+					bind:this={ELEMENTS_MAP[route.slug]}
+					class="{$routerStore.subview === route.slug ? 'active' : ''}"
+					on:mouseenter={e => hoverEl = ELEMENTS_MAP[route.slug]}
 					data-config="SUB_NAV">
 					<span>
-						{route.charAt(0).toUpperCase() + route.slice(1)}
+						{route.title}
 					</span>
 				</a>
 			</li>
