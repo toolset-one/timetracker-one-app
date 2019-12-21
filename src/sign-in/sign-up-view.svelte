@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte'
 	import { get } from 'svelte/store'
 	import { isEmailValid } from '../helpers/helpers.js'
+	import { i18n } from '../stores/i18n-store.js'
 	import { uiStore } from '../stores/ui-store.js'
 	import { authStore, authSignUp, authSignIn } from '../stores/auth-store.js'
 	import { routerStore } from '../stores/router-store.js'
@@ -46,17 +47,24 @@
 	})
 
 	function signUp() {
+
+		const {
+			EMAIL_TAKEN,
+			EMAIL_NOT_VALID,
+			CONNECTION_ERROR
+		} = get(i18n)
+
 		authSignUp(email, password, code).then(res => {
 			authSignIn(email, password)
 				.then(() => Page('/timelog/'))
 				.catch(() => Page('/sign-in/'))
 		}).catch(err => {
 			if(err.code === 'duplicate-key') {
-				emailError = 'This email already belongs to an account'
+				emailError = EMAIL_TAKEN
 			} else if(err.code === 'email-not-valid') {
-				emailError = 'Please provide a correct email address'
+				emailError = EMAIL_NOT_VALID
 			} else if(err.code === 'not-connected') {
-				emailError = 'Connection error to the server – please try again'
+				emailError = CONNECTION_ERROR
 			} else {
 				console.log('ERR', err)
 			}
@@ -76,12 +84,12 @@
 <section class="container">
 
 	<h2>
-		Sign up to {isInvitation ? 'your team' : 'Timetracker.One'}
+		{isInvitation ? $i18n.SIGN_UP_TO_TEAM : $i18n.SIGN_UP_TO_TIMETRACKER_ONE}
 	</h2>
 
 	{#if isInvitation}
 		<p>
-			You followed an invitation email to timetracker.one. Please set a passwort below, and you'll be added directly to the team.
+			{$i18n.INVITATION_GUIDE}
 		</p>
 	{/if}
 
@@ -89,7 +97,7 @@
 
 		<div class="form-item">
 			<UiInput
-				label="E-Mail"
+				label="{$i18n.EMAIL}"
 				type="email"
 				bind:this={emailEl}
 				bind:value={email}
@@ -98,7 +106,7 @@
 		</div>
 		<div class="form-item">
 			<UiInput
-				label="Password"
+				label="{$i18n.PASSWORD}"
 				type="password"
 				bind:this={passwordEl}
 				bind:value={password}
@@ -106,13 +114,13 @@
 		</div>
 		
 		<UiButton
-			label="{isInvitation ? 'Join The Team' : 'Create New Account'}"
+			label="{isInvitation ? $i18n.JOIN_TEAM : $i18n.CREATE_NEW_ACCOUNT_BUTTON}"
 			on:click={e => signUp(e)} />
 		{#if !isInvitation}
 			<span>
-				or
+				{$i18n.OR}
 				<a href="/sign-in/">
-					go to sign in
+					{$i18n.GO_TO_SIGN_IN_PAGE}
 				</a>
 			</span>
 		{/if}

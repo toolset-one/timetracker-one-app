@@ -2,6 +2,7 @@
 	import Page from 'page'
 	import { onMount } from 'svelte'
 	import { get } from 'svelte/store'
+	import { i18n } from '../stores/i18n-store.js'
 	import { uiStore } from '../stores/ui-store.js'
 	import { authStore, authSignIn } from '../stores/auth-store.js'
 
@@ -23,18 +24,26 @@
 	})
 
 	function signIn() {
+
+		const {
+			ACCOUNT_NOT_FOUND,
+			EMAIL_NOT_VALID,
+			CONNECTION_ERROR,
+			PASSWORD_DOES_NOT_MATCH
+		} = get(i18n)
+
 		authSignIn(email, password).then(res => {
 			error = ''
 			Page('/timelog/')
 		}).catch(err => {
 			if(err.code === 'user-not-found') {
-				emailError = 'Account not found'
+				emailError = ACCOUNT_NOT_FOUND
 			} else if(err.code === 'email-not-valid') {
-				emailError = 'Please provide a correct email address'
+				emailError = EMAIL_NOT_VALID
 			} else if(err.code === 'not-connected') {
-				emailError = 'Connection error to the server – please try again'
+				emailError = CONNECTION_ERROR
 			} else if(err.code === 'password-not-correct') {
-				passwordError = 'Password does not match'
+				passwordError = PASSWORD_DOES_NOT_MATCH
 			} else {
 				console.log('ERR', err)
 			}
@@ -54,7 +63,7 @@
 <section class="container">
 
 	<h2>
-		Sign in to Timetracker.One
+		{$i18n.SIGN_IN_TO}
 	</h2>
 
 	{#if error.length > 0}
@@ -67,7 +76,7 @@
 
 		<div class="form-item">
 			<UiInput
-				label="E-Mail"
+				label="{$i18n.EMAIL}"
 				type="email"
 				bind:this={emailEl}
 				bind:value={email}
@@ -75,24 +84,24 @@
 		</div>
 		<div class="form-item">
 			<UiInput
-				label="Password"
+				label="{$i18n.PASSWORD}"
 				type="password"
 				bind:value={password}
 				bind:error={passwordError} />
 		</div>
 		
-		<UiButton label="Sign In" on:click={e => signIn(e)} />
+		<UiButton label="{$i18n.SIGN_IN}" on:click={e => signIn(e)} />
 		<span>
-			or
+			{$i18n.OR}
 			<a href="/sign-up/">
-				create a new account
+				{$i18n.CREATE_NEW_ACCOUNT}
 			</a>
 		</span>
 	</form>
 
 	<div class="password-link">
 		<a href="/new-password/">
-			Send new password
+			{$i18n.SEND_NEW_PASSWORD}
 		</a>
 	</div>
 </section>

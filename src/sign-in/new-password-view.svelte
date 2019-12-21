@@ -1,20 +1,20 @@
 <script>
 	import { onMount } from 'svelte'
 	import { get } from 'svelte/store'
+	import { i18n } from '../stores/i18n-store.js'
 	import { uiStore } from '../stores/ui-store.js'
 	import { authStoreNewPassword } from '../stores/auth-store.js'
 
 	import UiInput from '../ui/ui-input.svelte'
 	import UiButton from '../ui/ui-button.svelte'
 
-	const ERROR_MAP = {
-		'auth/invalid-email': 'The provided email is not valid.'
-	}
-
 	let email = '',
 		emailError = '',
 		emailEl
 
+	$: ERROR_MAP = {
+		'auth/invalid-email': $i18n.EMAIL_NOT_VALID
+	}
 
 	onMount(() => {
 		if(!get(uiStore).isTouchDevice) {
@@ -23,13 +23,15 @@
 	})
 
 	function getNewPassword() {
+
+		const { CONNECTION_ERROR } = get(i18n )
 		
 
 		authStoreNewPassword(email).then(res => {
 
 		}).catch(err => {
 			if(err.code === 'not-connected') {
-				emailError = 'Connection error to the server – please try again'
+				emailError = CONNECTION_ERROR
 			} else {
 				console.log('ERR', err)
 			}
@@ -49,25 +51,25 @@
 <section class="container">
 
 	<h2>
-		New password for Timetracker.One
+		{$i18n.NEW_PASSWORD_FOR}
 	</h2>
 
 	<form on:keydown={e => keydown(e)}>
 
 		<div class="form-item">
 			<UiInput
-				label="E-Mail"
+				label="{$i18n.EMAIL}"
 				type="email"
 				bind:this={emailEl}
 				bind:value={email}
 				bind:error={emailError} />
 		</div>
 		
-		<UiButton label="Get New Password" on:click={e => getNewPassword()} />
+		<UiButton label="{$i18n.GET_NEW_PASSWORD}" on:click={e => getNewPassword()} />
 		<span>
-			or
+			{$i18n.OR}
 			<a href="/sign-in/">
-				go to sign in
+				{$i18n.GO_TO_SIGN_IN_PAGE}
 			</a>
 		</span>
 	</form>

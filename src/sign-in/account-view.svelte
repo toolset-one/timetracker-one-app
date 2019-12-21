@@ -1,19 +1,20 @@
 <script>
 	import { onMount } from 'svelte'
+	import { i18n } from '../stores/i18n-store.js'
 	import { authStoreNewPassword, authStoreVerifyPasswordCode, authStoreConfirmPasswordReset } from '../stores/auth-store.js'
 	import { getUrlParameter } from '../helpers/helpers.js'
 
 	import UiInput from '../ui/ui-input.svelte'
 	import UiButton from '../ui/ui-button.svelte'
 
-	const ERROR_MAP = {
-		'auth/invalid-email': 'The provided email is not valid.'
-	}
-
 	let password = '',
 		error = '',
 		confirmError = '',
 		subview = ''
+
+	$: ERROR_MAP = {
+		'auth/invalid-email': $i18n.EMAIL_NOT_VALID
+	}
 
 	onMount(() => {
 		if(getUrlParameter('mode', window.location.href) === 'resetPassword') {
@@ -44,7 +45,7 @@
 
 	{#if subview === 'resetPassword'}
 		<h2>
-			Set password for Timetracker.One
+			{$i18n.SET_NEW_PASSWORD_FOR}
 		</h2>
 		{#if error && error.length > 0}
 			<p>
@@ -57,23 +58,23 @@
 				</p>
 			{/if}
 			<form on:submit|preventDefault={e => setNewPassword(e)}>
-				<UiInput label="Password" type="password" bind:value={password} />
+				<UiInput label="{$i18n.PASSWORD}" type="password" bind:value={password} />
 				
-				<UiButton label="Set New Password" on:click={e => setNewPassword(e)} />
+				<UiButton label="{$i18n.SET_NEW_PASSWORD}" on:click={e => setNewPassword(e)} />
 			</form>
 		{/if}
 	{:else if subview === 'resetPasswordSuccess'}
 		<h2>
-			New password is set!
+			{$i18n.NEW_PASSWORD_SET}
 		</h2>
 		<p>
 			<a href="/sign-in/">
-				Go to sign in page
+				{$i18n.GO_TO_SIGN_IN_PAGE}
 			</a>
 		</p>
 	{:else}
 		<h2>
-			Loading…
+			{$i18n.LOADING}
 		</h2>
 	{/if}
 
