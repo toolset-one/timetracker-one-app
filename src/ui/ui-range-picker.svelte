@@ -45,7 +45,7 @@
 		left: 0
 	}
 
-	$: rangeTitle = getRangeTitle(firstDate, lastDate)
+	$: rangeTitle = getRangeTitle(firstDate, lastDate, $i18n.WEEK)
 	$: rangeNow = dateRangeGetStandardForDates(firstDate, lastDate)
 
 
@@ -65,17 +65,17 @@
 	}
 
 
-	function getRangeTitle(firstDateNow, lastDateNow) {
+	function getRangeTitle(firstDateNow, lastDateNow, weekI18n) {
+
+		const { MONTHS, WEEKDAYS_SHORT } = get(i18n)
 
 		if(dateIsWeek(firstDateNow, lastDateNow)) {
-			return 'Week ' + dateGetWeek(firstDateNow) + ', ' + firstDateNow.getFullYear()
+			return weekI18n +' ' + dateGetWeek(firstDateNow) + ', ' + firstDateNow.getFullYear()
 		}
 
 		if(dateIsMonth(firstDateNow, lastDateNow)) {
-			return dateGetMonth(firstDateNow) + ', ' + firstDateNow.getFullYear()
+			return dateGetMonth(MONTHS, firstDateNow) + ', ' + firstDateNow.getFullYear()
 		}
-
-		const { MONTHS, WEEKDAYS_SHORT } = get(i18n)
 
 		return dateGetHumanDate(MONTHS, WEEKDAYS_SHORT, firstDateNow, true) +' – '+ dateGetHumanDate(MONTHS, WEEKDAYS_SHORT, lastDateNow, true)
 	}
@@ -220,7 +220,7 @@
 					bind:value={firstDate} 
 					active={pickStartDate} 
 					on:click={e => pickStartDate = true}/>
-					until
+					{$i18n.UNTIL}
 				<UiDateInput
 					bind:value={lastDate} 
 					active={!pickStartDate} 

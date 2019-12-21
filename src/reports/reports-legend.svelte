@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte'
 	import { cubicOut } from 'svelte/easing'
+	import { i18n } from '../stores/i18n-store.js'
 	import { reportsStore, reportsStoreBarchartData, reportsStoreSetActive } from '../stores/reports-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 
@@ -34,10 +35,10 @@
 			on:mouseleave={e => reportsStoreSetActive(null)}
 			style="background:{$tasksStore.json[task.taskId] ? $tasksStore.json[task.taskId].color : '#333'};">
 				{!$tasksStore.json[task.taskId] 
-					? 'No Task'
+					? $i18n.NO_TASK
 					: $tasksStore.json[task.taskId].title.length > 0 
 						? $tasksStore.json[task.taskId].title 
-						: 'No Title'}
+						: $i18n.NO_TITLE}
 				<span>
 					{dateGetHours(task.duration)}:{dateGetMinutes(task.duration)}
 				</span>

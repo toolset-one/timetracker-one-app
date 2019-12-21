@@ -60,7 +60,7 @@
 {#if !hasNoWeekdays}
 	<div class="date">
 		<span>
-			{dateGetWeekday(date).substr(0, (hasShortWeekAbbrivations ? 1 : 3))}
+			{dateGetWeekday($i18n.WEEKDAYS_SHORT, date).substr(0, (hasShortWeekAbbrivations ? 1 : 3))}
 		</span>
 	</div>
 {/if}

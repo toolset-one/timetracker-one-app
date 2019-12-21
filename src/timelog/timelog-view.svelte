@@ -152,7 +152,7 @@
 
 	<div class="total bp-{$uiStore.breakpoint}">
 		<p>
-			{dateGetHours(total)}:{dateGetMinutes(total)} total
+			{dateGetHours(total)}:{dateGetMinutes(total)} {$i18n.TOTAL}
 		</p>
 	</div>
 {:else}

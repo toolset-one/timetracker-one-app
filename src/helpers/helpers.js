@@ -10,19 +10,19 @@ export const COLORS = [
 
 
 export const RANGE_OPTIONS = [{
-	title: 'Current Week',
+	title: 'CURRENT_WEEK',
 	value: 'current-week'
 }, {
-	title: 'Last Week',
+	title: 'LAST_WEEK',
 	value: 'last-week'
 }, {
-	title: 'Current Month',
+	title: 'CURRENT_MONTH',
 	value: 'current-month'
 }, {
-	title: 'Last Month',
+	title: 'LAST_MONTH',
 	value: 'last-month'
 }, {
-	title: 'Custom',
+	title: 'CUSTOM',
 	value: 'custom',
 	disabled: true
 }]
@@ -79,12 +79,12 @@ export const dateGetDay = date => {
 }
 
 
-export const dateGetWeekday = date => {
+export const dateGetWeekday = (WEEKDAYS_SHORT, date) => {
 	return WEEKDAYS_SHORT[date.getDay()]
 }
 
 
-export const dateGetMonth = date => {
+export const dateGetMonth = (MONTHS, date) => {
 	return MONTHS[date.getMonth()]
 }
 

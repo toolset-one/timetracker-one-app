@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte'
 	import { routerStore } from '../stores/router-store.js'
+	import { i18n } from '../stores/i18n-store.js'
 	import { uiStore } from '../stores/ui-store.js'
 	import { dateToDatestring } from '../helpers/helpers.js'
 
@@ -29,7 +30,7 @@
 
 <nav class="bp-{$uiStore.breakpoint}">
 	<ul>
-		{#each ROUTES as route}
+		{#each ROUTES as route, index}
 			<li>
 				<a 
 					href="/{route}/{route === 'timelog' ? dateToDatestring(new Date()) + '/' : ''}{route === 'settings' ? 'tasks/' : ''}"
@@ -38,7 +39,7 @@
 					on:mouseenter={e => hoverEl = ELEMENTS_MAP[route]}
 					data-config="MAIN_NAV">
 					<span>
-						{route.charAt(0).toUpperCase() + route.slice(1)}
+						{$i18n.MAIN_NAV[index]}
 					</span>
 				</a>
 			</li>

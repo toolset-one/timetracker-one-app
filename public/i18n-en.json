@@ -22,6 +22,11 @@
 		"Fri",
 		"Sat"
 	],
+	"MAIN_NAV": [
+		"Timelog",
+		"Reports",
+		"Settings"
+	],
 
 	"NEW_ENTRY": "New Entry",
 	"NO_TITLE": "No title",
@@ -37,5 +42,16 @@
 	"NO_TASKS_FOUND": "No tasks found for this search term",
 	"NO_TRACKED_HOURS": "No tracked hours for this day.",
 	"NO_TRACKED_HOURS_DESCRIPTION": "To track some time, please use the button saying \"New Entry\". If you need help how to use timetracker.one, please",
-	"NO_TRACKED_HOURS_LINK": "click here"
+	"NO_TRACKED_HOURS_LINK": "click here",
+	"TOTAL": "total",
+
+	"NO_TIMES_FOR_FILTERS": "There are no times logged for the choosen filters.",
+	"TASKS": "Tasks",
+	"CURRENT_WEEK": "Current Week",
+	"LAST_WEEK": "Last Week",
+	"CURRENT_MONTH": "Current Month",
+	"LAST_MONTH": "Last Month",
+	"CUSTOM": "Custom",
+	"WEEK": "Week",
+	"UNTIL": "until"
 }

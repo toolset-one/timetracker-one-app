@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte'
 	import { cubicOut } from 'svelte/easing'
+	import { i18n } from '../stores/i18n-store.js'
 	import { reportsStore, reportsStoreBarchartData } from '../stores/reports-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 
@@ -18,7 +19,7 @@
 </script>
 
 <h2>
-	{dateGetHours($reportsStoreBarchartData.total)}:{dateGetMinutes($reportsStoreBarchartData.total)} total
+	{dateGetHours($reportsStoreBarchartData.total)}:{dateGetMinutes($reportsStoreBarchartData.total)} {$i18n.TOTAL}
 </h2>
 
 <div class="distribution-wrapper">
@@ -33,10 +34,10 @@
 				</div>
 				<span class="title">
 					{!$tasksStore.json[task.taskId] 
-						? 'No Task'
+						? $i18n.NO_TASK
 						: $tasksStore.json[task.taskId].title.length > 0 
 							? $tasksStore.json[task.taskId].title 
-							: 'No Title'}
+							: $i18n.NO_TITLE}
 				</span>
 
 				{#if hoveredId === task.taskId || $reportsStore.active === task.taskId}
@@ -45,10 +46,10 @@
 						style="background:{$tasksStore.json[task.taskId] ? $tasksStore.json[task.taskId].color : '#333'};">		
 						<span class="tooltip-title">
 							{!$tasksStore.json[task.taskId] 
-								? 'No Task'
+								? $i18n.NO_TASK
 								: $tasksStore.json[task.taskId].title.length > 0 
 									? $tasksStore.json[task.taskId].title 
-									: 'No Title'}
+									: $i18n.NO_TITLE}
 						</span>
 						{dateGetHours(task.duration)}:{dateGetMinutes(task.duration)}
 					</div>
@@ -58,7 +59,7 @@
 
 	{#if tasks.length === 0}
 		<p>
-			There are no times logged for the choosen filters.
+			{$i18n.NO_TIMES_FOR_FILTERS}
 		</p>
 	{/if}
 </div>

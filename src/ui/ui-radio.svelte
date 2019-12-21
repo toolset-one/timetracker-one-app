@@ -1,17 +1,11 @@
 <script>
-	import { onMount, createEventDispatcher } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
+	import { i18n } from '../stores/i18n-store.js'
 	import { routerStore } from '../stores/router-store.js'
 
 	import UiIcon from './ui-icon.svelte'
 
 	const dispatch = createEventDispatcher()
-
-	export let label = 'No Label'
-	export let type = 'default'
-	export let icon = 'arrow-left'
-	export let hovered = false
-	export let color = 'var(--c-darkgrey)'
-	export let link = null
 
 	export let value = null
 	export let options = []
@@ -32,12 +26,13 @@
 	$: activeBoundingRect = optionEls[value]
 		? optionEls[value].getBoundingClientRect() 
 		: {
+		width: 0,
 		top: 0,
 		left: 0
 	}
 
-	$: activeWidth = activeBoundingRect.width + 2
-	$: activeLeft = activeBoundingRect.left - boundingRect.left - 2
+	$: activeWidth = activeBoundingRect ? activeBoundingRect.width + 2 : 0
+	$: activeLeft = activeBoundingRect ? activeBoundingRect.left - boundingRect.left - 2 : 0
 
 	function click(e, option) {
 		if(!option.disabled) {
@@ -67,7 +62,7 @@
 			'width:'+ activeWidth +'px;' +
 			'left:'+ activeLeft +'px;'
 		}"></div>
-		{#each options as option, i}
+		{#each options as option, i (option.value)}
 			<div
 				bind:this={optionEls[option.value]}
 				class="option {option.value === value ? 'active' : ''} {option.disabled ? 'disabled' : ''}"

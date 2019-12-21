@@ -1,6 +1,7 @@
 <script>
 	import { onMount, afterUpdate } from 'svelte'
 	import { routerStore } from '../stores/router-store.js'
+	import { i18n } from '../stores/i18n-store.js'
 	import { uiStore } from '../stores/ui-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
@@ -24,9 +25,17 @@
 		rangeNow = 'current-week'
 
 	$: tasksToFilter = [...$tasksStore.array, {
-		title: 'No Task',
+		title: $i18n.NO_TASK,
 		id: null
 	}]
+
+
+	$: RANGE_OPTIONS_I18N = ($i18n =>
+			(JSON.parse(JSON.stringify(RANGE_OPTIONS))).map(range => {
+				range.title = $i18n[range.title]
+				return range
+			})
+		)($i18n)
 
 
 	onMount(() => {
@@ -86,7 +95,7 @@
 	</div>
 	{#if $uiStore.breakpoint === 'l'}
 		<div class="ranges-wrapper">
-			<UiRadio options={RANGE_OPTIONS} bind:value={rangeNow} on:change={e => rangeChanged()} />
+			<UiRadio options={RANGE_OPTIONS_I18N} bind:value={rangeNow} on:change={e => rangeChanged()} />
 		</div>
 	{/if}
 </section>
@@ -95,7 +104,7 @@
 <section class="filter-buttons bp-{$uiStore.breakpoint}">	
 	<div class="button-wrapper">
 		<UiMultiselect
-			label="Tasks"
+			label="{$i18n.TASKS}"
 			options={tasksToFilter}
 			bind:value={filterTasks} />
 	</div>
