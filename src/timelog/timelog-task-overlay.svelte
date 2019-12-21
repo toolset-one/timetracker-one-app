@@ -100,7 +100,7 @@
 		type="text"
 		bind:this={el}
 		bind:value={value}
-		placeholder="Search Tasks"
+		placeholder="{$i18n.SEARCH_TASKS}"
 		on:keydown={e => keydownInput(e)}
 		data-disable="true">
 
@@ -111,7 +111,7 @@
 				on:keydown={e => keydownList(e, null)}
 				tabindex="0"
 				data-disable="true">
-				No Task
+				{$i18n.NO_TASK}
 			</li>
 		{/if}
 		{#each tasks as task}
@@ -120,13 +120,13 @@
 				on:keydown={e => keydownList(e, task.id)}
 				tabindex="0"
 				data-disable="true">
-				{task.title.length > 0 ? task.title : 'No title'}
+				{task.title.length > 0 ? task.title : $i18n.NO_TITLE}
 			</li>
 		{/each}
 	</ul>
 	{#if tasks.length === 0 && !('no task').includes(value.toLowerCase())}
 		<small>
-			No tasks found for this search term
+			{$i18n.NO_TASKS_FOUND}
 		</small>
 	{/if}
 </div>

@@ -123,7 +123,7 @@
 				focusConfig="TIMELOG_HEADER_ARROW_RIGHT" />
 		</div>
 		<h2>
-			{dateGetHumanDate(dateNow)}
+			{dateGetHumanDate($i18n.MONTHS, $i18n.WEEKDAYS_SHORT, dateNow)}
 		</h2>
 	</div>
 	<div class="add-button-wrapper">
@@ -158,10 +158,10 @@
 {:else}
 	<div class="container">
 		<h3>
-			No tracked hours for this day.
+			{$i18n.NO_TRACKED_HOURS}
 		</h3>
 		<p>
-			To track some time, please use the button saying "Add Entry". If you need help how to use timetracker.one, please <a href="https://timetracker.one/help/" target="_blank" data-config="TIMELOG_EMPTY_STATE_LINK">click here</a>.
+			{$i18n.NO_TRACKED_HOURS_DESCRIPTION} <a href="https://timetracker.one/help/" target="_blank" data-config="TIMELOG_EMPTY_STATE_LINK">{$i18n.NO_TRACKED_HOURS_LINK}</a>.
 		</p>
 	</div>
 {/if}

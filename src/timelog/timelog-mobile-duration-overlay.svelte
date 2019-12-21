@@ -4,6 +4,7 @@
 	import { mobileOverlayTransition } from '../helpers/animations.js'
 	import { userStore, userSetStopwatch } from '../stores/user-store.js'
 	import { timesStore, timesStoreChangeDuration } from '../stores/times-store.js'
+	import { i18n } from '../stores/i18n-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 	import { dateGetHours, dateGetMinutes } from '../helpers/helpers.js'
 
@@ -55,7 +56,7 @@
 
 <div class="wrapper" transition:mobileOverlayTransition>
 	<header>
-		Edit Duration
+		{$i18n.EDIT_DURATION}
 	</header>
 
 	<div class="swiper">

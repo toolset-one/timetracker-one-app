@@ -1,6 +1,7 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
 
+	import { i18n } from '../stores/i18n-store.js'
 	import { dateGetHumanDate } from '../helpers/helpers.js'
 
 	import UiButton from '../ui/ui-button.svelte'
@@ -74,7 +75,7 @@
 			<UiIcon type='clock-big' size="big" color="var(--c-darkgrey)" />
 		</div>
 		<span class="attr-value">
-			{dateGetHumanDate(firstDate)}
+			{dateGetHumanDate($i18n.MONTHS, $i18n.WEEKDAYS_SHORT, firstDate)}
 		</span>
 	</div>
 
@@ -85,7 +86,7 @@
 			<UiIcon type='clock-big' size="big" color="var(--c-darkgrey)" />
 		</div>
 		<span class="attr-value">
-			{dateGetHumanDate(lastDate)}
+			{dateGetHumanDate($i18n.MONTHS, $i18n.WEEKDAYS_SHORT, lastDate)}
 		</span>
 	</div>
 	

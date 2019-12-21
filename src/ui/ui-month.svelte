@@ -1,7 +1,8 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
 	import { routerStore } from '../stores/router-store.js'
-	import { MONTHS, dateDaysBetweenDates, datePrevDate, dateNextDate, datePrevMonth, dateNextMonth, dateGetWeek, dateGetHumanDate } from '../helpers/helpers.js'
+	import { i18n } from '../stores/i18n-store.js'
+	import { dateDaysBetweenDates, datePrevDate, dateNextDate, datePrevMonth, dateNextMonth, dateGetWeek } from '../helpers/helpers.js'
 
 	import UiIcon from './ui-icon.svelte'
 
@@ -199,7 +200,7 @@
 			</div>
 		{/if}
 		<div class="title-wrapper">
-			{MONTHS[monthForPicker.getMonth()]}, {monthForPicker.getFullYear()}
+			{$i18n.MONTHS[monthForPicker.getMonth()]}, {monthForPicker.getFullYear()}
 		</div>
 		{#if rightArrow}
 			<div

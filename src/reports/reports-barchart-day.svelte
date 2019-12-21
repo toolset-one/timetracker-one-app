@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte'
 	import { cubicOut } from 'svelte/easing'
+	import { i18n } from '../stores/i18n-store.js'
 	import { routerStore } from '../stores/router-store.js'
 	import { reportsStore, reportsStoreBarchartData } from '../stores/reports-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
@@ -44,7 +45,7 @@
 					<div
 						class="tooltip">		
 						<span class="tooltip-date">
-							{dateGetHumanDate(date)}
+							{dateGetHumanDate($i18n.MONTHS, $i18n.WEEKDAYS_SHORT, date)}
 						</span>
 						{dateGetHours(dayTotal)}:{dateGetMinutes(dayTotal)}
 					</div>

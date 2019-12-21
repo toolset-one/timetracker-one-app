@@ -1,5 +1,6 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
+	import { i18n } from '../stores/i18n-store.js'
 	import { timesStoreChangeComment } from '../stores/times-store.js'
 
 	export let id = null
@@ -75,7 +76,7 @@
 		type="text"
 		bind:this={el}
 		bind:value={value}
-		placeholder="No comment"
+		placeholder="{$i18n.NO_COMMENT}"
 		on:blur={e => save()}
 		on:keydown={e => keydown(e)}
 		on:input={e => sizeTestChange()}

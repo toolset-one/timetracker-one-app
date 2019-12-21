@@ -1,32 +1,6 @@
 const DAY_ENDINGS = ['', 'st', 'nd', 'rd']
 
 
-export const MONTHS = [
-	'January',
-	'February',
-	'March', 'April',
-	'May',
-	'June',
-	'Juli',
-	'August',
-	'September',
-	'October',
-	'November',
-	'December'
-]
-
-
-const WEEKDAYS_SHORT = [
-	'Sun',
-	'Mon',
-	'Tue',
-	'Wed',
-	'Thu',
-	'Fri',
-	'Sat'
-]
-
-
 export const COLORS = [
   '#B33C24', '#B37D47', '#B3A147', '#A1B347', '#7DB347',
   '#68B359', '#47B359', '#47B37D', '#47B3A1', '#47A1B3',
@@ -91,7 +65,7 @@ export const dateStringToDate = string => {
 }
 
 
-export const dateGetHumanDate = (date, abbreviate = false) => {
+export const dateGetHumanDate = (MONTHS, WEEKDAYS_SHORT, date, abbreviate = false) => {
 	const dayString = DAY_ENDINGS[date.getDate()] ? date.getDate() + DAY_ENDINGS[date.getDate()] : date.getDate() + 'th',
 		monthString = MONTHS[date.getMonth()].substr(0, (abbreviate ? 3 : 100)),
 		weekdayString = WEEKDAYS_SHORT[date.getDay()]

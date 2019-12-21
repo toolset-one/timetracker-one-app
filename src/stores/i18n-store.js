@@ -3,7 +3,32 @@ import { userStore } from '../stores/user-store.js'
 
 let language = 'en'
 
-export const i18n = writable({})
+export const i18n = writable({
+	"NEW_ENTRY": "New Entry",
+	"MONTHS": [
+		"January",
+		"February",
+		"March",
+		"April",
+		"May",
+		"June",
+		"Juli",
+		"August",
+		"September",
+		"October",
+		"November",
+		"December"
+	],
+	"WEEKDAYS_SHORT": [
+		"Sun",
+		"Mon",
+		"Tue",
+		"Wed",
+		"Thu",
+		"Fri",
+		"Sat"
+	]
+})
 
 export function i18nStoreInit() {
 	setListener()
@@ -20,9 +45,6 @@ function setListener() {
 }
 
 function getTranslations() {
-
-	console.log('/i18n-'+ language +'.json')
-
 	fetch('/i18n-'+ language +'.json').then(async res => {
 			if (res.status !== 200) {
 				return

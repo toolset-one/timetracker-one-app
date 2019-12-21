@@ -2,6 +2,7 @@
 	import { onMount, createEventDispatcher } from 'svelte'
 	import { get } from 'svelte/store'
 	import { fade } from 'svelte/transition'
+	import { i18n } from '../stores/i18n-store.js'
 	import { routerStore } from '../stores/router-store.js'
 	import { uiStore } from '../stores/ui-store.js'
 
@@ -74,7 +75,9 @@
 			return dateGetMonth(firstDateNow) + ', ' + firstDateNow.getFullYear()
 		}
 
-		return dateGetHumanDate(firstDateNow, true) +' – '+ dateGetHumanDate(lastDateNow, true)
+		const { MONTHS, WEEKDAYS_SHORT } = get(i18n)
+
+		return dateGetHumanDate(MONTHS, WEEKDAYS_SHORT, firstDateNow, true) +' – '+ dateGetHumanDate(MONTHS, WEEKDAYS_SHORT, lastDateNow, true)
 	}
 
 

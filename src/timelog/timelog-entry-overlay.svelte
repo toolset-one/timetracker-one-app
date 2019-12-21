@@ -1,6 +1,7 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
 	import { mobileOverlayTransition } from '../helpers/animations.js'
+	import { i18n } from '../stores/i18n-store.js'
 	import { userStore, userSetStopwatch } from '../stores/user-store.js'
 	import { timesStore, timesStoreGetEntry, timesStoreDeleteEntry } from '../stores/times-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
@@ -102,8 +103,8 @@
 		</div>
 		<span class="attr-value">
 			{(entryData && entryData.task && $tasksStore.json && $tasksStore.json[entryData.task]) 
-					? $tasksStore.json[entryData.task].title.length > 0 ? $tasksStore.json[entryData.task].title : 'No Title' 
-					: 'No Task'}
+					? $tasksStore.json[entryData.task].title.length > 0 ? $tasksStore.json[entryData.task].title : $i18n.NO_TITLE 
+					: $i18n.NO_TASK}
 		</span>
 	</div>
 	<div
@@ -113,7 +114,7 @@
 			<UiIcon type='pen-big' size="big" />
 		</div>
 		<span class="attr-value">
-			{entryData && entryData.comment.length > 0 ? entryData.comment : 'No comment'}
+			{entryData && entryData.comment.length > 0 ? entryData.comment : $i18n.NO_COMMENT}
 		</span>
 	</div>
 

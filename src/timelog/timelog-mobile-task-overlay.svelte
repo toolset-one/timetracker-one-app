@@ -3,6 +3,7 @@
 	import { get } from 'svelte/store'
 	import { mobileOverlayTransition } from '../helpers/animations.js'
 	import { timesStoreChangeTask } from '../stores/times-store.js'
+	import { i18n } from '../stores/i18n-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 
 	import UiIcon from '../ui/ui-icon.svelte'
@@ -96,7 +97,7 @@
 
 <div class="wrapper" transition:mobileOverlayTransition>
 	<header>
-		Edit Task
+		{$i18n.EDIT_TASK}
 	</header>
 
 	<div class="swiper">

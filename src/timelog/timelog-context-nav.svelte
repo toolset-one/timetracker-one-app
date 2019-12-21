@@ -1,6 +1,7 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
 	import { getWindowWidth } from '../helpers/helpers.js'
+	import { i18n } from '../stores/i18n-store.js'
 	import { userStore, userSetStopwatch } from '../stores/user-store.js'
 	import { timesStoreGetEntry, timesStoreDeleteEntry } from '../stores/times-store.js'
 
@@ -75,7 +76,7 @@
 			tabindex="0"
 			data-disable="true"
 			on:keydown={e =>keydown(e)}>
-			{hasStopwatch ? 'Stop' : 'Start'} Stopwatch
+			{hasStopwatch ? $i18n.STOP_STOPWATCH : $i18n.START_STOPWATCH}
 		</li>
 		<li 
 			class="border {hasStopwatch ? 'disabled' : ''}"
@@ -83,25 +84,25 @@
 			tabindex="0"
 			data-disable="true"
 			on:keydown={e =>keydown(e)}>
-			Edit Duration
+			{$i18n.EDIT_DURATION}
 		</li>
 		<li on:click={e => dispatch('open', { component: 'task', id})}
 			tabindex="0"
 			data-disable="true"
 			on:keydown={e =>keydown(e)}>
-			Edit Task
+			{$i18n.EDIT_TASK}
 		</li>
 		<li on:click={e => dispatch('open', { component: 'comment', id})}
 			tabindex="0"
 			data-disable="true"
 			on:keydown={e =>keydown(e)}>
-			Edit Comment
+			{$i18n.EDIT_COMMENT}
 		</li>
 		<li bind:this={lastEl} class="border" on:click={e => timesStoreDeleteEntry(id)}
 			tabindex="0"
 			data-disable="true"
 			on:keydown={e =>keydown(e)}>
-			Delete
+			{$i18n.DELETE}
 		</li>
 	</ul>
 </nav>

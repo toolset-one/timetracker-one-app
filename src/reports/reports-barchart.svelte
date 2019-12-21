@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte'
 	import { routerStore } from '../stores/router-store.js'
+	import { i18n } from '../stores/i18n-store.js'
 	import { uiStore } from '../stores/ui-store.js'
 	import { reportsStore, reportsStoreBarchartData, reportsStoreUpdateRange } from '../stores/reports-store.js'
 
@@ -90,10 +91,10 @@
 
 <div class="dates">
 	<div class="date first-date">
-		{dateGetHumanDate($reportsStore.firstDate)}
+		{dateGetHumanDate($i18n.MONTHS, $i18n.WEEKDAYS_SHORT, $reportsStore.firstDate)}
 	</div>
 	<div class="date last-date">
-		{dateGetHumanDate($reportsStore.lastDate)}
+		{dateGetHumanDate($i18n.MONTHS, $i18n.WEEKDAYS_SHORT, $reportsStore.lastDate)}
 	</div>
 </div>
 

@@ -3,6 +3,7 @@
 	import { slide } from 'svelte/transition'
 	import { cubicOut } from 'svelte/easing'
 	import { dateGetHours, dateGetMinutes, dateGetSeconds } from '../helpers/helpers.js'
+	import { i18n } from '../stores/i18n-store.js'
 	import { userStore, userSetStopwatch } from '../stores/user-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 	import { timesStoreDeleteEntry } from '../stores/times-store.js'
@@ -124,8 +125,8 @@
 				{/if}
 
 				{(data.task && $tasksStore.json && $tasksStore.json[data.task]) 
-					? $tasksStore.json[data.task].title.length > 0 ? $tasksStore.json[data.task].title : 'No Title'
-					: 'No Task'}
+					? $tasksStore.json[data.task].title.length > 0 ? $tasksStore.json[data.task].title : $i18n.NO_TITLE
+					: $i18n.NO_TASK}
 			</div>
 		</div>
 		<div
@@ -135,7 +136,7 @@
 			data-config="TIMELOG_ENTRY_COMMENT"
 			data-top={first ? 'TIMELOG_ENTRY__TO_ADD' : null}>
 			<div>
-				{data.comment.length > 0 ? data.comment : 'No comment'}
+				{data.comment.length > 0 ? data.comment : $i18n.NO_COMMENT}
 			</div>
 		</div>
 		{#if $uiStore.breakpoint != 'xs' && !$uiStore.isTouchDevice}

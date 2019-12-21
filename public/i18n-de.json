@@ -1,3 +1,41 @@
 {
-  "NEW_ENTRY": "Neuer Eintrag"
+	"MONTHS": [
+		"Januar",
+		"Februar",
+		"März",
+		"April",
+		"Mai",
+		"Juni",
+		"Juli",
+		"August",
+		"September",
+		"Oktober",
+		"November",
+		"Dezember"
+	],
+	"WEEKDAYS_SHORT": [
+		"So",
+		"Mo",
+		"Di",
+		"Mi",
+		"Do",
+		"Fr",
+		"Sa"
+	],
+
+	"NEW_ENTRY": "Neuer Eintrag",
+	"NO_TITLE": "Kein Titel",
+	"NO_TASK": "Keine Aufgabe",
+	"NO_COMMENT": "Kein Kommentar",
+	"STOP_STOPWATCH": "Stoppuhr anhalten",
+	"START_STOPWATCH": "Stoppuhr starten",
+	"EDIT_DURATION": "Dauer bearbeiten",
+	"EDIT_TASK": "Aufgabe bearbeiten",
+	"EDIT_COMMENT": "Kommentar bearbeiten",
+	"DELETE": "Löschen",
+	"SEARCH_TASKS": "Aufgaben durchsuchen",
+	"NO_TASKS_FOUND": "Keine Aufgaben für diesen Suchbegriff gefunden",
+	"NO_TRACKED_HOURS": "Keine erfasste Zeit für diesen Tag.",
+	"NO_TRACKED_HOURS_DESCRIPTION": "Um Zeit zu erfassen, klicke bitte den Button \"Neuer Eintrag\". Wenn Du Hilfe bei der Benutzung von timetracker.one brauchst, bitte",
+	"NO_TRACKED_HOURS_LINK": "klicke hier"
 }

@@ -1,6 +1,7 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
 	import { get } from 'svelte/store'
+	import { i18n } from '../stores/i18n-store.js'
 	import { uiStore, uiScrollstopStore } from '../stores/ui-store.js'
 	import { userSetStopwatch } from '../stores/user-store.js'
 	import { timesStoreDeleteEntry } from '../stores/times-store.js'
@@ -9,14 +10,6 @@
 	export let data
 
 	const dispatch = createEventDispatcher(),
-		LABEL_MAP = {
-			'delete': 'Delete Entry',
-			'stopwatch': 'Start Stopwatch',
-			'duration': 'Edit Duration',
-			'task': 'Edit Task',
-			'comment': 'Edit Comment',
-			'neutral': ''
-		},
 		ICON_MAP = {
 			'delete': 'cross-big',
 			'stopwatch': 'clock-big',
@@ -31,6 +24,15 @@
 		firstX = 0,
 		delta = 0,
 		trigger = 'neutral'
+
+	$: LABEL_MAP = {
+		'delete': $i18n.DELETE,
+		'stopwatch': $i18n.START_STOPWATCH,
+		'duration': $i18n.EDIT_DURATION,
+		'task': $i18n.EDIT_TASK,
+		'comment': $i18n.EDIT_COMMENT,
+		'neutral': ''
+	}
 
 	onMount(() => {
 

@@ -4,7 +4,7 @@
 	import { reportsStore, reportsStoreBarchartData, reportsStoreSetActive } from '../stores/reports-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 
-	import { dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth, dateToDatabaseDate} from '../helpers/helpers.js'
+	import { dateToDatestring, dateStringToDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateDaysBetweenDates, dateGetWeekday, dateGetDay, dateGetMonth, dateToDatabaseDate} from '../helpers/helpers.js'
 
 	$: tasks = (Object.keys($reportsStoreBarchartData.tasks).map(taskId => {
 		return {

@@ -1,8 +1,9 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte'
-	import { MONTHS, getWindowWidth, trailingZero } from '../helpers/helpers.js'
+	import { getWindowWidth, trailingZero } from '../helpers/helpers.js'
 	import { mobileOverlayTransition } from '../helpers/animations.js'
 	import { userStore, userSetStopwatch } from '../stores/user-store.js'
+	import { i18n } from '../stores/i18n-store.js'
 	import { timesStore, timesStoreChangeDuration } from '../stores/times-store.js'
 	import { tasksStore } from '../stores/tasks-store.js'
 	import { dateGetHours, dateGetMinutes } from '../helpers/helpers.js'
@@ -14,16 +15,13 @@
 
 	const dispatch = createEventDispatcher()
 
-	let months = [],
-		dates = [],
+	let dates = [],
 		years = [],
 		monthsEl,
 		datesEl,
 		yearsEl
 
 	onMount(async () => {
-		months = MONTHS
-
 		for(var i = 0; i <= 31; i++) {
 			dates.push(i)
 		}
@@ -70,7 +68,7 @@
 				<li></li>
 				<li></li>
 				<li></li>
-				{#each months as month}
+				{#each $i18n.MONTHS as month}
 					<li>
 						{month}
 					</li>

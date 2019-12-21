@@ -6,7 +6,7 @@
 	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
 	import { reportsStore, reportsStoreUpdateRange, reportsStoreBarchartData, reportsStoreSetPeriod } from '../stores/reports-store.js'
 
-	import { RANGE_OPTIONS, RANGE_MAP, dateToDatestring, dateStringToDate, dateGetHumanDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateGetWeek, dateGetMonth, datePrevMonth, dateNextMonth, dateIsWeek, dateIsMonth, dateGetWeekStart, dateGetMonthStart, dateRangeGetStandard, dateRangeGetStandardForDates } from '../helpers/helpers.js'
+	import { RANGE_OPTIONS, RANGE_MAP, dateToDatestring, dateStringToDate, datePrevDate, dateNextDate, dateGetHours, dateGetMinutes, dateGetWeek, dateGetMonth, datePrevMonth, dateNextMonth, dateIsWeek, dateIsMonth, dateGetWeekStart, dateGetMonthStart, dateRangeGetStandard, dateRangeGetStandardForDates } from '../helpers/helpers.js'
 
 	import UiButton from '../ui/ui-button.svelte'
 	import UiMultiselect from '../ui/ui-multiselect.svelte'
