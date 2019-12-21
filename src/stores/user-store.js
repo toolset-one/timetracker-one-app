@@ -6,9 +6,9 @@ import { sws } from '../helpers/sws-client.js'
 
 
 export const userStore = writable({
-	language: 'EN',
+	language: 'en',
 	stopwatchEntryId: null,
-	stopwatchStartTime: 0,
+	stopwatchStartTime: 0
 })
 
 export const userStopwatchStore = writable(0)
@@ -33,6 +33,7 @@ function setListener() {
 				col: 'settings',
 				id: authData.user.id
 			}).then(res => {
+				console.log(userStore)
 				userStore.update(data => {
 					return res ? res : data
 				})
@@ -107,6 +108,16 @@ export function userSetStopwatch(id, startTime) {
 export function userStoreSetUsername(username, cb) {
 	userStore.update(data => {
 		data.username = username
+		return data
+	})
+
+	updateUser(cb)
+}
+
+
+export function userStoreSetLanguage(language, cb) {
+	userStore.update(data => {
+		data.language = language
 		return data
 	})
 

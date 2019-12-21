@@ -2,6 +2,7 @@
 	import Page from 'page'
 	import { get } from 'svelte/store'
 	import { routerStore } from '../stores/router-store.js'
+	import { i18n } from '../stores/i18n-store.js'
 	import { timesStore, timesStoreNewTime } from '../stores/times-store.js'
 	import { uiStore, uiScrollstopStore } from '../stores/ui-store.js'
 	import { userStore, userStopwatchStore } from '../stores/user-store.js'
@@ -127,7 +128,7 @@
 	</div>
 	<div class="add-button-wrapper">
 		<UiButton
-			label="Add Entry"
+			label={$i18n.NEW_ENTRY}
 			on:click={e => newEntry()}
 			focusConfig="TIMELOG_HEADER_ADD"
 			type="{$uiStore.breakpoint === 'xs' ? 'dark' : 'default'}" />

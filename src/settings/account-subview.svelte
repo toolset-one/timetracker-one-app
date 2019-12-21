@@ -3,20 +3,30 @@
 	import { onMount } from 'svelte'
 	import { authSignOut } from '../stores/auth-store.js'
 	import { uiStore } from '../stores/ui-store.js'
-	import { userStore, userStoreSetUsername } from '../stores/user-store.js'
+	import { userStore, userStoreSetUsername, userStoreSetLanguage } from '../stores/user-store.js'
 
 	import UiButton from '../ui/ui-button.svelte'
 	import UiInput from '../ui/ui-input.svelte'
+	import UiRadio from '../ui/ui-radio.svelte'
+
+	const LANGUAGE_OPTIONS = [{
+		title: 'English',
+		value: 'en'
+	}, {
+		title: 'Deutsch',
+		value: 'de'
+	}]
 
 	let username = '',
 		usernameFocused = false,
 		usernameInfo = '',
-		usernameDebounce
+		usernameDebounce,
+		languageNow = 'en'
 
 	onMount(() => {
-		userStore.subscribe(data =>
-			setTimeout(() => username = data.username || '')
-		)
+		userStore.subscribe(data => {
+			languageNow = data.language
+		})
 	})
 
 	function usernameFocus(e) {
@@ -47,6 +57,11 @@
 		, 500)
 	}
 
+
+	function languageChanged() {
+		userStoreSetLanguage(languageNow)
+	}
+
 </script>
 
 <header class="bp-{$uiStore.breakpoint}">
@@ -64,7 +79,7 @@
 
 	<div class="container">
 		<h2>
-			Your Account
+			Your Account {languageNow}
 		</h2>
 		
 		<UiInput
@@ -77,6 +92,15 @@
 		<small>
 			{usernameInfo}
 		</small>
+
+
+		<p>
+			Language
+		</p>
+		<UiRadio
+			options={LANGUAGE_OPTIONS}
+			bind:value={languageNow}
+			on:change={e => languageChanged()} />
 	</div>
 
 	<!-- <p>	

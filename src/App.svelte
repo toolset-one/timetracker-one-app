@@ -8,6 +8,7 @@
 	import { teamStore, teamStoreInit } from './stores/team-store.js'
 	import { reportsStoreInit } from './stores/reports-store.js'
 	import { uiStore, uiStoreInit, uiStoreSetBreakpoint } from './stores/ui-store.js'
+	import { i18nStoreInit } from './stores/i18n-store.js'
 	import { getWindowWidth } from './helpers/helpers.js'
 	import { sws } from './helpers/sws-client.js'
 
@@ -93,6 +94,7 @@ const MODELS = {
 		userStoreInit()
 		teamStoreInit()
 		reportsStoreInit()
+		i18nStoreInit()
 	})
 
 	function resize() {
