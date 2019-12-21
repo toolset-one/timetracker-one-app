@@ -65,10 +65,7 @@
 
 <div 
 	bind:this={el}
-	class="wrapper
-		{focused ? 'focused' : ''}
-		{disabled ? 'disabled' : ''}
-		{value.length > 0 || prefilled ? 'filled' : ''}"
+	class="wrapper {focused ? 'focused' : ''} {disabled ? 'disabled' : ''} {value.length > 0 || prefilled ? 'filled' : ''}"
 		on:keydown={e => keydown(e)}
 		on:mouseup={e => mouseup(e)}>
 	<label>
