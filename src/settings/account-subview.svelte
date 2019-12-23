@@ -5,7 +5,8 @@
 	import { i18n } from '../stores/i18n-store.js'
 	import { authSignOut } from '../stores/auth-store.js'
 	import { uiStore } from '../stores/ui-store.js'
-	import { userStore, userStoreSetUsername, userStoreSetLanguage } from '../stores/user-store.js'
+	import { userStore, userStoreSetLanguage } from '../stores/user-store.js'
+	import { teamStoreGetUsername, teamStoreSetUsername } from '../stores/team-store.js'
 
 	import UiButton from '../ui/ui-button.svelte'
 	import UiInput from '../ui/ui-input.svelte'
@@ -29,6 +30,8 @@
 		userStore.subscribe(data => {
 			languageNow = data.language
 		})
+
+		username = teamStoreGetUsername()
 	})
 
 	function usernameFocus(e) {
@@ -53,12 +56,14 @@
 
 		const { USERNAME_UP_TO_DATE } = get(i18n)
 
-		usernameDebounce = setTimeout(() =>
-			userStoreSetUsername(username, success => {
+		usernameDebounce = setTimeout(async () =>
+			teamStoreSetUsername(username).then(() => {
 				usernameInfo = USERNAME_UP_TO_DATE
 				usernameDebounce = setTimeout(() => {
 					usernameInfo = usernameFocused ? USERNAME_UP_TO_DATE : ''
 				}, 1000)
+			}).catch(err => {
+				console.log('ERR', err)
 			})
 		, 500)
 	}

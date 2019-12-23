@@ -47,7 +47,6 @@ function setListener(teamId) {
 			team: teamId
 		},
 		fn: obj => {
-			console.log('OBJ', obj)
 			tasksStore.update(data => {
 				data.json[obj.id] = obj
 				data.array = Object.values(data.json)

@@ -28,14 +28,6 @@
 		debounceTimeout
 
 const MODELS = {
-	'teams': {
-		col: 'teams',
-		attributes: {
-			title: '',
-			members: {}
-		},
-		indexes: []
-	}, 
 	'settings': {
 		col: 'settings',
 		attributes: {
@@ -74,6 +66,17 @@ const MODELS = {
 		indexes: [
 			['team'],
 			['project', 'team']
+		]
+	}, 
+	'members': {
+		col: 'members',
+		attributes: {
+			name: '',
+			user: null,
+			team: null
+		},
+		indexes: [
+			['team']
 		]
 	}
 }

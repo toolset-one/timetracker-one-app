@@ -63,7 +63,6 @@ export function authStoreVerifyPasswordCode(oobCode, cb) {
 
 export function authStoreConfirmPasswordReset(oobCode, password, cb) {
 	sws.auth.resetPassword(oobCode, password).then(res => {
-		console.log('RES', res)
 		cb(null)
 	}).catch(err => {
 		cb(err)

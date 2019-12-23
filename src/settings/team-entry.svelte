@@ -7,6 +7,7 @@
 
 	import { i18n } from '../stores/i18n-store.js'
 	import { uiStore } from '../stores/ui-store.js'
+	import { teamStore } from '../stores/team-store.js'
 
 	import UiButton from '../ui/ui-button.svelte'
 
@@ -63,7 +64,7 @@
 		{/if}
 		<div class="name" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'name', id: data.id })}>
 			<div>
-				{data.title && data.title.length > 0 ? data.title : $i18n.NO_NAME}
+				{$teamStore.members[data.id] && $teamStore.members[data.id].name.length > 0 ? $teamStore.members[data.id].name : $i18n.NO_NAME}
 			</div>
 		</div>
 		<div class="email" on:click={e => dispatchDesktopAndKeyboard('open', { component: 'email', id: data.id })}>

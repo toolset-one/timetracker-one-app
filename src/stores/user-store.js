@@ -1,6 +1,7 @@
 import { writable, get } from 'svelte/store';
 import { routerStore } from '../stores/router-store.js'
 import { authStore } from '../stores/auth-store.js'
+import { teamStore } from '../stores/team-store.js'
 import { timesStoreChangeDuration } from '../stores/times-store.js'
 import { sws } from '../helpers/sws-client.js'
 
@@ -8,7 +9,10 @@ import { sws } from '../helpers/sws-client.js'
 export const userStore = writable({
 	language: 'en',
 	stopwatchEntryId: null,
-	stopwatchStartTime: 0
+	stopwatchStartTime: 0,
+	firstWeekDay: 'MON',
+	dateFormat: 'DD.MM.YYY',
+	timeFormat: 24
 })
 
 export const userStopwatchStore = writable(0)
@@ -27,13 +31,11 @@ export function userStoreInit() {
 function setListener() {
 	authStore.subscribe(authData => {
 		if(authData.hasAuth) {
-			console.log('USER ID', authData.user.id)
 
 			sws.db.get({
 				col: 'settings',
 				id: authData.user.id
 			}).then(res => {
-				console.log(userStore)
 				userStore.update(data => {
 					return res ? res : data
 				})
@@ -102,16 +104,6 @@ export function userSetStopwatch(id, startTime) {
 	})
 
 	updateUser()
-}
-
-
-export function userStoreSetUsername(username, cb) {
-	userStore.update(data => {
-		data.username = username
-		return data
-	})
-
-	updateUser(cb)
 }
 
 
