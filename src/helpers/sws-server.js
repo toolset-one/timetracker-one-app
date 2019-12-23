@@ -285,7 +285,7 @@ swsServer.db = {
 								}
 							}
 						}).catch(err => {
-							console.log('ERR', err)
+							console.log('ERR', err, req.result)
 							setTimeout(() => {
 								swsServer.db.__sync()
 							}, 1000)

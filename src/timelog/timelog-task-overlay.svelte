@@ -2,6 +2,7 @@
 	import { onMount, createEventDispatcher } from 'svelte'
 	import UiButton from '../ui/ui-button.svelte'
 
+	import { i18n } from '../stores/i18n-store.js'
 	import { timesStoreChangeTask } from '../stores/times-store.js'
 	import { tasksStore, tasksStoreNewTask } from '../stores/tasks-store.js'
 

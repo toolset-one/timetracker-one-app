@@ -107,5 +107,11 @@
 	"ACCOUNT_NOT_FOUND": "Account nicht gefunden",
 	"PASSWORD_DOES_NOT_MATCH": "Die Passwörter stimmen nicht überein",
 	"EMAIL_NOT_VALID": "Die angegebene E-Mail Adresse ist nicht gültig",
-	"CONNECTION_ERROR": "Verbindungsfehler mit dem Server – bitte erneut versuchen"
+	"CONNECTION_ERROR": "Verbindungsfehler mit dem Server – bitte erneut versuchen",
+
+	"DATE_FORMAT": "Datumsformat",
+	"FIRST_WEEKDAY": "Wochenanfang",
+	"SATURDAY": "Samstag",
+	"SUNDAY": "Sonntag",
+	"MONDAY": "Montag"
 }

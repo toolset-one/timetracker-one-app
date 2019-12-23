@@ -31,9 +31,12 @@ const MODELS = {
 	'settings': {
 		col: 'settings',
 		attributes: {
-			language: 'EN',
+			language: 'en',
 			stopwatchEntryId: null,
 			stopwatchStartTime: 0,
+			firstWeekDay: 'MON',
+			dateFormat: 'DD.MM.YYY',
+			timeFormat: 24
 		},
 		indexes: []
 	}, 

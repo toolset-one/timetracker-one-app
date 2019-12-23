@@ -18,13 +18,51 @@
 	}, {
 		title: 'Deutsch',
 		value: 'de'
+	}],
+
+	DATE_FORMAT_OPTIONS = [{
+		title: 'DD.MM.YYYY',
+		value: 'DD.MM.YYYY'
+	}, {
+		title: 'MM/DD/YYYY',
+		value: 'MM/DD/YYYY'
+	}, {
+		title: 'DD/MM/YYYY',
+		value: 'DD/MM/YYYY'
+	}, {
+		title: 'YYYY/MM/DD',
+		value: 'YYYY/MM/DD'
+	}, {
+		title: 'YYYY-MM-DD',
+		value: 'YYYY-MM-DD'
+	}],
+
+	FIRST_WEEKDAY_OPTIONS = [{
+		title: 'SATURDAY',
+		value: 'SAT'
+	}, {
+		title: 'SUNDAY',
+		value: 'SUN'
+	}, {
+		title: 'MONDAY',
+		value: 'MON'
 	}]
+
 
 	let username = '',
 		usernameFocused = false,
 		usernameInfo = '',
 		usernameDebounce,
-		languageNow = 'en'
+		languageNow = 'en',
+		dateFormatNow = 'DD.MM.YYYY',
+		firstWeekdayNow = 'MON'
+
+
+	$: FIRST_WEEKDAY_OPTIONS_I18N = JSON.parse(JSON.stringify(FIRST_WEEKDAY_OPTIONS)).map(option => {
+		option.title = $i18n[option.title]
+		return option
+	})
+
 
 	onMount(() => {
 		userStore.subscribe(data => {
@@ -73,6 +111,14 @@
 		userStoreSetLanguage(languageNow)
 	}
 
+	function dateFormatChanged() {
+		console.log(dateFormatNow)
+	}
+
+	function firstWeekdayChanged() {
+		console.log(firstWeekdayNow)
+	}
+
 </script>
 
 <header class="bp-{$uiStore.breakpoint}">
@@ -92,6 +138,7 @@
 		<h2>
 			{$i18n.YOUR_ACCOUNT}
 		</h2>
+
 		
 		<UiInput
 			label="{$i18n.USERNAME}"
@@ -100,18 +147,44 @@
 			on:focus={e => usernameFocus(e)}
 			on:blur={e => usernameBlur(e)}
 			on:keydown={e => usernameKeydown(e)} />
-		<small>
+		<small class="hidden-small">
 			{usernameInfo}
 		</small>
 
+	</div>
 
-		<p>
+
+	<div class="container">
+		<h2>
+			{$i18n.MAIN_NAV[2]}
+		</h2>
+
+
+		<small class="label-small">
 			{$i18n.LANGUAGE}
-		</p>
+		</small>
 		<UiRadio
 			options={LANGUAGE_OPTIONS}
 			bind:value={languageNow}
 			on:change={e => languageChanged()} />
+
+
+		<small class="label-small">
+			{$i18n.DATE_FORMAT}
+		</small>
+		<UiRadio
+			options={DATE_FORMAT_OPTIONS}
+			bind:value={dateFormatNow}
+			on:change={e => dateFormatChanged()} />
+
+
+		<small class="label-small">
+			{$i18n.FIRST_WEEKDAY}
+		</small>
+		<UiRadio
+			options={FIRST_WEEKDAY_OPTIONS_I18N}
+			bind:value={firstWeekdayNow}
+			on:change={e => firstWeekdayChanged()} />
 	</div>
 
 	<!-- <p>	
@@ -170,10 +243,15 @@
 		padding:24px 0;
 	}
 
-	small {
-		margin:6px 0 24px 0;
+	.hidden-small {
+		margin:6px 0 -12px 0;
 		display:block;
 		height:18px;
+	}
+
+	.label-small {
+		display:block;
+		margin:24px 0 6px 0;
 	}
 
 </style>
