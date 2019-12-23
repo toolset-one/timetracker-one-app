@@ -97,8 +97,7 @@ sws.auth = {
 		return sws.bridge.send({
 			action: 'inviteMember',
 			teamId,
-			email,
-			name
+			email
 		})
 	}
 }

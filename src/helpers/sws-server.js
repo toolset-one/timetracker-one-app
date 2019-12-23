@@ -187,12 +187,11 @@ swsServer.auth = {
 	},
 
 
-	inviteMember: ({ promiseId, teamId, email, name }) => {
+	inviteMember: ({ promiseId, teamId, email }) => {
 		swsServer.gateway.send({
 			action: 'inviteMember',
 			teamId,
-			email,
-			name
+			email
 		}).then(res => {
 			swsServer.bridge.answer({
 				promiseId: promiseId,
